@@ -1,0 +1,35 @@
+{
+  "description": "Pickleball scoring and ranking points structure",
+  "matchFormat": {
+    "games_to_win": 2,
+    "points_per_game": 11,
+    "win_by": 2,
+    "rally_scoring": true,
+    "freeze_point": null,
+    "notes": "Rally scoring adopted in 2025. Games played to 11, win by 2."
+  },
+  "events": {
+    "singles": {"abbreviation": "MS/WS", "description": "Men's/Women's Singles"},
+    "doubles": {"abbreviation": "MD/WD", "description": "Men's/Women's Doubles"},
+    "mixed_doubles": {"abbreviation": "MXD", "description": "Mixed Doubles"}
+  },
+  "rankingPoints": {
+    "World Championship": {"W": 3000, "F": 2100, "SF": 1500, "QF": 900, "R16": 450, "R32": 225},
+    "Major": {"W": 2000, "F": 1400, "SF": 1000, "QF": 600, "R16": 300, "R32": 150},
+    "Championship": {"W": 2000, "F": 1400, "SF": 1000, "QF": 600, "R16": 300, "R32": 150},
+    "Masters": {"W": 1000, "F": 700, "SF": 500, "QF": 300, "R16": 150, "R32": 75},
+    "Open": {"W": 750, "F": 525, "SF": 375, "QF": 225, "R16": 110, "R32": 55},
+    "League": {"W": 500, "F": 350, "SF": 250, "QF": 150}
+  },
+  "duprRating": {
+    "description": "DUPR (Dynamic Universal Pickleball Rating) is the standard rating system",
+    "scale": {"min": 2.0, "max": 8.0},
+    "levels": {
+      "beginner": {"min": 2.0, "max": 3.0},
+      "intermediate": {"min": 3.0, "max": 4.0},
+      "advanced": {"min": 4.0, "max": 5.0},
+      "pro_am": {"min": 5.0, "max": 5.5},
+      "professional": {"min": 5.5, "max": 8.0}
+    }
+  }
+}

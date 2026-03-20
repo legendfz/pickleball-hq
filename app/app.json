@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "PickleballHQ",
+    "slug": "pickleballhq",
+    "version": "1.0.0",
+    "scheme": "pickleballhq",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d0d"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pickleballhq.app",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0891b2"
+      },
+      "package": "com.pickleballhq.app",
+      "permissions": ["NOTIFICATIONS"]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#0891b2"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}

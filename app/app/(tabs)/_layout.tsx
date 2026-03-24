@@ -3,28 +3,32 @@ import { Text, StyleSheet, View } from 'react-native';
 import { theme } from '../../lib/theme';
 import { useLanguage } from '../../lib/i18n';
 import {
-  MatchesIcon,
-  PlayersIcon,
-  TournamentsIcon,
-  H2HIcon,
-  FollowingIcon,
-  FantasyIcon,
+  PlayIcon,
   CourtsIcon,
+  PlayersIcon,
+  EventsIcon,
+  ProfileIcon,
 } from '../../lib/tab-icons';
 
 function TabIcon({
   label,
   focused,
   icon: Icon,
+  emoji,
 }: {
   label: string;
   focused: boolean;
   icon: React.ComponentType<{ color: string; size?: number }>;
+  emoji?: string;
 }) {
   const color = focused ? theme.accent : theme.textSecondary;
   return (
     <View style={tabStyles.iconWrap}>
-      <Icon color={color} size={22} />
+      {emoji ? (
+        <Text style={[tabStyles.emoji, { opacity: focused ? 1 : 0.5 }]}>{emoji}</Text>
+      ) : (
+        <Icon color={color} size={22} />
+      )}
       <Text style={[tabStyles.label, focused && tabStyles.labelActive]}>{label}</Text>
       {focused && <View style={tabStyles.indicator} />}
     </View>
@@ -38,6 +42,9 @@ const tabStyles = StyleSheet.create({
     paddingTop: 4,
     minHeight: 44,
     minWidth: 44,
+  },
+  emoji: {
+    fontSize: 22,
   },
   label: {
     fontSize: 10,
@@ -69,12 +76,13 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.accent,
         tabBarInactiveTintColor: theme.textSecondary,
         tabBarStyle: {
-          backgroundColor: theme.cardAlt,
+          backgroundColor: 'rgba(18, 18, 18, 0.95)',
           borderTopColor: theme.border,
           borderTopWidth: 1,
           height: 68,
           paddingBottom: 8,
           paddingTop: 4,
+          backdropFilter: 'blur(20px)',
         },
         tabBarLabelStyle: {
           display: 'none',
@@ -89,55 +97,19 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* Tab 1: Play (首页) — 约球中心 */}
       <Tabs.Screen
         name="index"
         options={{
-          title: t('matches'),
+          title: 'Play',
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <TabIcon label={t('matches')} focused={focused} icon={MatchesIcon} />
+            <TabIcon label="Play" focused={focused} icon={PlayIcon} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="players"
-        options={{
-          title: t('players'),
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon label={t('players')} focused={focused} icon={PlayersIcon} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="tournaments"
-        options={{
-          title: t('tournaments'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon label={t('events')} focused={focused} icon={TournamentsIcon} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="h2h"
-        options={{
-          title: t('h2h'),
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon label={t('h2h')} focused={focused} icon={H2HIcon} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="fantasy"
-        options={{
-          title: 'Fantasy',
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon label="Fantasy" focused={focused} icon={FantasyIcon} />
-          ),
-        }}
-      />
+
+      {/* Tab 2: Courts — 球场 */}
       <Tabs.Screen
         name="courts"
         options={{
@@ -148,19 +120,48 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* Hidden tabs */}
+
+      {/* Tab 3: Players — 排名 */}
       <Tabs.Screen
-        name="following"
+        name="players"
         options={{
-          href: null,
+          title: 'Players',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label="Players" focused={focused} icon={PlayersIcon} />
+          ),
         }}
       />
+
+      {/* Tab 4: Events — 赛事 */}
       <Tabs.Screen
-        name="matches"
+        name="tournaments"
         options={{
-          href: null,
+          title: 'Events',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label="Events" focused={focused} icon={EventsIcon} />
+          ),
         }}
       />
+
+      {/* Tab 5: Profile — 我的 */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label="Profile" focused={focused} icon={ProfileIcon} />
+          ),
+        }}
+      />
+
+      {/* Hidden tabs — routes still accessible, not shown in tab bar */}
+      <Tabs.Screen name="following" options={{ href: null }} />
+      <Tabs.Screen name="matches" options={{ href: null }} />
+      <Tabs.Screen name="h2h" options={{ href: null }} />
+      <Tabs.Screen name="fantasy" options={{ href: null }} />
     </Tabs>
   );
 }

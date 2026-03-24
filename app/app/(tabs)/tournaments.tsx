@@ -61,6 +61,10 @@ export default function TournamentsScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.headerArea}>
+        <Text style={styles.pageTitle}>Events</Text>
+        <Text style={styles.pageSubtitle}>Tournaments & competitions</Text>
+      </View>
       <FlatList
         data={tournaments}
         keyExtractor={(item) => item.id.toString()}
@@ -113,6 +117,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.bg,
+  },
+  headerArea: {
+    paddingTop: 56,
+    paddingBottom: 4,
+  },
+  pageTitle: {
+    fontSize: theme.fontSize.pageTitle,
+    fontWeight: theme.fontWeight.bold,
+    color: theme.text,
+    paddingHorizontal: theme.spacing.padding,
+  },
+  pageSubtitle: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    paddingHorizontal: theme.spacing.padding,
+    marginBottom: 8,
   },
   list: {
     paddingBottom: 20,

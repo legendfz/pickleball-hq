@@ -333,19 +333,47 @@ export default function HomeScreen() {
         <PickleballBallIcon size={16} />
       </View>
 
-      {/* Find Game Button */}
-      <TouchableOpacity
-        style={styles.findGameBtn}
-        onPress={() => router.push('/matchmaking')}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.findGameIcon}>🏓</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.findGameTitle}>Find a Game</Text>
-          <Text style={styles.findGameSubtitle}>Find opponents & partners near you</Text>
-        </View>
-        <Text style={styles.findGameArrow}>→</Text>
-      </TouchableOpacity>
+      {/* Game Action Buttons */}
+      <View style={styles.gameActionsRow}>
+        <TouchableOpacity
+          style={styles.gameActionBtn}
+          onPress={() => router.push('/matchmaking')}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.gameActionIcon}>🔍</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.gameActionTitle}>Find a Game</Text>
+            <Text style={styles.gameActionSub}>Find opponents near you</Text>
+          </View>
+          <Text style={styles.gameActionArrow}>→</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.gameActionBtn}
+          onPress={() => router.push('/posted-games')}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.gameActionIcon}>📋</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.gameActionTitle}>Browse Games</Text>
+            <Text style={styles.gameActionSub}>Join open games posted by players</Text>
+          </View>
+          <Text style={styles.gameActionArrow}>→</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.gameActionBtn}
+          onPress={() => router.push('/post-game')}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.gameActionIcon}>➕</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.gameActionTitle}>Post a Game</Text>
+            <Text style={styles.gameActionSub}>Create & invite players</Text>
+          </View>
+          <Text style={styles.gameActionArrow}>→</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Tour Filter Pills */}
       <View style={styles.tourFilterRow}>
@@ -724,34 +752,37 @@ const styles = StyleSheet.create({
     fontWeight: theme.fontWeight.bold,
   },
 
-  // Find Game Button
-  findGameBtn: {
+  // Game Action Buttons
+  gameActionsRow: {
+    paddingHorizontal: theme.spacing.padding,
+    marginBottom: 12,
+    gap: 8,
+  },
+  gameActionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 12,
     borderRadius: 12,
     padding: 14,
     gap: 12,
     borderWidth: 1,
-    borderColor: theme.accent + '40',
+    borderColor: theme.accent + '30',
   },
-  findGameIcon: {
-    fontSize: 28,
+  gameActionIcon: {
+    fontSize: 24,
   },
-  findGameTitle: {
-    fontSize: 16,
+  gameActionTitle: {
+    fontSize: 15,
     fontWeight: '700',
     color: theme.text,
   },
-  findGameSubtitle: {
-    fontSize: 12,
+  gameActionSub: {
+    fontSize: 11,
     color: theme.textSecondary,
     marginTop: 1,
   },
-  findGameArrow: {
-    fontSize: 20,
+  gameActionArrow: {
+    fontSize: 18,
     color: theme.accent,
     fontWeight: '300',
   },

@@ -60,6 +60,30 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="matchmaking"
+          options={{
+            title: 'Find Game',
+            headerBackTitle: 'Back',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="post-game"
+          options={{
+            title: 'Post a Game',
+            headerBackTitle: 'Back',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="posted-games"
+          options={{
+            title: 'Find Games',
+            headerBackTitle: 'Back',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
           name="fantasy/create"
           options={{
             title: 'Create Team',

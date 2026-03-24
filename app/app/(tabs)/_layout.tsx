@@ -9,6 +9,7 @@ import {
   H2HIcon,
   FollowingIcon,
   FantasyIcon,
+  CourtsIcon,
 } from '../../lib/tab-icons';
 
 function TabIcon({
@@ -134,6 +135,16 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon label="Fantasy" focused={focused} icon={FantasyIcon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="courts"
+        options={{
+          title: 'Courts',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label="Courts" focused={focused} icon={CourtsIcon} />
           ),
         }}
       />

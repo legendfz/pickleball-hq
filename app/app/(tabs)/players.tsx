@@ -165,6 +165,20 @@ export default function PlayersScreen() {
                   </View>
                 )}
               </View>
+              {(item as any).duprRating && (
+                <View style={styles.duprWrap}>
+                  <Text style={[
+                    styles.duprValue,
+                    (item as any).duprRating >= 5.0 && { color: '#22c55e' },
+                    (item as any).duprRating >= 4.0 && (item as any).duprRating < 5.0 && { color: theme.blue },
+                    (item as any).duprRating >= 3.0 && (item as any).duprRating < 4.0 && { color: '#888' },
+                    (item as any).duprRating >= 2.0 && (item as any).duprRating < 3.0 && { color: '#666' },
+                  ]}>
+                    {(item as any).duprRating.toFixed(3)}
+                  </Text>
+                  <Text style={styles.duprLabel}>DUPR</Text>
+                </View>
+              )}
               <Text style={[
                 styles.rankChange,
                 rankChange > 0 && styles.rankUp,
@@ -313,5 +327,22 @@ const styles = StyleSheet.create({
     height: 0.5,
     backgroundColor: theme.cardAlt,
     marginLeft: 56,
+  },
+  duprWrap: {
+    alignItems: 'center',
+    marginRight: 4,
+  },
+  duprValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: theme.text,
+    letterSpacing: -0.5,
+  },
+  duprLabel: {
+    fontSize: 8,
+    color: theme.textSecondary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginTop: 1,
   },
 });

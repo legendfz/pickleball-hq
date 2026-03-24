@@ -345,7 +345,7 @@ function PrizeMoneyPanel({ prizeMoney }: { prizeMoney?: string }) {
 }
 
 // ─── Overview Tab ────────────────────────────────────────────────────
-function OverviewTab({ player, router }: { player: PlayerDetail; router: any }) {
+function OverviewTab({ player, router, duprData }: { player: PlayerDetail; router: any; duprData?: any }) {
   const { t } = useLanguage();
   const [expandedStat, setExpandedStat] = useState<StatKey | null>(null);
   const record = player.record;
@@ -354,6 +354,7 @@ function OverviewTab({ player, router }: { player: PlayerDetail; router: any }) 
   const careerTotal = record ? record.career.wins + record.career.losses : 1;
   const winRate = record ? `${((careerWins / careerTotal) * 100).toFixed(0)}%` : '--';
   const playerPrizeMoney = (player as any).prizeMoney as string | undefined;
+  const duprRating = duprData?.duprRating as number | undefined;
 
   const toggleStat = (key: StatKey) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -419,6 +420,101 @@ function OverviewTab({ player, router }: { player: PlayerDetail; router: any }) 
 
       {/* Expanded Detail */}
       {renderExpandedContent()}
+
+      {/* DUPR Rating Card */}
+      {duprRating != null && (
+        <View style={styles.duprCard}>
+          <Text style={styles.duprCardTitle}>DUPR Rating</Text>
+          <View style={styles.duprCardRow}>
+            <View style={styles.duprCardItem}>
+              <Text style={[
+                styles.duprBigNumber,
+                duprRating >= 5.0 && { color: '#22c55e' },
+                duprRating >= 4.0 && duprRating < 5.0 && { color: theme.blue },
+                duprRating >= 3.0 && duprRating < 4.0 && { color: '#888' },
+                duprRating >= 2.0 && duprRating < 3.0 && { color: '#666' },
+              ]}>
+                {duprRating.toFixed(3)}
+              </Text>
+              <Text style={styles.duprCardLabel}>Singles</Text>
+            </View>
+            <View style={styles.duprCardDivider} />
+            <View style={styles.duprCardItem}>
+              <Text style={[
+                styles.duprBigNumber,
+                (duprData?.duprDoubles || duprRating) >= 5.0 && { color: '#22c55e' },
+                (duprData?.duprDoubles || duprRating) >= 4.0 && (duprData?.duprDoubles || duprRating) < 5.0 && { color: theme.blue },
+                (duprData?.duprDoubles || duprRating) >= 3.0 && (duprData?.duprDoubles || duprRating) < 4.0 && { color: '#888' },
+              ]}>
+                {(duprData?.duprDoubles || duprRating).toFixed(3)}
+              </Text>
+              <Text style={styles.duprCardLabel}>Doubles</Text>
+            </View>
+            <View style={styles.duprCardDivider} />
+            <View style={styles.duprCardItem}>
+              <Text style={styles.duprRankNumber}>#{duprData?.rank || '--'}</Text>
+              <Text style={styles.duprCardLabel}>Club Rank</Text>
+            </View>
+          </View>
+          {duprRating >= 5.0 && (
+            <Text style={styles.duprLevelBadge}>🟢 Advanced Amateur</Text>
+          )}
+          {duprRating >= 4.0 && duprRating < 5.0 && (
+            <Text style={[styles.duprLevelBadge, { color: theme.blue }]}>🔵 Intermediate</Text>
+          )}
+          {duprRating >= 3.0 && duprRating < 4.0 && (
+            <Text style={[styles.duprLevelBadge, { color: '#888' }]}>⚪ Recreational</Text>
+          )}
+          {duprRating >= 2.0 && duprRating < 3.0 && (
+            <Text style={[styles.duprLevelBadge, { color: '#666' }]}>Beginner</Text>
+          )}
+        </View>
+      )}
+
+      {/* DUPR History Chart */}
+      {duprData?.history && duprData.history.length > 1 && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>DUPR Rating History</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator>
+            <Svg width={Math.max(SCREEN_WIDTH - 64, duprData.history.length * PX_PER_POINT)} height={CHART_HEIGHT}>
+              {(() => {
+                const h = duprData.history;
+                const paddingLeft = 44;
+                const paddingRight = 24;
+                const paddingTop = 20;
+                const paddingBottom = 30;
+                const w = Math.max(SCREEN_WIDTH - 64, paddingLeft + paddingRight + h.length * PX_PER_POINT);
+                const plotW = w - paddingLeft - paddingRight;
+                const plotH = CHART_HEIGHT - paddingTop - paddingBottom;
+                const ratings = h.map((x: any) => x.rating);
+                const minR = Math.min(...ratings) - 0.2;
+                const maxR = Math.max(...ratings) + 0.2;
+                const range = maxR - minR;
+                const getX = (i: number) => paddingLeft + (i / (h.length - 1)) * plotW;
+                const getY = (r: number) => paddingTop + ((maxR - r) / range) * plotH;
+                const pts = h.map((x: any, i: number) => `${getX(i)},${getY(x.rating)}`).join(' ');
+                const lastIdx = h.length - 1;
+                return (
+                  <>
+                    <Polyline points={pts} fill="none" stroke={theme.accent} strokeWidth={2} strokeLinejoin="round" />
+                    {h.map((x: any, i: number) => (
+                      <Circle key={i} cx={getX(i)} cy={getY(x.rating)} r={i === lastIdx ? 4 : 2} fill={i === lastIdx ? '#16a34a' : theme.accent} />
+                    ))}
+                    <SvgText x={getX(lastIdx)} y={getY(h[lastIdx].rating) - 10} fill={theme.accent} fontSize={10} fontWeight="bold" textAnchor="middle">
+                      {h[lastIdx].rating.toFixed(3)}
+                    </SvgText>
+                    {h.filter((_: any, i: number) => i % 3 === 0).map((x: any, idx: number) => (
+                      <SvgText key={idx} x={getX(idx * 3)} y={CHART_HEIGHT - 6} fill="#888" fontSize={9} textAnchor="middle">
+                        {x.month.slice(5)}
+                      </SvgText>
+                    ))}
+                  </>
+                );
+              })()}
+            </Svg>
+          </ScrollView>
+        </View>
+      )}
 
       {/* Bio */}
       <View style={styles.card}>
@@ -768,6 +864,15 @@ export default function PlayerDetailScreen() {
     },
   });
 
+  const { data: duprData } = useQuery({
+    queryKey: ['player-dupr', id],
+    queryFn: async () => {
+      const res = await api.get(`/api/players/${id}/dupr`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
   useEffect(() => {
     if (id) {
       isFavorite(parseInt(id)).then(setIsFav);
@@ -854,6 +959,19 @@ export default function PlayerDetailScreen() {
               </Text>
             </View>
           )}
+          {duprData?.duprRating && (
+            <View style={styles.duprHeaderBadge}>
+              <Text style={[
+                styles.duprHeaderValue,
+                duprData.duprRating >= 5.0 && { color: '#22c55e' },
+                duprData.duprRating >= 4.0 && duprData.duprRating < 5.0 && { color: theme.blue },
+                duprData.duprRating >= 3.0 && duprData.duprRating < 4.0 && { color: '#888' },
+              ]}>
+                {duprData.duprRating.toFixed(3)}
+              </Text>
+              <Text style={styles.duprHeaderLabel}>DUPR Rating</Text>
+            </View>
+          )}
         </View>
 
         {/* Tab Bar */}
@@ -872,7 +990,7 @@ export default function PlayerDetailScreen() {
 
         {/* Tab Content */}
         <View style={styles.tabContent}>
-          {activeTab === 'overview' && <OverviewTab player={player} router={router} />}
+          {activeTab === 'overview' && <OverviewTab player={player} router={router} duprData={duprData} />}
           {activeTab === 'stats' && <StatsTab player={player} />}
           {activeTab === 'matches' && <MatchesTab player={player} getPlayerName={getPlayerName} router={router} />}
           {activeTab === 'gear' && <GearTab player={player} router={router} />}
@@ -1176,6 +1294,81 @@ const styles = StyleSheet.create({
   sponsorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   sponsorPill: { backgroundColor: theme.bg, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 0.5, borderColor: theme.border },
   sponsorText: { fontSize: 13, color: theme.blue },
+
+  // DUPR Header
+  duprHeaderBadge: {
+    backgroundColor: theme.border,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  duprHeaderValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: theme.text,
+    letterSpacing: -0.5,
+  },
+  duprHeaderLabel: {
+    fontSize: 10,
+    color: '#888',
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginTop: 1,
+  },
+
+  // DUPR Card in Overview
+  duprCard: {
+    backgroundColor: theme.card,
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+  },
+  duprCardTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.text,
+    marginBottom: 12,
+  },
+  duprCardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  duprCardItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  duprBigNumber: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: theme.text,
+    letterSpacing: -1,
+  },
+  duprCardLabel: {
+    fontSize: 11,
+    color: '#888',
+    marginTop: 4,
+  },
+  duprCardDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: theme.border,
+  },
+  duprRankNumber: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: theme.gold,
+    letterSpacing: -1,
+  },
+  duprLevelBadge: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#22c55e',
+    textAlign: 'center',
+    marginTop: 10,
+  },
 
   // Comments Tab
   tagGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },

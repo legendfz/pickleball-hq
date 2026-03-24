@@ -127,4 +127,49 @@ router.get('/:id', (req: Request, res: Response) => {
   });
 });
 
+// GET /api/players/:id/dupr — DUPR rating details
+router.get('/:id/dupr', (req: Request, res: Response) => {
+  const player = mockPlayers.find((p) => p.id === parseInt(String(req.params.id)));
+  if (!player) {
+    res.status(404).json({ error: 'Player not found' });
+    return;
+  }
+
+  const duprRating = (player as any).duprRating || 4.0;
+  const duprDoubles = (player as any).duprDoubles || duprRating;
+
+  // Calculate rank among all players
+  const allDups = mockPlayers
+    .map((p) => ({ id: p.id, dupr: (p as any).duprRating || 4.0 }))
+    .sort((a, b) => b.dupr - a.dupr);
+  const rank = allDups.findIndex((p) => p.id === player.id) + 1;
+
+  // Generate 12-month mock DUPR history
+  const history: { month: string; rating: number }[] = [];
+  let currentRating = duprRating;
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date();
+    date.setMonth(date.getMonth() - i);
+    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    // Gradually trend toward current rating
+    const trend = ((12 - i) / 12);
+    const noise = (Math.random() - 0.5) * 0.15;
+    const rating = Math.round((duprRating - 0.3 * (1 - trend) + noise) * 1000) / 1000;
+    history.push({ month, rating: Math.min(8.0, Math.max(2.0, rating)) });
+  }
+  // Ensure last entry matches current
+  history[history.length - 1].rating = duprRating;
+
+  res.json({
+    playerId: player.id,
+    playerName: player.name,
+    duprRating,
+    duprDoubles,
+    rank,
+    totalPlayers: mockPlayers.length,
+    history,
+    lastUpdated: new Date().toISOString(),
+  });
+});
+
 export default router;

@@ -109,3 +109,34 @@ export function FollowingIcon({ color, size = 24 }: TabIconProps) {
     </Svg>
   );
 }
+
+// Courts — grid/map pin
+export function CourtsIcon({ color, size = 24 }: TabIconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Court rectangle */}
+      <Rect x="3" y="6" width="18" height="12" rx="2" stroke={color} strokeWidth="1.8" fill="none" />
+      {/* Center line */}
+      <Line x1="12" y1="6" x2="12" y2="18" stroke={color} strokeWidth="1.5" />
+      {/* Net line */}
+      <Line x1="3" y1="12" x2="21" y2="12" stroke={color} strokeWidth="1.2" strokeDasharray="2 2" />
+    </Svg>
+  );
+}
+
+// Matchmaking — two people + handshake
+export function MatchmakingIcon({ color, size = 24 }: TabIconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Person left */}
+      <Circle cx="7" cy="7" r="3" stroke={color} strokeWidth="1.5" fill="none" />
+      <Path d="M2 20 C2 17, 4 14, 7 14 C9 14, 10 15, 11 16" stroke={color} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* Person right */}
+      <Circle cx="17" cy="7" r="3" stroke={color} strokeWidth="1.5" fill="none" />
+      <Path d="M22 20 C22 17, 20 14, 17 14 C15 14, 14 15, 13 16" stroke={color} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* Handshake */}
+      <Path d="M10 10 L14 10" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+      <Path d="M11 12 L13 12" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    </Svg>
+  );
+}

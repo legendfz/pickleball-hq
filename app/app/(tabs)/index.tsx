@@ -333,6 +333,20 @@ export default function HomeScreen() {
         <PickleballBallIcon size={16} />
       </View>
 
+      {/* Find Game Button */}
+      <TouchableOpacity
+        style={styles.findGameBtn}
+        onPress={() => router.push('/matchmaking')}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.findGameIcon}>🏓</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.findGameTitle}>Find a Game</Text>
+          <Text style={styles.findGameSubtitle}>Find opponents & partners near you</Text>
+        </View>
+        <Text style={styles.findGameArrow}>→</Text>
+      </TouchableOpacity>
+
       {/* Tour Filter Pills */}
       <View style={styles.tourFilterRow}>
         {TOUR_FILTERS.map((tf) => (
@@ -708,5 +722,37 @@ const styles = StyleSheet.create({
     color: theme.text,
     fontSize: 9,
     fontWeight: theme.fontWeight.bold,
+  },
+
+  // Find Game Button
+  findGameBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.card,
+    marginHorizontal: theme.spacing.padding,
+    marginBottom: 12,
+    borderRadius: 12,
+    padding: 14,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: theme.accent + '40',
+  },
+  findGameIcon: {
+    fontSize: 28,
+  },
+  findGameTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  findGameSubtitle: {
+    fontSize: 12,
+    color: theme.textSecondary,
+    marginTop: 1,
+  },
+  findGameArrow: {
+    fontSize: 20,
+    color: theme.accent,
+    fontWeight: '300',
   },
 });

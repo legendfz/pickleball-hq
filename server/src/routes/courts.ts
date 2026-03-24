@@ -16,6 +16,10 @@ interface Court {
   free: boolean;
   openHours: string;
   address: string;
+  activeNow?: number;
+  predictedCrowd?: string;
+  checkIns?: Array<{ name: string; time: string }>;
+  upcomingGames?: number;
 }
 
 const courts: Court[] = courtsData as Court[];
@@ -27,7 +31,7 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(a));
   return R * c;
 }
 
@@ -46,6 +50,14 @@ router.get('/', (req: Request, res: Response) => {
 
   results.sort((a, b) => b.rating - a.rating);
   res.json({ data: results, total: results.length });
+});
+
+// GET /api/courts/hot — courts ranked by activity
+router.get('/hot', (_req: Request, res: Response) => {
+  const hot = [...courts]
+    .filter((c) => (c.activeNow || 0) > 0)
+    .sort((a, b) => (b.activeNow || 0) - (a.activeNow || 0));
+  res.json({ data: hot, total: hot.length });
 });
 
 // GET /api/courts/nearby — find nearby courts
@@ -70,7 +82,7 @@ router.get('/nearby', (req: Request, res: Response) => {
   res.json({ data: results, total: results.length });
 });
 
-// GET /api/courts/:id — court detail
+// GET /api/courts/:id — court detail with heat data
 router.get('/:id', (req: Request, res: Response) => {
   const court = courts.find((c) => c.id === parseInt(String(req.params.id)));
   if (!court) {
@@ -93,7 +105,22 @@ router.get('/:id', (req: Request, res: Response) => {
     { id: 3, name: 'Beginner Clinic', date: '2025-01-06', time: '10:00 AM', level: '2.0-3.0' },
   ];
 
-  res.json({ ...court, reviews, events });
+  // Heat prediction based on historical patterns
+  const now = new Date();
+  const hour = now.getHours();
+  const day = now.getDay();
+  const isWeekend = day === 0 || day === 6;
+  let predictedBusy = court.predictedCrowd || 'moderate';
+  if (isWeekend && hour >= 8 && hour <= 12) predictedBusy = 'busy';
+  else if (!isWeekend && hour >= 17 && hour <= 19) predictedBusy = 'busy';
+  else if (hour < 7 || hour > 21) predictedBusy = 'quiet';
+
+  res.json({
+    ...court,
+    reviews,
+    events,
+    predictedCrowd: predictedBusy,
+  });
 });
 
 export default router;

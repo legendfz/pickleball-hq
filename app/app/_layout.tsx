@@ -68,6 +68,14 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="play-now"
+          options={{
+            title: 'Play Now',
+            headerBackTitle: 'Back',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
           name="post-game"
           options={{
             title: 'Post a Game',

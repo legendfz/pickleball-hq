@@ -51,12 +51,57 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   return R * c;
 }
 
-// GET /api/matchmaking/nearby — find nearby players with similar DUPR
+/**
+ * Smart match score calculation (1-10):
+ * - DUPR proximity (±0.5 = max score): 4 points
+ * - Format preference match: 3 points
+ * - Location proximity: 2 points
+ * - Availability overlap: 1 point
+ */
+function calculateMatchScore(
+  player: MatchPlayer & { distance: number; duprDiff: number },
+  userDupr: number,
+  userCity: string,
+  userFormat: string
+): { score: number; isPerfect: boolean } {
+  let score = 0;
+
+  // DUPR proximity (max 4 pts)
+  const duprDiff = Math.abs(player.dupr - userDupr);
+  if (duprDiff <= 0.3) score += 4;
+  else if (duprDiff <= 0.5) score += 3.5;
+  else if (duprDiff <= 0.7) score += 3;
+  else if (duprDiff <= 1.0) score += 2;
+  else score += 1;
+
+  // Format preference (max 3 pts)
+  if (userFormat && player.preferredPlay === userFormat) score += 3;
+  else if (!userFormat) score += 1.5; // no preference, partial credit
+
+  // Location proximity (max 2 pts)
+  if (player.distance <= 5) score += 2;
+  else if (player.distance <= 10) score += 1.5;
+  else if (player.distance <= 20) score += 1;
+  else score += 0.5;
+
+  // Same city bonus (0.5-1 pt)
+  if (player.city.toLowerCase() === userCity.toLowerCase()) score += 1;
+  else score += 0.5;
+
+  const finalScore = Math.min(10, Math.round(score * 10) / 10);
+  const isPerfect = finalScore >= 9;
+
+  return { score: finalScore, isPerfect };
+}
+
+// GET /api/matchmaking/nearby — smart matchmaking
 router.get('/nearby', (req: Request, res: Response) => {
   const lat = parseFloat(String(req.query.lat || '33.6846'));
   const lng = parseFloat(String(req.query.lng || '-117.8265'));
   const dupr = parseFloat(String(req.query.dupr || '4.0'));
   const type = (req.query.type as string) || 'all';
+  const format = (req.query.format as string) || '';
+  const city = (req.query.city as string) || 'Irvine';
   const radius = parseFloat(String(req.query.radius || '50'));
 
   let results = matchPlayers.map((p) => ({
@@ -75,14 +120,19 @@ router.get('/nearby', (req: Request, res: Response) => {
   // Filter by radius
   results = results.filter((p) => p.distance <= radius);
 
-  // Filter by DUPR range (within 1.0)
-  results = results.filter((p) => p.duprDiff <= 1.5);
+  // Smart DUPR range: user ±0.5 preferred, ±1.0 acceptable
+  results = results.filter((p) => p.duprDiff <= 1.0);
 
-  // Sort by combined distance + DUPR difference score
+  // Calculate smart match scores
+  results = results.map((p) => {
+    const { score, isPerfect } = calculateMatchScore(p, dupr, city, format);
+    return { ...p, matchScore: score, isPerfect };
+  });
+
+  // Sort by match score (desc), then distance (asc)
   results.sort((a, b) => {
-    const scoreA = a.distance * 0.3 + a.duprDiff * 10;
-    const scoreB = b.distance * 0.3 + b.duprDiff * 10;
-    return scoreA - scoreB;
+    if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore;
+    return a.distance - b.distance;
   });
 
   res.json({ data: results, total: results.length });

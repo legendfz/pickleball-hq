@@ -333,6 +333,20 @@ export default function HomeScreen() {
         <PickleballBallIcon size={16} />
       </View>
 
+      {/* 🏓 Play Now - Big CTA */}
+      <TouchableOpacity
+        style={styles.playNowBtn}
+        onPress={() => router.push('/play-now')}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.playNowEmoji}>⚡</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.playNowTitle}>Play Now</Text>
+          <Text style={styles.playNowSub}>Find a game happening near you right now</Text>
+        </View>
+        <Text style={styles.playNowArrow}>→</Text>
+      </TouchableOpacity>
+
       {/* Game Action Buttons */}
       <View style={styles.gameActionsRow}>
         <TouchableOpacity
@@ -750,6 +764,41 @@ const styles = StyleSheet.create({
     color: theme.text,
     fontSize: 9,
     fontWeight: theme.fontWeight.bold,
+  },
+
+  // 🏓 Play Now CTA
+  playNowBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.accent,
+    marginHorizontal: theme.spacing.padding,
+    marginBottom: 10,
+    borderRadius: 14,
+    padding: 18,
+    gap: 12,
+    shadowColor: theme.accent,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  playNowEmoji: {
+    fontSize: 28,
+  },
+  playNowTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  playNowSub: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
+  },
+  playNowArrow: {
+    fontSize: 22,
+    color: theme.text,
+    fontWeight: '300',
   },
 
   // Game Action Buttons

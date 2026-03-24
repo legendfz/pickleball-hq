@@ -27,6 +27,8 @@ interface MatchPlayer {
   level: string;
   distance: number;
   duprDiff: number;
+  matchScore: number;
+  isPerfect: boolean;
 }
 
 type MatchType = 'all' | 'player' | 'partner';
@@ -180,8 +182,15 @@ export default function MatchmakingScreen() {
             }
             renderItem={({ item }) => {
               const level = duprLevels.find((l) => item.dupr >= l.min && item.dupr < l.max) || duprLevels[0];
+              const matchStars = Math.round(item.matchScore);
+              const starsText = '⭐'.repeat(Math.min(matchStars, 10));
               return (
-                <View style={styles.playerCard}>
+                <View style={[styles.playerCard, item.isPerfect && styles.playerCardPerfect]}>
+                  {item.isPerfect && (
+                    <View style={styles.perfectBadge}>
+                      <Text style={styles.perfectBadgeText}>⭐ Perfect Match</Text>
+                    </View>
+                  )}
                   <View style={styles.playerHeader}>
                     <View style={styles.playerInfo}>
                       <Text style={styles.playerName}>{item.name}</Text>
@@ -190,6 +199,13 @@ export default function MatchmakingScreen() {
                     <View style={styles.duprBadge}>
                       <Text style={[styles.duprBadgeText, { color: level.color }]}>{item.dupr.toFixed(1)}</Text>
                     </View>
+                  </View>
+
+                  {/* Match Score */}
+                  <View style={styles.matchScoreRow}>
+                    <Text style={styles.matchScoreLabel}>Match Score</Text>
+                    <Text style={styles.matchScoreStars}>{starsText}</Text>
+                    <Text style={styles.matchScoreNum}>{item.matchScore.toFixed(1)}/10</Text>
                   </View>
 
                   <View style={styles.playerTags}>
@@ -400,11 +416,28 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
   },
+  playerCardPerfect: {
+    borderWidth: 1.5,
+    borderColor: theme.gold + '80',
+  },
+  perfectBadge: {
+    backgroundColor: theme.gold + '20',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+  },
+  perfectBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: theme.gold,
+  },
   playerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   playerInfo: { flex: 1 },
   playerName: {
@@ -442,6 +475,27 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 11,
     color: theme.textSecondary,
+  },
+
+  // Match Score
+  matchScoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 10,
+  },
+  matchScoreLabel: {
+    fontSize: 11,
+    color: theme.textTertiary,
+    fontWeight: '500',
+  },
+  matchScoreStars: {
+    fontSize: 11,
+  },
+  matchScoreNum: {
+    fontSize: 11,
+    color: theme.accent,
+    fontWeight: '700',
   },
   actionBtn: {
     borderRadius: 8,

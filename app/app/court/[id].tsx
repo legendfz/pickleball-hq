@@ -131,6 +131,56 @@ export default function CourtDetailScreen() {
           </View>
         </View>
 
+        {/* 🔥 Live Activity */}
+        <View style={[styles.card, styles.heatCard]}>
+          <Text style={styles.cardTitle}>🔥 Live Activity</Text>
+          <View style={styles.heatRow}>
+            <Text style={styles.heatCount}>
+              {(court as any).activeNow || 0}
+            </Text>
+            <Text style={styles.heatLabel}>people playing now</Text>
+          </View>
+          <View style={styles.heatMeta}>
+            {(() => {
+              const crowd = (court as any).predictedCrowd || 'moderate';
+              const crowdColor = crowd === 'busy' ? '#ef4444' : crowd === 'moderate' ? '#f59e0b' : '#22c55e';
+              return (
+                <View style={[styles.crowdPill, { backgroundColor: crowdColor + '20' }]}>
+                  <Text style={[styles.crowdText, { color: crowdColor }]}>
+                    {crowd === 'busy' ? '🔴 Busy' : crowd === 'moderate' ? '🟡 Moderate' : '🟢 Quiet'}
+                  </Text>
+                </View>
+              );
+            })()}
+            {(court as any).upcomingGames > 0 && (
+              <Text style={styles.upcomingText}>
+                {`📅 ${(court as any).upcomingGames} upcoming game${(court as any).upcomingGames > 1 ? 's' : ''}`}
+              </Text>
+            )}
+          </View>
+          {/* Check-ins */}
+          {(court as any).checkIns && (court as any).checkIns.length > 0 && (
+            <View style={styles.checkInList}>
+              <Text style={styles.checkInTitle}>Checked in:</Text>
+              {(court as any).checkIns.slice(0, 6).map((ci: any, idx: number) => (
+                <View key={idx} style={styles.checkInRow}>
+                  <View style={styles.checkInAvatar}>
+                    <Text style={styles.checkInAvatarText}>{ci.name.split(' ').map((n: string) => n[0]).join('')}</Text>
+                  </View>
+                  <Text style={styles.checkInName}>{ci.name}</Text>
+                  <Text style={styles.checkInTime}>{ci.time}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+          {/* Peak hours prediction */}
+          <View style={styles.predictionRow}>
+            <Text style={styles.predictionText}>
+              📊 Usually busiest: Weekend mornings & weekday evenings
+            </Text>
+          </View>
+        </View>
+
         {/* Info Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Details</Text>
@@ -354,5 +404,102 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#666',
     marginTop: 4,
+  },
+
+  // 🔥 Live Activity
+  heatCard: {
+    borderWidth: 1,
+    borderColor: '#22c55e' + '30',
+  },
+  heatRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 6,
+    marginBottom: 8,
+  },
+  heatCount: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#22c55e',
+  },
+  heatLabel: {
+    fontSize: 14,
+    color: theme.textSecondary,
+    fontWeight: '500',
+  },
+  heatMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 12,
+    flexWrap: 'wrap',
+  },
+  crowdPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  crowdText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  upcomingText: {
+    fontSize: 12,
+    color: theme.accent,
+    fontWeight: '500',
+  },
+  checkInList: {
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 0.5,
+    borderTopColor: theme.border,
+  },
+  checkInTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.textSecondary,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  checkInRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  checkInAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: theme.accent + '25',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkInAvatarText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: theme.accent,
+  },
+  checkInName: {
+    fontSize: 13,
+    color: theme.text,
+    fontWeight: '500',
+    flex: 1,
+  },
+  checkInTime: {
+    fontSize: 11,
+    color: theme.textTertiary,
+  },
+  predictionRow: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: theme.border,
+  },
+  predictionText: {
+    fontSize: 12,
+    color: theme.textTertiary,
+    lineHeight: 18,
   },
 });

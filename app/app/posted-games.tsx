@@ -36,6 +36,11 @@ interface PostedGame {
   notes: string;
   status: 'open' | 'full' | 'cancelled';
   city: string;
+  isRecurring?: boolean;
+  recurrence?: string;
+  regulars?: Array<{ id: number; name: string; dupr: number }>;
+  openSpots?: number;
+  waitlist?: Array<{ id: number; name: string; dupr: number }>;
 }
 
 function getInitials(name: string): string {
@@ -104,12 +109,19 @@ export default function PostedGamesScreen() {
     try {
       // Mock current user
       const currentPlayer = { id: 999, name: 'You', dupr: 4.0 };
+      // For recurring games with no open spots, join waitlist
+      const joinWaitlist = game.isRecurring && (game.openSpots ?? 0) <= 0;
       await api.post(`/api/posted-games/${game.id}/join`, {
         playerId: currentPlayer.id,
         playerName: currentPlayer.name,
         playerDupr: currentPlayer.dupr,
+        joinWaitlist,
       });
-      Alert.alert('Joined! 🏓', `You've joined the game at ${game.courtName}`);
+      if (joinWaitlist) {
+        Alert.alert('Added to Waitlist! 📋', `You'll be notified when a spot opens up at ${game.courtName}`);
+      } else {
+        Alert.alert('Joined! 🏓', `You've joined the game at ${game.courtName}`);
+      }
       refetch();
     } catch (err: any) {
       Alert.alert('Error', err?.response?.data?.error || 'Failed to join');
@@ -120,6 +132,125 @@ export default function PostedGamesScreen() {
 
   const renderGame = (game: PostedGame) => {
     const dt = formatDateTime(game.datetime);
+
+    // Recurring game rendering
+    if (game.isRecurring) {
+      const regulars = game.regulars ?? [];
+      const openSpots = game.openSpots ?? 0;
+      const waitlist = game.waitlist ?? [];
+
+      return (
+        <View key={game.id} style={[styles.gameCard, styles.recurringCard]}>
+          {/* Recurring Badge */}
+          <View style={styles.recurringBadgeRow}>
+            <View style={styles.recurringBadge}>
+              <Text style={styles.recurringBadgeText}>⚡ Recurring</Text>
+            </View>
+            <Text style={styles.recurrenceText}>{game.recurrence}</Text>
+          </View>
+
+          {/* Header */}
+          <View style={styles.cardHeader}>
+            <View style={styles.courtInfo}>
+              <Text style={styles.courtName} numberOfLines={1}>{game.courtName}</Text>
+              <View style={styles.formatBadge}>
+                <Text style={styles.formatBadgeText}>
+                  {formatIcons[game.format]} {game.format.charAt(0).toUpperCase() + game.format.slice(1)}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.dateBox}>
+              <Text style={styles.dateRelative}>{dt.relative}</Text>
+              <Text style={styles.dateTime}>{dt.time}</Text>
+            </View>
+          </View>
+
+          {/* Regulars */}
+          <Text style={styles.regularsTitle}>Regular Crew ({regulars.length})</Text>
+          <View style={styles.playersRow}>
+            {regulars.map((player) => (
+              <View key={player.id} style={styles.playerChip}>
+                <View style={[styles.avatar, styles.avatarRegular]}>
+                  <Text style={styles.avatarText}>{getInitials(player.name)}</Text>
+                </View>
+                <Text style={styles.playerName} numberOfLines={1}>
+                  {player.name}
+                </Text>
+                <Text style={styles.playerDupr}>{player.dupr.toFixed(1)}</Text>
+              </View>
+            ))}
+            {openSpots > 0 && Array.from({ length: openSpots }).map((_, i) => (
+              <View key={`open-${i}`} style={styles.playerChip}>
+                <View style={[styles.avatar, styles.avatarEmpty]}>
+                  <Text style={styles.avatarTextEmpty}>?</Text>
+                </View>
+                <Text style={styles.playerNameEmpty}>Open</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Open Spots / Waitlist */}
+          {openSpots > 0 ? (
+            <Text style={styles.openSpotsText}>
+              🟢 <Text style={{ fontWeight: '700', color: theme.accent }}>{openSpots} spot{openSpots > 1 ? 's' : ''} open</Text>
+            </Text>
+          ) : (
+            <Text style={styles.fullText}>✅ Roster full</Text>
+          )}
+
+          {/* Waitlist */}
+          {waitlist.length > 0 && (
+            <View style={styles.waitlistSection}>
+              <Text style={styles.waitlistTitle}>Waitlist ({waitlist.length})</Text>
+              <View style={styles.waitlistRow}>
+                {waitlist.map((w) => (
+                  <View key={w.id} style={styles.waitlistChip}>
+                    <Text style={styles.waitlistName}>{w.name}</Text>
+                    <Text style={styles.waitlistDupr}>{w.dupr.toFixed(1)}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* DUPR Range */}
+          <View style={styles.duprRow}>
+            <Text style={styles.duprLabel}>DUPR Range</Text>
+            <View style={styles.duprRangePill}>
+              <Text style={styles.duprRangeText}>
+                {game.duprRange[0].toFixed(1)} — {game.duprRange[1].toFixed(1)}
+              </Text>
+            </View>
+          </View>
+
+          {game.notes ? (
+            <Text style={styles.notesText}>💬 {game.notes}</Text>
+          ) : null}
+
+          {/* Join / Waitlist Button */}
+          <TouchableOpacity
+            style={[
+              styles.joinBtn,
+              openSpots <= 0 && styles.waitlistBtn,
+              joining === game.id && styles.joinBtnDisabled,
+            ]}
+            onPress={() => handleJoin(game)}
+            disabled={joining === game.id}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.joinBtnText, openSpots <= 0 && styles.waitlistBtnText]}>
+              {joining === game.id
+                ? 'Joining...'
+                : openSpots > 0
+                  ? '🏓 Join Regular Session'
+                  : '📋 Join Waitlist'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    // Regular (non-recurring) game rendering
     const spotsLeft = game.needed - game.joined.length;
     const isFull = game.status === 'full' || spotsLeft <= 0;
     const allPlayers = [
@@ -528,5 +659,97 @@ const styles = StyleSheet.create({
     color: theme.text,
     fontSize: 15,
     fontWeight: '700',
+  },
+
+  // Recurring games
+  recurringCard: {
+    borderColor: theme.accent + '40',
+    borderWidth: 1.5,
+  },
+  recurringBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  recurringBadge: {
+    backgroundColor: theme.accent + '20',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  recurringBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: theme.accent,
+  },
+  recurrenceText: {
+    fontSize: 12,
+    color: theme.textSecondary,
+    fontWeight: '500',
+  },
+  regularsTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.textSecondary,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  avatarRegular: {
+    borderWidth: 2,
+    borderColor: '#22c55e' + '60',
+  },
+  openSpotsText: {
+    fontSize: 14,
+    color: theme.textSecondary,
+    marginBottom: 8,
+  },
+  waitlistSection: {
+    marginTop: 8,
+    paddingTop: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: theme.border,
+    marginBottom: 8,
+  },
+  waitlistTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: theme.textTertiary,
+    marginBottom: 6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  waitlistRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  waitlistChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: theme.bg,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  waitlistName: {
+    fontSize: 12,
+    color: theme.textMuted,
+    fontWeight: '500',
+  },
+  waitlistDupr: {
+    fontSize: 10,
+    color: theme.textTertiary,
+    fontWeight: '600',
+  },
+  waitlistBtn: {
+    backgroundColor: theme.card,
+    borderWidth: 1,
+    borderColor: theme.accent,
+  },
+  waitlistBtnText: {
+    color: theme.accent,
   },
 });

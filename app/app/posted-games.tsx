@@ -34,13 +34,14 @@ interface PostedGame {
   joined: JoinedPlayer[];
   duprRange: [number, number];
   notes: string;
-  status: 'open' | 'full' | 'cancelled';
+  status: 'open' | 'full' | 'cancelled' | 'needs_players' | 'expired';
   city: string;
   isRecurring?: boolean;
   recurrence?: string;
   regulars?: Array<{ id: number; name: string; dupr: number }>;
   openSpots?: number;
   waitlist?: Array<{ id: number; name: string; dupr: number }>;
+  urgency?: 'low' | 'medium' | 'high';
 }
 
 function getInitials(name: string): string {
@@ -253,13 +254,26 @@ export default function PostedGamesScreen() {
     // Regular (non-recurring) game rendering
     const spotsLeft = game.needed - game.joined.length;
     const isFull = game.status === 'full' || spotsLeft <= 0;
+
+    // Compute urgency
+    let urgency: 'low' | 'medium' | 'high' = 'low';
+    if (!isFull) {
+      if (spotsLeft <= 1) urgency = 'high';
+      else if (spotsLeft <= 2) urgency = 'medium';
+    }
+
     const allPlayers = [
       { id: game.hostId, name: game.hostName, dupr: game.hostDupr, isHost: true },
       ...game.joined.map((p) => ({ ...p, isHost: false })),
     ];
 
     return (
-      <View key={game.id} style={styles.gameCard}>
+      <View key={game.id} style={[
+        styles.gameCard,
+        urgency === 'high' && !isFull && styles.gameCardUrgentHigh,
+        urgency === 'medium' && !isFull && styles.gameCardUrgentMedium,
+        isFull && styles.gameCardFull,
+      ]}>
         {/* Header */}
         <View style={styles.cardHeader}>
           <View style={styles.courtInfo}>
@@ -280,6 +294,10 @@ export default function PostedGamesScreen() {
         <Text style={styles.needText}>
           {isFull ? (
             <Text style={styles.fullText}>✅ Game is full!</Text>
+          ) : urgency === 'high' ? (
+            <Text style={{ color: '#ef4444', fontWeight: '700' as const }}>🔥 1 spot left!</Text>
+          ) : urgency === 'medium' ? (
+            <Text style={{ color: '#f59e0b', fontWeight: '600' as const }}>{spotsLeft} spots left</Text>
           ) : (
             <>
               <Text style={styles.hostName}>{game.hostName}</Text> needs{' '}
@@ -328,15 +346,19 @@ export default function PostedGamesScreen() {
         ) : null}
 
         {/* Join Button */}
-        {!isFull && game.status === 'open' && (
+        {!isFull && (game.status === 'open' || game.status === 'needs_players') && (
           <TouchableOpacity
-            style={[styles.joinBtn, joining === game.id && styles.joinBtnDisabled]}
+            style={[
+              styles.joinBtn,
+              urgency === 'high' && styles.joinBtnUrgent,
+              joining === game.id && styles.joinBtnDisabled,
+            ]}
             onPress={() => handleJoin(game)}
             disabled={joining === game.id}
             activeOpacity={0.8}
           >
-            <Text style={styles.joinBtnText}>
-              {joining === game.id ? 'Joining...' : '🏓 Join Game'}
+            <Text style={[styles.joinBtnText, urgency === 'high' && { color: '#fff' }]}>
+              {joining === game.id ? 'Joining...' : urgency === 'high' ? '🔥 Join Now!' : '🏓 Join Game'}
             </Text>
           </TouchableOpacity>
         )}
@@ -499,6 +521,23 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: theme.border,
+  },
+  gameCardUrgentHigh: {
+    borderWidth: 2,
+    borderColor: '#ef4444',
+    shadowColor: '#ef4444',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  gameCardUrgentMedium: {
+    borderWidth: 1.5,
+    borderColor: '#f59e0b',
+  },
+  gameCardFull: {
+    opacity: 0.7,
+    borderColor: theme.textTertiary + '40',
   },
   cardHeader: {
     flexDirection: 'row',

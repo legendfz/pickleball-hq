@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import courtsData from '../data/courts.json';
+import postedGamesData from '../data/posted-games.json';
 
 const router = Router();
 
@@ -20,9 +21,36 @@ interface Court {
   predictedCrowd?: string;
   checkIns?: Array<{ name: string; time: string }>;
   upcomingGames?: number;
+  mostActive?: string;
+  weeklyVisitors?: number;
+  popularTimes?: number[];
+  photos?: Array<{ id: number; color: string; caption: string; author: string; time: string }>;
+  topPlayers?: string[];
+}
+
+interface PostedGame {
+  id: number;
+  hostId: number;
+  hostName: string;
+  hostDupr: number;
+  courtId: number;
+  courtName: string;
+  datetime: string;
+  format: string;
+  needed: number;
+  joined: Array<{ id: number; name: string; dupr: number }>;
+  duprRange: [number, number];
+  notes: string;
+  status: string;
+  city: string;
+  isRecurring?: boolean;
+  recurrence?: string;
+  regulars?: Array<{ id: number; name: string; dupr: number }>;
+  openSpots?: number;
 }
 
 const courts: Court[] = courtsData as Court[];
+const games: PostedGame[] = postedGamesData as PostedGame[];
 
 function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 3959; // Earth radius in miles
@@ -33,6 +61,135 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
     Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(a));
   return R * c;
+}
+
+// Compute real-time status for a court based on posted games
+function computeRealTimeStatus(court: Court) {
+  const now = new Date();
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date(now);
+  todayEnd.setHours(23, 59, 59, 999);
+
+  // Get today's games at this court
+  const todayGames = games.filter((g) => {
+    if (g.courtId !== court.id) return false;
+    const dt = new Date(g.datetime);
+    return dt >= todayStart && dt <= todayEnd && g.status !== 'expired' && g.status !== 'cancelled';
+  });
+
+  const scheduledToday = todayGames.length;
+  const playersExpected = todayGames.reduce((sum, g) => {
+    if (g.isRecurring) {
+      return sum + (g.regulars?.length ?? 0) + (g.openSpots ?? 0);
+    }
+    return sum + g.needed;
+  }, 0);
+
+  // Find current game (closest to now, in progress or starting soon)
+  let currentGroup: string | null = null;
+  let nextGame: { time: string; host: string; spotsLeft: number } | null = null;
+
+  const sortedGames = [...todayGames].sort(
+    (a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+  );
+
+  for (const g of sortedGames) {
+    const dt = new Date(g.datetime);
+    const diffMin = (now.getTime() - dt.getTime()) / (1000 * 60);
+
+    if (diffMin >= 0 && diffMin <= 120) {
+      // Game is in progress (started within last 2 hours)
+      currentGroup = `${g.hostName}'s group`;
+    } else if (dt > now && !nextGame) {
+      // Next upcoming game
+      const spotsLeft = g.isRecurring
+        ? (g.openSpots ?? 0)
+        : g.needed - g.joined.length;
+      const timeStr = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      nextGame = {
+        time: timeStr,
+        host: g.hostName,
+        spotsLeft,
+      };
+    }
+  }
+
+  // Data confidence
+  let dataConfidence: 'high' | 'medium' | 'low';
+  const hasCheckIns = court.checkIns && court.checkIns.length > 0;
+  if (scheduledToday > 0 && hasCheckIns) {
+    dataConfidence = 'high';
+  } else if (scheduledToday > 0) {
+    dataConfidence = 'medium';
+  } else {
+    dataConfidence = 'low';
+  }
+
+  return {
+    scheduledToday,
+    playersExpected,
+    currentGroup,
+    nextGame,
+    peakHours: court.mostActive || 'Weekend mornings',
+    dataConfidence,
+    lastUpdated: now.toISOString(),
+  };
+}
+
+// Enrich court list items with game info for highlights
+function enrichCourtList(courtList: Court[]) {
+  const now = new Date();
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date(now);
+  todayEnd.setHours(23, 59, 59, 999);
+
+  return courtList.map((court) => {
+    const todayGames = games.filter((g) => {
+      if (g.courtId !== court.id) return false;
+      const dt = new Date(g.datetime);
+      return dt >= todayStart && dt <= todayEnd && g.status !== 'expired' && g.status !== 'cancelled';
+    });
+
+    const gamesToday = todayGames.length;
+    const totalPlayersExpected = todayGames.reduce((sum, g) => {
+      if (g.isRecurring) return sum + (g.regulars?.length ?? 0) + (g.openSpots ?? 0);
+      return sum + g.needed;
+    }, 0);
+
+    // Find urgency games
+    const urgencyGames = todayGames.filter((g) => {
+      const spotsLeft = g.isRecurring ? (g.openSpots ?? 0) : g.needed - g.joined.length;
+      return spotsLeft > 0 && spotsLeft <= 2;
+    });
+
+    // Data confidence
+    const hasCheckIns = court.checkIns && court.checkIns.length > 0;
+    let dataConfidence: 'high' | 'medium' | 'low';
+    if (gamesToday > 0 && hasCheckIns) dataConfidence = 'high';
+    else if (gamesToday > 0) dataConfidence = 'medium';
+    else dataConfidence = 'low';
+
+    return {
+      ...court,
+      realTimeStatus: {
+        scheduledToday: gamesToday,
+        playersExpected: totalPlayersExpected,
+        dataConfidence,
+        peakHours: court.mostActive || 'Weekend mornings',
+        hasUrgencyGames: urgencyGames.length > 0,
+        urgencySpotInfo: urgencyGames.length > 0
+          ? (() => {
+              const g = urgencyGames[0];
+              const spotsLeft = g.isRecurring ? (g.openSpots ?? 0) : g.needed - g.joined.length;
+              const timeStr = new Date(g.datetime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+              return `${spotsLeft} spot${spotsLeft > 1 ? 's' : ''} available @ ${timeStr}`;
+            })()
+          : null,
+      },
+    };
+  });
 }
 
 // GET /api/courts — search by city
@@ -49,7 +206,8 @@ router.get('/', (req: Request, res: Response) => {
   }
 
   results.sort((a, b) => b.rating - a.rating);
-  res.json({ data: results, total: results.length });
+  const enriched = enrichCourtList(results);
+  res.json({ data: enriched, total: enriched.length });
 });
 
 // GET /api/courts/hot — courts ranked by activity
@@ -57,7 +215,8 @@ router.get('/hot', (_req: Request, res: Response) => {
   const hot = [...courts]
     .filter((c) => (c.activeNow || 0) > 0)
     .sort((a, b) => (b.activeNow || 0) - (a.activeNow || 0));
-  res.json({ data: hot, total: hot.length });
+  const enriched = enrichCourtList(hot);
+  res.json({ data: enriched, total: enriched.length });
 });
 
 // GET /api/courts/nearby — find nearby courts
@@ -79,7 +238,8 @@ router.get('/nearby', (req: Request, res: Response) => {
   results = results.filter((c) => c.distance <= radius);
   results.sort((a, b) => a.distance - b.distance);
 
-  res.json({ data: results, total: results.length });
+  const enriched = enrichCourtList(results);
+  res.json({ data: enriched, total: enriched.length });
 });
 
 // GET /api/courts/:id — court detail with heat data
@@ -115,11 +275,15 @@ router.get('/:id', (req: Request, res: Response) => {
   else if (!isWeekend && hour >= 17 && hour <= 19) predictedBusy = 'busy';
   else if (hour < 7 || hour > 21) predictedBusy = 'quiet';
 
+  // Compute real-time status
+  const realTimeStatus = computeRealTimeStatus(court);
+
   res.json({
     ...court,
     reviews,
     events,
     predictedCrowd: predictedBusy,
+    realTimeStatus,
   });
 });
 

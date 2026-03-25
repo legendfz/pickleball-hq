@@ -31,6 +31,14 @@ interface Court {
   distance?: number;
   weeklyVisitors?: number;
   mostActive?: string;
+  realTimeStatus?: {
+    scheduledToday: number;
+    playersExpected: number;
+    dataConfidence: 'high' | 'medium' | 'low';
+    peakHours: string;
+    hasUrgencyGames: boolean;
+    urgencySpotInfo: string | null;
+  };
 }
 
 function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
@@ -50,6 +58,36 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
     <Text style={{ color: theme.gold, fontSize: size }}>
       {stars.join('')} <Text style={{ color: theme.textSecondary, fontSize: size - 2 }}>{rating.toFixed(1)}</Text>
     </Text>
+  );
+}
+
+function RealTimeStatusLine({ status }: { status: Court['realTimeStatus'] }) {
+  if (!status) return null;
+
+  if (status.dataConfidence === 'high') {
+    return (
+      <View style={styles.statusLine}>
+        <Text style={[styles.statusText, { color: '#22c55e' }]}>
+          🟢 {status.scheduledToday} game{status.scheduledToday !== 1 ? 's' : ''} today · {status.playersExpected} players expected
+        </Text>
+      </View>
+    );
+  }
+  if (status.dataConfidence === 'medium') {
+    return (
+      <View style={styles.statusLine}>
+        <Text style={[styles.statusText, { color: '#f59e0b' }]}>
+          🟡 {status.scheduledToday} game{status.scheduledToday !== 1 ? 's' : ''} today · est. {status.playersExpected} players
+        </Text>
+      </View>
+    );
+  }
+  return (
+    <View style={styles.statusLine}>
+      <Text style={[styles.statusText, { color: theme.textTertiary }]}>
+        ⚪ Usually busy {status.peakHours}
+      </Text>
+    </View>
   );
 }
 
@@ -133,7 +171,10 @@ export default function CourtsScreen() {
         }
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.courtCard}
+            style={[
+              styles.courtCard,
+              item.realTimeStatus?.hasUrgencyGames && styles.courtCardUrgent,
+            ]}
             onPress={() => router.push(`/court/${item.id}`)}
             activeOpacity={theme.activeOpacity}
           >
@@ -151,6 +192,16 @@ export default function CourtsScreen() {
               <Text style={styles.courtMeta}>📍 {item.city}, {item.state}</Text>
               <Text style={styles.courtMeta}>🎾 {item.courts} courts</Text>
             </View>
+
+            {/* Real-time status line */}
+            <RealTimeStatusLine status={item.realTimeStatus} />
+
+            {/* Urgency highlight */}
+            {item.realTimeStatus?.urgencySpotInfo && (
+              <View style={styles.urgencyLine}>
+                <Text style={styles.urgencyText}>🔴 {item.realTimeStatus.urgencySpotInfo}</Text>
+              </View>
+            )}
 
             <View style={styles.courtFooter}>
               <StarRating rating={item.rating} />
@@ -238,6 +289,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
   },
+  courtCardUrgent: {
+    borderWidth: 1.5,
+    borderColor: '#ef4444' + '50',
+  },
   courtHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -279,11 +334,26 @@ const styles = StyleSheet.create({
   courtInfo: {
     flexDirection: 'row',
     gap: 16,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   courtMeta: {
     fontSize: 12,
     color: theme.textSecondary,
+  },
+  statusLine: {
+    marginBottom: 6,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  urgencyLine: {
+    marginBottom: 6,
+  },
+  urgencyText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#ef4444',
   },
   courtFooter: {
     flexDirection: 'row',

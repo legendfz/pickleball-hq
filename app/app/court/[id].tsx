@@ -53,6 +53,15 @@ interface CourtDetail {
   photos?: Array<{ id: number; color: string; caption: string; author: string; time: string }>;
   mostActive?: string;
   topPlayers?: string[];
+  realTimeStatus?: {
+    scheduledToday: number;
+    playersExpected: number;
+    currentGroup: string | null;
+    nextGame: { time: string; host: string; spotsLeft: number } | null;
+    peakHours: string;
+    dataConfidence: 'high' | 'medium' | 'low';
+    lastUpdated: string;
+  };
 }
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
@@ -195,6 +204,98 @@ export default function CourtDetailScreen() {
             </Text>
           </View>
         </View>
+
+        {/* ⚡ RIGHT NOW — Live Status */}
+        {court.realTimeStatus && (
+          <View style={[styles.card, styles.liveNowCard]}>
+            <Text style={styles.cardTitle}>⚡ RIGHT NOW</Text>
+
+            {/* Confidence chip */}
+            {(() => {
+              const conf = court.realTimeStatus!.dataConfidence;
+              if (conf === 'high') {
+                const checkInCount = (court as any).checkIns?.length || 0;
+                return (
+                  <View style={[styles.confidenceChip, { backgroundColor: '#22c55e' + '15' }]}>
+                    <Text style={[styles.confidenceChipText, { color: '#22c55e' }]}>
+                      ✅ Verified by {checkInCount} check-in{checkInCount !== 1 ? 's' : ''} today
+                    </Text>
+                  </View>
+                );
+              }
+              if (conf === 'medium') {
+                return (
+                  <View style={[styles.confidenceChip, { backgroundColor: '#f59e0b' + '15' }]}>
+                    <Text style={[styles.confidenceChipText, { color: '#f59e0b' }]}>
+                      📋 Based on scheduled games
+                    </Text>
+                  </View>
+                );
+              }
+              return (
+                <View style={[styles.confidenceChip, { backgroundColor: theme.textTertiary + '15' }]}>
+                  <Text style={[styles.confidenceChipText, { color: theme.textTertiary }]}>
+                    📊 Based on historical data
+                  </Text>
+                </View>
+              );
+            })()}
+
+            {/* Scheduled today summary */}
+            <View style={styles.liveNowRow}>
+              <Text style={styles.liveNowCount}>
+                {court.realTimeStatus.dataConfidence === 'high' ? '🟢' : court.realTimeStatus.dataConfidence === 'medium' ? '🟡' : '⚪'}{' '}
+                {court.realTimeStatus.scheduledToday} group{court.realTimeStatus.scheduledToday !== 1 ? 's' : ''} scheduled
+              </Text>
+            </View>
+
+            {/* Current group */}
+            {court.realTimeStatus.currentGroup && (
+              <View style={styles.liveNowDetail}>
+                <Text style={styles.liveNowLabel}>Current: {court.realTimeStatus.currentGroup}</Text>
+                <Text style={styles.liveNowMeta}>In progress</Text>
+              </View>
+            )}
+
+            {/* Next game */}
+            {court.realTimeStatus.nextGame && (
+              <View style={styles.liveNowDetail}>
+                <Text style={styles.liveNowLabel}>
+                  Next: {court.realTimeStatus.nextGame.host} @ {court.realTimeStatus.nextGame.time}
+                </Text>
+                <Text style={styles.liveNowMeta}>
+                  Spots left: {court.realTimeStatus.nextGame.spotsLeft}
+                </Text>
+                {court.realTimeStatus.nextGame.spotsLeft > 0 && court.realTimeStatus.nextGame.spotsLeft <= 2 && (
+                  <TouchableOpacity
+                    style={styles.liveNowJoinBtn}
+                    activeOpacity={0.8}
+                    onPress={() => router.push('/posted-games')}
+                  >
+                    <Text style={styles.liveNowJoinBtnText}>Join</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+
+            {/* Best time suggestion */}
+            <View style={styles.bestTimeRow}>
+              <Text style={styles.bestTimeLabel}>⏰ Best time: Now!</Text>
+              <Text style={styles.bestTimeSub}>(less crowded than avg)</Text>
+            </View>
+
+            {/* Peak hours */}
+            <View style={styles.peakHoursRow}>
+              <Text style={styles.peakHoursTitle}>📊 Peak hours:</Text>
+              <Text style={styles.peakHoursText}>{court.realTimeStatus.peakHours}</Text>
+              {court.mostActive && court.mostActive !== court.realTimeStatus.peakHours && (
+                <Text style={styles.peakHoursText}>
+                  {court.mostActive.includes('Tue') ? 'Tuesday 5-7 PM' : ''}
+                </Text>
+              )}
+            </View>
+          </View>
+        )}
 
         {/* Info Card */}
         <View style={styles.card}>
@@ -711,5 +812,92 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.textTertiary,
     lineHeight: 18,
+  },
+
+  // ⚡ Live Now Section
+  liveNowCard: {
+    borderWidth: 1,
+    borderColor: theme.accent + '30',
+  },
+  confidenceChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+  },
+  confidenceChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  liveNowRow: {
+    marginBottom: 12,
+  },
+  liveNowCount: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  liveNowDetail: {
+    backgroundColor: theme.bg,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    gap: 4,
+  },
+  liveNowLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.text,
+  },
+  liveNowMeta: {
+    fontSize: 12,
+    color: theme.textSecondary,
+  },
+  liveNowJoinBtn: {
+    backgroundColor: theme.accent,
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    alignSelf: 'flex-start',
+    marginTop: 6,
+  },
+  liveNowJoinBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  bestTimeRow: {
+    backgroundColor: '#22c55e' + '10',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
+    gap: 2,
+  },
+  bestTimeLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#22c55e',
+  },
+  bestTimeSub: {
+    fontSize: 11,
+    color: theme.textSecondary,
+    fontStyle: 'italic',
+  },
+  peakHoursRow: {
+    paddingTop: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: theme.border,
+    gap: 4,
+  },
+  peakHoursTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.textSecondary,
+  },
+  peakHoursText: {
+    fontSize: 13,
+    color: theme.text,
+    fontWeight: '500',
   },
 });

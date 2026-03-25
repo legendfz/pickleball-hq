@@ -38,7 +38,7 @@ const COURT_INFO: Record<number, { icon: string; rating: number; playing: number
   28: { icon: '🎯', rating: 4.2, playing: 5, weeklyVisits: 145, mostActive: 'Saturday 10-12 PM' },
 };
 
-// ─── Game Data (from posted-games.json) ────────────────────
+// ─── Posted Games with urgency ────────────────────────────
 
 interface RawGame {
   id: number;
@@ -59,22 +59,23 @@ interface RawGame {
   recurrence?: string;
   regulars?: Array<{ id: number; name: string; dupr: number }>;
   openSpots?: number;
+  urgency?: 'low' | 'medium' | 'high';
 }
 
 const POSTED_GAMES: RawGame[] = [
-  { id: 1, hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, courtId: 1, courtName: 'Pickleball Station', datetime: '2026-03-25T18:00:00', format: 'doubles', needed: 2, joined: [{ id: 501, name: 'Lisa Wang', dupr: 4.0 }], duprRange: [3.5, 4.5], notes: 'Bring own balls', status: 'open', city: 'Irvine', isRecurring: false },
-  { id: 2, hostId: 502, hostName: 'David Rodriguez', hostDupr: 3.5, courtId: 2, courtName: 'Rancho San Joaquin', datetime: '2026-03-25T09:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.0, 4.0], notes: 'Looking for a fun singles match', status: 'open', city: 'Irvine', isRecurring: false },
-  { id: 3, hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, courtId: 4, courtName: 'Lakeshore Athletic Club', datetime: '2026-03-26T10:00:00', format: 'doubles', needed: 3, joined: [{ id: 509, name: 'Emily Clark', dupr: 4.7 }], duprRange: [4.0, 5.0], notes: 'Indoor courts, need 3 more for doubles', status: 'open', city: 'Irvine', isRecurring: false },
-  { id: 4, hostId: 504, hostName: 'Chris Thompson', hostDupr: 3.2, courtId: 9, courtName: 'Newport Beach PB Courts', datetime: '2026-03-26T16:00:00', format: 'doubles', needed: 2, joined: [{ id: 510, name: 'Kevin Nguyen', dupr: 3.6 }, { id: 508, name: 'James Lee', dupr: 3.1 }], duprRange: [2.5, 4.0], notes: 'Casual game, all levels welcome', status: 'open', city: 'Newport Beach', isRecurring: false },
-  { id: 5, hostId: 505, hostName: 'Nicole Kim', hostDupr: 4.0, courtId: 8, courtName: 'Costa Mesa Pickleball', datetime: '2026-03-27T19:00:00', format: 'mixed', needed: 2, joined: [{ id: 506, name: 'Ryan Patel', dupr: 3.9 }], duprRange: [3.5, 4.5], notes: 'Mixed doubles, need 1 more pair', status: 'open', city: 'Costa Mesa', isRecurring: false },
-  { id: 6, hostId: 507, hostName: 'Sarah Mitchell', hostDupr: 4.3, courtId: 11, courtName: 'Laguna Niguel Regional Park', datetime: '2026-03-28T08:00:00', format: 'doubles', needed: 1, joined: [], duprRange: [4.0, 5.0], notes: 'Morning doubles, early bird!', status: 'open', city: 'Laguna Niguel', isRecurring: false },
-  { id: 7, hostId: 511, hostName: 'Megan Davis', hostDupr: 4.1, courtId: 15, courtName: 'Santa Monica Pickleball Club', datetime: '2026-03-28T14:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Singles match by the beach', status: 'open', city: 'Santa Monica', isRecurring: false },
-  { id: 8, hostId: 513, hostName: 'Amanda Garcia', hostDupr: 4.4, courtId: 12, courtName: 'Anaheim Pickleball Center', datetime: '2026-03-29T11:00:00', format: 'doubles', needed: 3, joined: [{ id: 515, name: 'Rachel Adams', dupr: 4.6 }], duprRange: [4.0, 5.0], notes: 'Competitive doubles, reserve courts booked', status: 'open', city: 'Anaheim', isRecurring: false },
-  { id: 9, hostId: 514, hostName: 'Brandon Scott', hostDupr: 3.7, courtId: 6, courtName: 'Glen IR Pickleball Complex', datetime: '2026-03-29T17:00:00', format: 'doubles', needed: 2, joined: [{ id: 518, name: 'Jason Brown', dupr: 3.8 }, { id: 516, name: 'Daniel Kim', dupr: 3.3 }], duprRange: [3.0, 4.0], notes: 'After-work doubles, drinks after!', status: 'open', city: 'Irvine', isRecurring: false },
-  { id: 10, hostId: 517, hostName: 'Lauren Taylor', hostDupr: 4.0, courtId: 28, courtName: 'Long Beach Pickleball Hub', datetime: '2026-03-30T10:00:00', format: 'mixed', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Mixed doubles partner needed', status: 'open', city: 'Long Beach', isRecurring: false },
-  { id: 11, isRecurring: true, recurrence: 'Every Sat 9:00-11:00 AM', courtId: 1, courtName: 'Pickleball Station', city: 'Irvine', hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-29T09:00:00', needed: 4, duprRange: [3.5, 4.5], notes: 'Our regular Saturday morning crew', status: 'open', regulars: [{ id: 500, name: 'Mike C.', dupr: 3.8 }, { id: 501, name: 'Lisa W.', dupr: 4.0 }, { id: 506, name: 'Ryan P.', dupr: 3.9 }, { id: 514, name: 'Brandon S.', dupr: 3.7 }], openSpots: 0, joined: [] },
-  { id: 12, isRecurring: true, recurrence: 'Every Sun 8:00-10:00 AM', courtId: 6, courtName: 'Glen IR Pickleball Complex', city: 'Irvine', hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, format: 'doubles', datetime: '2026-03-30T08:00:00', needed: 4, duprRange: [4.0, 5.0], notes: 'Advanced doubles group', status: 'open', regulars: [{ id: 503, name: 'Amy W.', dupr: 4.5 }, { id: 509, name: 'Emily C.', dupr: 4.7 }, { id: 507, name: 'Sarah M.', dupr: 4.3 }], openSpots: 1, joined: [] },
-  { id: 13, isRecurring: true, recurrence: 'Every Wed 6:00-8:00 PM', courtId: 26, courtName: 'Irvine Great Park Courts', city: 'Irvine', hostId: 518, hostName: 'Jason Brown', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-25T18:00:00', needed: 4, duprRange: [3.0, 4.5], notes: 'Mid-week doubles, casual vibe', status: 'open', regulars: [{ id: 518, name: 'Jason B.', dupr: 3.8 }, { id: 519, name: 'Stephanie N.', dupr: 4.2 }, { id: 505, name: 'Nicole K.', dupr: 4.0 }], openSpots: 1, joined: [] },
+  { id: 1, hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, courtId: 1, courtName: 'Pickleball Station', datetime: '2026-03-25T18:00:00', format: 'doubles', needed: 2, joined: [{ id: 501, name: 'Lisa Wang', dupr: 4.0 }], duprRange: [3.5, 4.5], notes: 'Bring own balls', status: 'open', city: 'Irvine', isRecurring: false, urgency: 'high' },
+  { id: 2, hostId: 502, hostName: 'David Rodriguez', hostDupr: 3.5, courtId: 2, courtName: 'Rancho San Joaquin', datetime: '2026-03-25T09:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.0, 4.0], notes: 'Looking for a fun singles match', status: 'open', city: 'Irvine', isRecurring: false, urgency: 'high' },
+  { id: 3, hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, courtId: 4, courtName: 'Lakeshore Athletic Club', datetime: '2026-03-26T10:00:00', format: 'doubles', needed: 3, joined: [{ id: 509, name: 'Emily Clark', dupr: 4.7 }, { id: 512, name: 'Tom Harris', dupr: 4.3 }], duprRange: [4.0, 5.0], notes: 'Indoor courts, 1 more for doubles', status: 'open', city: 'Irvine', isRecurring: false, urgency: 'high' },
+  { id: 4, hostId: 504, hostName: 'Chris Thompson', hostDupr: 3.2, courtId: 9, courtName: 'Newport Beach PB Courts', datetime: '2026-03-26T16:00:00', format: 'doubles', needed: 2, joined: [{ id: 510, name: 'Kevin Nguyen', dupr: 3.6 }], duprRange: [2.5, 4.0], notes: 'Casual game, all levels welcome', status: 'open', city: 'Newport Beach', isRecurring: false, urgency: 'high' },
+  { id: 5, hostId: 505, hostName: 'Nicole Kim', hostDupr: 4.0, courtId: 8, courtName: 'Costa Mesa Pickleball', datetime: '2026-03-27T19:00:00', format: 'mixed', needed: 2, joined: [{ id: 506, name: 'Ryan Patel', dupr: 3.9 }], duprRange: [3.5, 4.5], notes: 'Mixed doubles, need 1 more pair', status: 'open', city: 'Costa Mesa', isRecurring: false, urgency: 'high' },
+  { id: 6, hostId: 507, hostName: 'Sarah Mitchell', hostDupr: 4.3, courtId: 11, courtName: 'Laguna Niguel Regional Park', datetime: '2026-03-28T08:00:00', format: 'doubles', needed: 1, joined: [], duprRange: [4.0, 5.0], notes: 'Morning doubles, early bird!', status: 'open', city: 'Laguna Niguel', isRecurring: false, urgency: 'high' },
+  { id: 7, hostId: 511, hostName: 'Megan Davis', hostDupr: 4.1, courtId: 15, courtName: 'Santa Monica Pickleball Club', datetime: '2026-03-28T14:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Singles match by the beach', status: 'open', city: 'Santa Monica', isRecurring: false, urgency: 'high' },
+  { id: 8, hostId: 513, hostName: 'Amanda Garcia', hostDupr: 4.4, courtId: 12, courtName: 'Anaheim Pickleball Center', datetime: '2026-03-29T11:00:00', format: 'doubles', needed: 3, joined: [{ id: 515, name: 'Rachel Adams', dupr: 4.6 }, { id: 520, name: 'Jake Wilson', dupr: 4.2 }], duprRange: [4.0, 5.0], notes: 'Competitive doubles, reserve courts booked', status: 'open', city: 'Anaheim', isRecurring: false, urgency: 'high' },
+  { id: 9, hostId: 514, hostName: 'Brandon Scott', hostDupr: 3.7, courtId: 6, courtName: 'Glen IR Pickleball Complex', datetime: '2026-03-29T17:00:00', format: 'doubles', needed: 2, joined: [{ id: 518, name: 'Jason Brown', dupr: 3.8 }, { id: 516, name: 'Daniel Kim', dupr: 3.3 }], duprRange: [3.0, 4.0], notes: 'After-work doubles, drinks after!', status: 'full', city: 'Irvine', isRecurring: false, urgency: 'low' },
+  { id: 10, hostId: 517, hostName: 'Lauren Taylor', hostDupr: 4.0, courtId: 28, courtName: 'Long Beach Pickleball Hub', datetime: '2026-03-30T10:00:00', format: 'mixed', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Mixed doubles partner needed', status: 'open', city: 'Long Beach', isRecurring: false, urgency: 'high' },
+  { id: 11, isRecurring: true, recurrence: 'Every Sat 9:00-11:00 AM', courtId: 1, courtName: 'Pickleball Station', city: 'Irvine', hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-29T09:00:00', needed: 4, duprRange: [3.5, 4.5], notes: 'Our regular Saturday morning crew', status: 'full', regulars: [{ id: 500, name: 'Mike C.', dupr: 3.8 }, { id: 501, name: 'Lisa W.', dupr: 4.0 }, { id: 506, name: 'Ryan P.', dupr: 3.9 }, { id: 514, name: 'Brandon S.', dupr: 3.7 }], openSpots: 0, joined: [], urgency: 'low' },
+  { id: 12, isRecurring: true, recurrence: 'Every Sun 8:00-10:00 AM', courtId: 6, courtName: 'Glen IR Pickleball Complex', city: 'Irvine', hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, format: 'doubles', datetime: '2026-03-30T08:00:00', needed: 4, duprRange: [4.0, 5.0], notes: 'Advanced doubles group', status: 'open', regulars: [{ id: 503, name: 'Amy W.', dupr: 4.5 }, { id: 509, name: 'Emily C.', dupr: 4.7 }, { id: 507, name: 'Sarah M.', dupr: 4.3 }], openSpots: 1, joined: [], urgency: 'high' },
+  { id: 13, isRecurring: true, recurrence: 'Every Wed 6:00-8:00 PM', courtId: 26, courtName: 'Irvine Great Park Courts', city: 'Irvine', hostId: 518, hostName: 'Jason Brown', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-25T18:00:00', needed: 4, duprRange: [3.0, 4.5], notes: 'Mid-week doubles, casual vibe', status: 'open', regulars: [{ id: 518, name: 'Jason B.', dupr: 3.8 }, { id: 519, name: 'Stephanie N.', dupr: 4.2 }, { id: 505, name: 'Nicole K.', dupr: 4.0 }], openSpots: 1, joined: [], urgency: 'high' },
 ];
 
 interface CardData {
@@ -98,6 +99,9 @@ interface CardData {
   isRecurring?: boolean;
   recurrence?: string;
   notes?: string;
+  // Urgency
+  urgency?: 'low' | 'medium' | 'high';
+  spotsLeft?: number;
 }
 
 function buildCards(): CardData[] {
@@ -110,6 +114,7 @@ function buildCards(): CardData[] {
 
     const joinedPlayers = game.joined || [];
     const regulars = game.regulars || [];
+    const spotsLeft = game.isRecurring ? (game.openSpots ?? 0) : game.needed - game.joined.length;
 
     cards.push({
       id: game.isRecurring ? `recurring-${game.id}` : `game-${game.id}`,
@@ -131,6 +136,8 @@ function buildCards(): CardData[] {
       isRecurring: game.isRecurring,
       recurrence: game.recurrence,
       notes: game.notes,
+      urgency: game.urgency as CardData['urgency'],
+      spotsLeft,
     });
   }
 
@@ -138,6 +145,9 @@ function buildCards(): CardData[] {
 }
 
 const ALL_CARDS = buildCards();
+
+// Count high-urgency games for Play Now badge
+const HIGH_URGENCY_COUNT = ALL_CARDS.filter((c) => c.urgency === 'high' && (c.spotsLeft ?? 0) > 0).length;
 
 // ─── Components ────────────────────────────────────────────
 
@@ -240,7 +250,11 @@ function GameCard({
         </View>
 
         {/* Game Info */}
-        <View style={styles.gameSection}>
+        <View style={[
+          styles.gameSection,
+          card.urgency === 'high' && styles.gameSectionUrgentHigh,
+          card.urgency === 'medium' && styles.gameSectionUrgentMedium,
+        ]}>
           <View style={styles.gameRow}>
             <Text style={styles.hostName}>@ {card.hostName}</Text>
             <Text style={styles.dot}>·</Text>
@@ -258,6 +272,17 @@ function GameCard({
               <Text style={styles.recurringText}>🔄 {card.recurrence}</Text>
             </View>
           )}
+          {/* Urgency indicator */}
+          {card.urgency === 'high' && (card.spotsLeft ?? 0) > 0 && (
+            <View style={styles.urgencyHighBadge}>
+              <Text style={styles.urgencyHighText}>🔥 {card.spotsLeft} spot{card.spotsLeft !== 1 ? 's' : ''} left!</Text>
+            </View>
+          )}
+          {card.urgency === 'medium' && (card.spotsLeft ?? 0) > 0 && (
+            <View style={styles.urgencyMediumBadge}>
+              <Text style={styles.urgencyMediumText}>{card.spotsLeft} spots left</Text>
+            </View>
+          )}
         </View>
 
         {/* Player Avatars */}
@@ -266,8 +291,13 @@ function GameCard({
             players={card.joined || []}
             needed={card.needed || 0}
           />
-          <Text style={styles.spotsText}>
-            {card.needed && card.needed > 0 ? `${card.needed} spot${card.needed > 1 ? 's' : ''} open` : 'Full — waitlist available'}
+          <Text style={[
+            styles.spotsText,
+            card.urgency === 'high' && { color: '#ef4444', fontWeight: '700' as const },
+          ]}>
+            {card.needed && card.needed > 0
+              ? (card.urgency === 'high' ? `🔥 Only ${card.needed} spot${card.needed > 1 ? 's' : ''} left — join now!` : `${card.needed} spot${card.needed > 1 ? 's' : ''} open`)
+              : 'Full — waitlist available'}
           </Text>
         </View>
 
@@ -361,6 +391,15 @@ export default function PlayScreen() {
           <Text style={styles.title}>Play</Text>
         </View>
         <View style={styles.headerRight}>
+          {HIGH_URGENCY_COUNT > 0 && (
+            <TouchableOpacity
+              style={styles.urgencyBadge}
+              onPress={() => router.push('/posted-games')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.urgencyBadgeText}>🔴 {HIGH_URGENCY_COUNT}</Text>
+            </TouchableOpacity>
+          )}
           {MOCK_USER.streakDays > 0 && (
             <TouchableOpacity
               style={styles.streakBadge}
@@ -441,6 +480,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 4,
   },
+  urgencyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 4,
+  },
+  urgencyBadgeText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#ef4444',
+  },
   streakEmoji: {
     fontSize: 16,
   },
@@ -518,6 +571,45 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     gap: 8,
+  },
+  gameSectionUrgentHigh: {
+    borderWidth: 2,
+    borderColor: '#ef4444',
+    shadowColor: '#ef4444',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  gameSectionUrgentMedium: {
+    borderWidth: 1.5,
+    borderColor: '#f59e0b',
+  },
+  urgencyHighBadge: {
+    backgroundColor: '#ef4444' + '20',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
+  urgencyHighText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#ef4444',
+  },
+  urgencyMediumBadge: {
+    backgroundColor: '#f59e0b' + '20',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
+  urgencyMediumText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#f59e0b',
   },
   gameRow: {
     flexDirection: 'row',

@@ -22,22 +22,63 @@ interface PostedGame {
   joined: JoinedPlayer[];
   duprRange: [number, number];
   notes: string;
-  status: 'open' | 'full' | 'cancelled';
+  status: 'open' | 'full' | 'cancelled' | 'needs_players' | 'expired';
   city: string;
   isRecurring?: boolean;
   recurrence?: string;
   regulars?: Array<{ id: number; name: string; dupr: number }>;
   openSpots?: number;
   waitlist?: Array<{ id: number; name: string; dupr: number }>;
+  urgency?: 'low' | 'medium' | 'high';
 }
 
 let games: PostedGame[] = [...(postedGamesData as PostedGame[])];
 
+// Compute urgency based on spots left
+function computeUrgency(spotsLeft: number): 'low' | 'medium' | 'high' {
+  if (spotsLeft <= 1) return 'high';
+  if (spotsLeft <= 2) return 'medium';
+  return 'low';
+}
+
+// Enrich a game with computed fields (urgency, expiry, needs_players status)
+function enrichGame(game: PostedGame): PostedGame {
+  const now = new Date();
+  const gameTime = new Date(game.datetime);
+  const diffMin = (now.getTime() - gameTime.getTime()) / (1000 * 60);
+
+  // Auto-expire games past 15 min
+  if (game.status === 'open' && diffMin > 15) {
+    game.status = 'expired';
+  }
+
+  // Calculate spots left
+  let spotsLeft: number;
+  if (game.isRecurring) {
+    spotsLeft = game.openSpots ?? 0;
+  } else {
+    spotsLeft = game.needed - game.joined.length;
+  }
+
+  // Mark as needs_players if open and spots available
+  if (game.status === 'open' && spotsLeft > 0) {
+    game.status = 'needs_players';
+  }
+
+  // Compute urgency for open/needs_players games
+  if (game.status === 'open' || game.status === 'needs_players' || game.status === 'full') {
+    game.urgency = computeUrgency(spotsLeft);
+  }
+
+  return game;
+}
+
 // GET /api/posted-games — all posted games, sorted by datetime
 router.get('/', (_req: Request, res: Response) => {
-  const sorted = [...games].sort(
-    (a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
-  );
+  const sorted = [...games]
+    .map(enrichGame)
+    .filter((g) => g.status !== 'expired')
+    .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
   res.json({ data: sorted, total: sorted.length });
 });
 
@@ -52,9 +93,11 @@ router.get('/play-now', (_req: Request, res: Response) => {
 
   // Games happening today or within next 2 hours
   const active = games
+    .map(enrichGame)
     .filter((g) => {
+      if (g.status === 'expired') return false;
       const dt = new Date(g.datetime);
-      return dt >= now && dt <= endOfDay && g.status === 'open';
+      return dt >= now && dt <= endOfDay && (g.status === 'open' || g.status === 'needs_players');
     })
     .map((g) => {
       const dt = new Date(g.datetime);
@@ -100,7 +143,8 @@ router.get('/play-now', (_req: Request, res: Response) => {
 router.get('/city/:city', (req: Request, res: Response) => {
   const city = decodeURIComponent(req.params.city).toLowerCase();
   const filtered = games
-    .filter((g) => g.city.toLowerCase() === city)
+    .map(enrichGame)
+    .filter((g) => g.status !== 'expired' && g.city.toLowerCase() === city)
     .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
   res.json({ data: filtered, total: filtered.length });
 });
@@ -137,7 +181,7 @@ router.post('/', (req: Request, res: Response) => {
   };
 
   games.push(newGame);
-  res.status(201).json({ data: newGame });
+  res.status(201).json({ data: enrichGame(newGame) });
 });
 
 // POST /api/posted-games/:id/join — join a game
@@ -150,7 +194,7 @@ router.post('/:id/join', (req: Request, res: Response) => {
     return;
   }
 
-  if (game.status !== 'open') {
+  if (game.status !== 'open' && game.status !== 'needs_players') {
     res.status(400).json({ error: 'Game is not open for joining' });
     return;
   }
@@ -182,7 +226,7 @@ router.post('/:id/join', (req: Request, res: Response) => {
       return;
     }
     game.waitlist.push({ id: playerId, name: playerName, dupr: playerDupr || 0 });
-    res.json({ data: game, message: 'Added to waitlist' });
+    res.json({ data: enrichGame(game), message: 'Added to waitlist' });
     return;
   }
 
@@ -203,7 +247,7 @@ router.post('/:id/join', (req: Request, res: Response) => {
     game.status = 'full';
   }
 
-  res.json({ data: game });
+  res.json({ data: enrichGame(game) });
 });
 
 export default router;

@@ -16,7 +16,29 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "precise",
+        "count": 22
+      },
+      {
+        "tagId": "tactical",
+        "count": 18
+      },
+      {
+        "tagId": "fair",
+        "count": 15
+      },
+      {
+        "tagId": "calm",
+        "count": 12
+      },
+      {
+        "tagId": "punctual",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 2,
@@ -35,7 +57,25 @@
       "brandId": 8,
       "apparel": "Franklin",
       "shoes": "Nike Court Air Zoom"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "fire",
+        "count": 25
+      },
+      {
+        "tagId": "precise",
+        "count": 20
+      },
+      {
+        "tagId": "vibe",
+        "count": 14
+      },
+      {
+        "tagId": "punctual",
+        "count": 11
+      }
+    ]
   },
   {
     "id": 3,
@@ -54,7 +94,25 @@
       "brandId": 2,
       "apparel": "Selkirk",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 28
+      },
+      {
+        "tagId": "fire",
+        "count": 19
+      },
+      {
+        "tagId": "vibe",
+        "count": 16
+      },
+      {
+        "tagId": "chatty",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 4,
@@ -73,7 +131,29 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 17
+      },
+      {
+        "tagId": "calm",
+        "count": 14
+      },
+      {
+        "tagId": "fair",
+        "count": 12
+      },
+      {
+        "tagId": "punctual",
+        "count": 10
+      },
+      {
+        "tagId": "quiet",
+        "count": 7
+      }
+    ]
   },
   {
     "id": 5,
@@ -92,7 +172,25 @@
       "brandId": 3,
       "apparel": "HEAD",
       "shoes": "HEAD Sprint Pro"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 21
+      },
+      {
+        "tagId": "ironman",
+        "count": 16
+      },
+      {
+        "tagId": "fire",
+        "count": 13
+      },
+      {
+        "tagId": "chatty",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 6,
@@ -111,7 +209,25 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 19
+      },
+      {
+        "tagId": "fair",
+        "count": 15
+      },
+      {
+        "tagId": "punctual",
+        "count": 11
+      },
+      {
+        "tagId": "patient",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 7,
@@ -130,7 +246,25 @@
       "brandId": 2,
       "apparel": "Selkirk",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 20
+      },
+      {
+        "tagId": "precise",
+        "count": 16
+      },
+      {
+        "tagId": "calm",
+        "count": 13
+      },
+      {
+        "tagId": "quiet",
+        "count": 10
+      }
+    ]
   },
   {
     "id": 8,
@@ -149,7 +283,25 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 24
+      },
+      {
+        "tagId": "fire",
+        "count": 18
+      },
+      {
+        "tagId": "chatty",
+        "count": 12
+      },
+      {
+        "tagId": "vibe",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 9,
@@ -168,7 +320,29 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 19
+      },
+      {
+        "tagId": "fair",
+        "count": 16
+      },
+      {
+        "tagId": "punctual",
+        "count": 13
+      },
+      {
+        "tagId": "quiet",
+        "count": 10
+      },
+      {
+        "tagId": "calm",
+        "count": 7
+      }
+    ]
   },
   {
     "id": 10,
@@ -187,7 +361,25 @@
       "brandId": 3,
       "apparel": "HEAD",
       "shoes": "HEAD Sprint Pro"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 15
+      },
+      {
+        "tagId": "patient",
+        "count": 12
+      },
+      {
+        "tagId": "fair",
+        "count": 10
+      },
+      {
+        "tagId": "responsive",
+        "count": 7
+      }
+    ]
   },
   {
     "id": 11,
@@ -206,7 +398,25 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 22
+      },
+      {
+        "tagId": "ironman",
+        "count": 17
+      },
+      {
+        "tagId": "fire",
+        "count": 14
+      },
+      {
+        "tagId": "precise",
+        "count": 11
+      }
+    ]
   },
   {
     "id": 12,
@@ -225,7 +435,25 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 18
+      },
+      {
+        "tagId": "precise",
+        "count": 14
+      },
+      {
+        "tagId": "patient",
+        "count": 11
+      },
+      {
+        "tagId": "fair",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 13,
@@ -244,7 +472,29 @@
       "brandId": 1,
       "apparel": "JOOLA",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 16
+      },
+      {
+        "tagId": "calm",
+        "count": 13
+      },
+      {
+        "tagId": "punctual",
+        "count": 10
+      },
+      {
+        "tagId": "fair",
+        "count": 8
+      },
+      {
+        "tagId": "quiet",
+        "count": 6
+      }
+    ]
   },
   {
     "id": 14,
@@ -263,7 +513,25 @@
       "brandId": 9,
       "apparel": "Engage",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "fire",
+        "count": 20
+      },
+      {
+        "tagId": "vibe",
+        "count": 16
+      },
+      {
+        "tagId": "chatty",
+        "count": 13
+      },
+      {
+        "tagId": "responsive",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 15,
@@ -282,7 +550,25 @@
       "brandId": 4,
       "apparel": "CRBN",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 23
+      },
+      {
+        "tagId": "precise",
+        "count": 18
+      },
+      {
+        "tagId": "tactical",
+        "count": 14
+      },
+      {
+        "tagId": "calm",
+        "count": 10
+      }
+    ]
   },
   {
     "id": 16,
@@ -301,7 +587,25 @@
       "brandId": 8,
       "apparel": "Franklin",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 21
+      },
+      {
+        "tagId": "fire",
+        "count": 17
+      },
+      {
+        "tagId": "chatty",
+        "count": 14
+      },
+      {
+        "tagId": "punctual",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 17,
@@ -320,7 +624,25 @@
       "brandId": 3,
       "apparel": "HEAD",
       "shoes": "HEAD Sprint Pro"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "precise",
+        "count": 19
+      },
+      {
+        "tagId": "tactical",
+        "count": 16
+      },
+      {
+        "tagId": "calm",
+        "count": 13
+      },
+      {
+        "tagId": "fair",
+        "count": 10
+      }
+    ]
   },
   {
     "id": 18,
@@ -339,7 +661,25 @@
       "brandId": 6,
       "apparel": "Onix",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "patient",
+        "count": 17
+      },
+      {
+        "tagId": "vibe",
+        "count": 14
+      },
+      {
+        "tagId": "fair",
+        "count": 11
+      },
+      {
+        "tagId": "responsive",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 19,
@@ -358,7 +698,25 @@
       "brandId": 9,
       "apparel": "Engage",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 20
+      },
+      {
+        "tagId": "fire",
+        "count": 16
+      },
+      {
+        "tagId": "ironman",
+        "count": 13
+      },
+      {
+        "tagId": "chatty",
+        "count": 10
+      }
+    ]
   },
   {
     "id": 20,
@@ -377,7 +735,29 @@
       "brandId": 4,
       "apparel": "CRBN",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 15
+      },
+      {
+        "tagId": "calm",
+        "count": 12
+      },
+      {
+        "tagId": "punctual",
+        "count": 10
+      },
+      {
+        "tagId": "quiet",
+        "count": 8
+      },
+      {
+        "tagId": "fair",
+        "count": 6
+      }
+    ]
   },
   {
     "id": 21,
@@ -396,7 +776,25 @@
       "brandId": 7,
       "apparel": "Paddletek",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 18
+      },
+      {
+        "tagId": "precise",
+        "count": 15
+      },
+      {
+        "tagId": "tactical",
+        "count": 12
+      },
+      {
+        "tagId": "calm",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 22,
@@ -415,7 +813,25 @@
       "brandId": 5,
       "apparel": "Diadem",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 16
+      },
+      {
+        "tagId": "patient",
+        "count": 13
+      },
+      {
+        "tagId": "fair",
+        "count": 10
+      },
+      {
+        "tagId": "punctual",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 23,
@@ -434,7 +850,25 @@
       "brandId": 2,
       "apparel": "Selkirk",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 17
+      },
+      {
+        "tagId": "ironman",
+        "count": 14
+      },
+      {
+        "tagId": "precise",
+        "count": 11
+      },
+      {
+        "tagId": "quiet",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 24,
@@ -453,7 +887,29 @@
       "brandId": 5,
       "apparel": "Diadem",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "precise",
+        "count": 16
+      },
+      {
+        "tagId": "calm",
+        "count": 13
+      },
+      {
+        "tagId": "tactical",
+        "count": 10
+      },
+      {
+        "tagId": "fair",
+        "count": 8
+      },
+      {
+        "tagId": "punctual",
+        "count": 6
+      }
+    ]
   },
   {
     "id": 25,
@@ -472,7 +928,25 @@
       "brandId": 5,
       "apparel": "Diadem",
       "shoes": "HEAD Sprint Pro"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "fire",
+        "count": 19
+      },
+      {
+        "tagId": "vibe",
+        "count": 15
+      },
+      {
+        "tagId": "chatty",
+        "count": 12
+      },
+      {
+        "tagId": "responsive",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 26,
@@ -491,7 +965,25 @@
       "brandId": 8,
       "apparel": "Franklin",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "patient",
+        "count": 18
+      },
+      {
+        "tagId": "fair",
+        "count": 15
+      },
+      {
+        "tagId": "vibe",
+        "count": 12
+      },
+      {
+        "tagId": "punctual",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 27,
@@ -510,7 +1002,25 @@
       "brandId": 2,
       "apparel": "Selkirk",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "power",
+        "count": 21
+      },
+      {
+        "tagId": "fire",
+        "count": 17
+      },
+      {
+        "tagId": "ironman",
+        "count": 14
+      },
+      {
+        "tagId": "chatty",
+        "count": 10
+      }
+    ]
   },
   {
     "id": 28,
@@ -529,7 +1039,29 @@
       "brandId": 6,
       "apparel": "Onix",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "precise",
+        "count": 15
+      },
+      {
+        "tagId": "vibe",
+        "count": 12
+      },
+      {
+        "tagId": "patient",
+        "count": 10
+      },
+      {
+        "tagId": "fair",
+        "count": 8
+      },
+      {
+        "tagId": "responsive",
+        "count": 6
+      }
+    ]
   },
   {
     "id": 29,
@@ -548,7 +1080,25 @@
       "brandId": 7,
       "apparel": "Paddletek",
       "shoes": "ASICS Gel-Renma"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "tactical",
+        "count": 18
+      },
+      {
+        "tagId": "power",
+        "count": 15
+      },
+      {
+        "tagId": "precise",
+        "count": 12
+      },
+      {
+        "tagId": "calm",
+        "count": 9
+      }
+    ]
   },
   {
     "id": 30,
@@ -567,7 +1117,25 @@
       "brandId": 2,
       "apparel": "Selkirk",
       "shoes": "Nike GP Challenge"
-    }
+    },
+    "socialTags": [
+      {
+        "tagId": "vibe",
+        "count": 16
+      },
+      {
+        "tagId": "patient",
+        "count": 14
+      },
+      {
+        "tagId": "fair",
+        "count": 11
+      },
+      {
+        "tagId": "punctual",
+        "count": 8
+      }
+    ]
   },
   {
     "id": 31,

@@ -35,6 +35,7 @@ import {
   formatCount,
   type PlayerComments,
 } from '../../lib/comments';
+import { getPlayerSocialTags, type PlayerSocialTags, type EnrichedSocialTag } from '../../lib/social-tags';
 import { TournamentLogo } from '../../lib/tournament-logo';
 import { PickleballBallIcon } from '../../lib/illustrations';
 import { theme } from '../../lib/theme';
@@ -344,6 +345,48 @@ function PrizeMoneyPanel({ prizeMoney }: { prizeMoney?: string }) {
   );
 }
 
+// ─── Community Tags Section ──────────────────────────────────────────
+function CommunityTagsSection({ playerId }: { playerId: number }) {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const { data: socialTags } = useQuery<PlayerSocialTags>({
+    queryKey: ['social-tags', playerId],
+    queryFn: () => getPlayerSocialTags(playerId),
+    enabled: !!playerId,
+  });
+
+  if (!socialTags || socialTags.tags.length === 0) return null;
+
+  const displayTags = socialTags.tags.slice(0, 5);
+
+  return (
+    <View style={styles.card}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <Text style={styles.cardTitle}>Community Tags</Text>
+        <TouchableOpacity
+          style={styles.ratePlayerBtn}
+          activeOpacity={0.7}
+          onPress={() => router.push(`/rate-player/${playerId}`)}
+        >
+          <Text style={styles.ratePlayerBtnText}>+ Rate</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.socialTagsWrap}>
+        {displayTags.map((tag) => (
+          <View key={tag.tagId} style={styles.socialTagPill}>
+            <Text style={styles.socialTagEmoji}>{tag.emoji}</Text>
+            <Text style={styles.socialTagName}>{tag.name}</Text>
+            <Text style={styles.socialTagCount}>· {tag.count}</Text>
+          </View>
+        ))}
+      </View>
+      <Text style={styles.socialTagsFooter}>
+        {socialTags.tags.reduce((sum, t) => sum + t.count, 0)} ratings from the community
+      </Text>
+    </View>
+  );
+}
+
 // ─── Overview Tab ────────────────────────────────────────────────────
 function OverviewTab({ player, router, duprData }: { player: PlayerDetail; router: any; duprData?: any }) {
   const { t } = useLanguage();
@@ -515,6 +558,9 @@ function OverviewTab({ player, router, duprData }: { player: PlayerDetail; route
           </ScrollView>
         </View>
       )}
+
+      {/* Community Tags */}
+      <CommunityTagsSection playerId={player.id} />
 
       {/* Bio */}
       <View style={styles.card}>
@@ -1507,4 +1553,49 @@ const styles = StyleSheet.create({
   tagRankPct: { width: 40, fontSize: 12, fontWeight: '600', color: theme.text, textAlign: 'right' },
   tagRankCount: { width: 40, fontSize: 11, color: '#888', textAlign: 'right' },
   roundLabel: { fontSize: 11, color: '#888', fontWeight: '400' as const },
+
+  // Community Tags
+  ratePlayerBtn: {
+    backgroundColor: theme.accent + '20',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  ratePlayerBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.accent,
+  },
+  socialTagsWrap: {
+    gap: 8,
+  },
+  socialTagPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.bg,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  socialTagEmoji: {
+    fontSize: 18,
+  },
+  socialTagName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.text,
+    flex: 1,
+  },
+  socialTagCount: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    fontWeight: '500',
+  },
+  socialTagsFooter: {
+    fontSize: 11,
+    color: theme.textSecondary,
+    marginTop: 10,
+    textAlign: 'center',
+  },
 });

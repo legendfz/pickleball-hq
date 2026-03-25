@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { mockPlayers, mockMatches, mockTournaments } from '../mock-data';
+import socialTagsData from '../data/social-tags.json';
 
 const router = Router();
 
@@ -169,6 +170,106 @@ router.get('/:id/dupr', (req: Request, res: Response) => {
     totalPlayers: mockPlayers.length,
     history,
     lastUpdated: new Date().toISOString(),
+  });
+});
+
+// GET /api/players/social-tags — All available social tags
+router.get('/social-tags/all', (_req: Request, res: Response) => {
+  res.json(socialTagsData);
+});
+
+// GET /api/players/:id/social-tags — Player's social tags
+router.get('/:id/social-tags', (req: Request, res: Response) => {
+  const player = mockPlayers.find((p) => p.id === parseInt(String(req.params.id)));
+  if (!player) {
+    res.status(404).json({ error: 'Player not found' });
+    return;
+  }
+
+  const rawTags = (player as any).socialTags || [];
+  // Enrich with tag metadata
+  const enriched = rawTags
+    .filter((st: any) => st.count >= 3)
+    .map((st: any) => {
+      const meta = socialTagsData.tags.find((t) => t.id === st.tagId);
+      return {
+        ...st,
+        name: meta?.name || st.tagId,
+        nameZh: meta?.nameZh || '',
+        emoji: meta?.emoji || '🏷️',
+        category: meta?.category || 'style',
+      };
+    })
+    .sort((a: any, b: any) => b.count - a.count);
+
+  res.json({
+    playerId: player.id,
+    playerName: player.name,
+    tags: enriched,
+    total: enriched.length,
+  });
+});
+
+// POST /api/players/:id/social-tags — Submit tags (mock, no auth)
+router.post('/:id/social-tags', (req: Request, res: Response) => {
+  const player = mockPlayers.find((p) => p.id === parseInt(String(req.params.id)));
+  if (!player) {
+    res.status(404).json({ error: 'Player not found' });
+    return;
+  }
+
+  const { tagIds } = req.body;
+  if (!Array.isArray(tagIds) || tagIds.length === 0) {
+    res.status(400).json({ error: 'tagIds must be a non-empty array' });
+    return;
+  }
+  if (tagIds.length > 3) {
+    res.status(400).json({ error: 'Maximum 3 tags per submission' });
+    return;
+  }
+
+  // Validate tag IDs
+  const validIds = new Set(socialTagsData.tags.map((t) => t.id));
+  const invalid = tagIds.filter((id: string) => !validIds.has(id));
+  if (invalid.length > 0) {
+    res.status(400).json({ error: `Invalid tag IDs: ${invalid.join(', ')}` });
+    return;
+  }
+
+  // Mock: increment counts on the player object
+  if (!(player as any).socialTags) {
+    (player as any).socialTags = [];
+  }
+
+  for (const tagId of tagIds) {
+    const existing = (player as any).socialTags.find((st: any) => st.tagId === tagId);
+    if (existing) {
+      existing.count++;
+    } else {
+      (player as any).socialTags.push({ tagId, count: 1 });
+    }
+  }
+
+  // Return updated tags
+  const rawTags = (player as any).socialTags;
+  const enriched = rawTags
+    .filter((st: any) => st.count >= 3)
+    .map((st: any) => {
+      const meta = socialTagsData.tags.find((t) => t.id === st.tagId);
+      return {
+        ...st,
+        name: meta?.name || st.tagId,
+        nameZh: meta?.nameZh || '',
+        emoji: meta?.emoji || '🏷️',
+        category: meta?.category || 'style',
+      };
+    })
+    .sort((a: any, b: any) => b.count - a.count);
+
+  res.json({
+    success: true,
+    playerId: player.id,
+    tags: enriched,
   });
 });
 

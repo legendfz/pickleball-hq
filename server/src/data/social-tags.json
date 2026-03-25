@@ -1,0 +1,19 @@
+{
+  "tags": [
+    {"id": "retriever", "emoji": "🧹", "name": "Ball Retriever", "nameZh": "捡球积极", "category": "style"},
+    {"id": "power", "emoji": "💪", "name": "Power Player", "nameZh": "力量型", "category": "style"},
+    {"id": "precise", "emoji": "🎯", "name": "Precision", "nameZh": "精准型", "category": "style"},
+    {"id": "ironman", "emoji": "🏃", "name": "Iron Man", "nameZh": "覆盖全场", "category": "style"},
+    {"id": "tactical", "emoji": "🧠", "name": "Tactical", "nameZh": "战术型", "category": "style"},
+    {"id": "vibe", "emoji": "😊", "name": "Vibe Master", "nameZh": "气氛组大师", "category": "social"},
+    {"id": "patient", "emoji": "👶", "name": "Great w/ Beginners", "nameZh": "适合带新手", "category": "social"},
+    {"id": "fire", "emoji": "🔥", "name": "Gets Hyped", "nameZh": "越打越嗨", "category": "social"},
+    {"id": "punctual", "emoji": "⏰", "name": "Always On Time", "nameZh": "从不迟到", "category": "reliable"},
+    {"id": "responsive", "emoji": "📅", "name": "Always Available", "nameZh": "随叫随到", "category": "reliable"},
+    {"id": "brings-balls", "emoji": "🎾", "name": "Brings Balls", "nameZh": "自带球", "category": "reliable"},
+    {"id": "fair", "emoji": "🤝", "name": "Fair Player", "nameZh": "公平公正", "category": "attitude"},
+    {"id": "calm", "emoji": "🧊", "name": "Cool Under Pressure", "nameZh": "冷静型", "category": "attitude"},
+    {"id": "quiet", "emoji": "💬", "name": "Quiet & Focused", "nameZh": "话少专注", "category": "attitude"},
+    {"id": "chatty", "emoji": "🗣️", "name": "Chat & Play", "nameZh": "爱聊天", "category": "attitude"}
+  ]
+}

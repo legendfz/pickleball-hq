@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  ScrollView,
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
@@ -13,6 +14,7 @@ import api from '../../lib/api';
 import { theme } from '../../lib/theme';
 import { SkeletonList } from '../../lib/skeleton';
 import { EmptyState } from '../../lib/empty-state';
+import { getPlayerSocialTags, type PlayerSocialTags } from '../../lib/social-tags';
 
 interface MatchPlayer {
   id: number;
@@ -33,11 +35,25 @@ interface MatchPlayer {
 
 type MatchType = 'all' | 'player' | 'partner';
 
+// Social tag filter options
+const TAG_FILTERS = [
+  { id: '', label: 'All', emoji: '🏓' },
+  { id: 'patient', label: 'Patient', emoji: '👶' },
+  { id: 'vibe', label: 'Vibe', emoji: '😊' },
+  { id: 'fair', label: 'Fair', emoji: '🤝' },
+  { id: 'punctual', label: 'On Time', emoji: '⏰' },
+  { id: 'fire', label: 'Hyped', emoji: '🔥' },
+  { id: 'calm', label: 'Calm', emoji: '🧊' },
+  { id: 'retriever', label: 'Retriever', emoji: '🧹' },
+];
+
 export default function MatchmakingScreen() {
   const router = useRouter();
   const [dupr, setDupr] = useState(4.0);
   const [matchType, setMatchType] = useState<MatchType>('all');
   const [hasSearched, setHasSearched] = useState(false);
+  const [tagFilter, setTagFilter] = useState('');
+  const [playerSocialTags, setPlayerSocialTags] = useState<Record<number, PlayerSocialTags>>({});
 
   const { data, isLoading, refetch, isFetching } = useQuery<{ data: MatchPlayer[] }>({
     queryKey: ['matchmaking', dupr, matchType],
@@ -76,8 +92,27 @@ export default function MatchmakingScreen() {
 
   const handleSearch = () => {
     setHasSearched(true);
-    refetch();
+    refetch().then((result) => {
+      const players = result.data?.data ?? [];
+      // Fetch social tags for all players
+      const tagsMap: Record<number, PlayerSocialTags> = {};
+      Promise.all(
+        players.map((p: MatchPlayer) =>
+          getPlayerSocialTags(p.id)
+            .then((tags) => { tagsMap[p.id] = tags; })
+            .catch(() => {})
+        )
+      ).then(() => setPlayerSocialTags(tagsMap));
+    });
   };
+
+  // Filter players by tag
+  const filteredPlayers = tagFilter
+    ? players.filter((p) => {
+        const tags = playerSocialTags[p.id];
+        return tags?.tags.some((t) => t.tagId === tagFilter && t.count >= 3);
+      })
+    : players;
 
   const adjustDupr = (delta: number) => {
     setDupr((prev) => Math.min(8.0, Math.max(2.0, Math.round((prev + delta) * 10) / 10)));
@@ -155,6 +190,28 @@ export default function MatchmakingScreen() {
           <Text style={styles.searchBtnText}>🔍 Search Players</Text>
         </TouchableOpacity>
 
+        {/* Tag Filter */}
+        {hasSearched && (
+          <View style={styles.tagFilterSection}>
+            <Text style={styles.tagFilterLabel}>Filter by social tag</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tagFilterScroll}>
+              {TAG_FILTERS.map((tf) => (
+                <TouchableOpacity
+                  key={tf.id}
+                  style={[styles.tagFilterChip, tagFilter === tf.id && styles.tagFilterChipActive]}
+                  onPress={() => setTagFilter(tf.id)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.tagFilterEmoji}>{tf.emoji}</Text>
+                  <Text style={[styles.tagFilterText, tagFilter === tf.id && styles.tagFilterTextActive]}>
+                    {tf.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* Results */}
         {isFetching && !hasSearched ? null : isLoading ? (
           <SkeletonList count={5} cardHeight={80} />
@@ -163,14 +220,14 @@ export default function MatchmakingScreen() {
             <Text style={styles.emptyEmoji}>🏓</Text>
             <Text style={styles.emptyText}>Set your rating and search to find players near you</Text>
           </View>
-        ) : players.length === 0 ? (
+        ) : filteredPlayers.length === 0 ? (
           <EmptyState
-            message="No players found"
-            subtitle="Try adjusting your DUPR range or search type"
+            message={tagFilter ? 'No players match this tag filter' : 'No players found'}
+            subtitle={tagFilter ? 'Try a different tag or clear the filter' : 'Try adjusting your DUPR range or search type'}
           />
         ) : (
           <FlatList
-            data={players}
+            data={filteredPlayers}
             keyExtractor={(item) => item.id.toString()}
             refreshControl={
               <RefreshControl
@@ -223,6 +280,19 @@ export default function MatchmakingScreen() {
                       <Text style={styles.tagText}>📅 {item.availability}</Text>
                     </View>
                   </View>
+
+                  {/* Social Tags */}
+                  {playerSocialTags[item.id]?.tags && playerSocialTags[item.id].tags.length > 0 && (
+                    <View style={styles.socialTagsRow}>
+                      {playerSocialTags[item.id].tags.slice(0, 3).map((tag) => (
+                        <View key={tag.tagId} style={styles.socialTagChip}>
+                          <Text style={styles.socialTagChipText}>
+                            {tag.emoji}×{tag.count}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
 
                   <TouchableOpacity
                     style={[
@@ -511,6 +581,67 @@ const styles = StyleSheet.create({
   actionBtnText: {
     color: theme.text,
     fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Tag Filter
+  tagFilterSection: {
+    paddingHorizontal: theme.spacing.padding,
+    marginBottom: 12,
+  },
+  tagFilterLabel: {
+    fontSize: 12,
+    color: theme.textSecondary,
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  tagFilterScroll: {
+    gap: 6,
+  },
+  tagFilterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.card,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: theme.border,
+    gap: 4,
+  },
+  tagFilterChipActive: {
+    borderColor: theme.accent,
+    backgroundColor: theme.accent + '20',
+  },
+  tagFilterEmoji: {
+    fontSize: 14,
+  },
+  tagFilterText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: theme.textSecondary,
+  },
+  tagFilterTextActive: {
+    color: theme.accent,
+    fontWeight: '600',
+  },
+
+  // Social Tags on Player Cards
+  socialTagsRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 8,
+    flexWrap: 'wrap',
+  },
+  socialTagChip: {
+    backgroundColor: theme.accent + '15',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  socialTagChipText: {
+    fontSize: 11,
+    color: theme.accent,
     fontWeight: '600',
   },
 });

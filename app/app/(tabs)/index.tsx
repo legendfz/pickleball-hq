@@ -1,94 +1,145 @@
-import { useState, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  FlatList,
+  Dimensions,
   TouchableOpacity,
-  RefreshControl,
+  Animated,
+  StatusBar,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { theme } from '../../lib/theme';
 import { getStreakEmoji } from '../../lib/gamification';
 
-// ─── Mock Data ──────────────────────────────────────────────
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+const HEADER_HEIGHT = 110;
+const TAB_BAR_HEIGHT = 85;
+const CARD_HEIGHT = SCREEN_HEIGHT - HEADER_HEIGHT - TAB_BAR_HEIGHT;
+
+// ─── Mock User ─────────────────────────────────────────────
 const MOCK_USER = {
   streakDays: 7,
 };
 
-const MOCK_COURTS = [
-  {
-    id: 1,
-    name: 'Pickleball Station Irvine',
-    icon: '🏠',
-    playing: 4,
-    status: 'Busy' as const,
-    rating: 4.3,
-    courts: 8,
-    weeklyVisitors: 127,
-    mostActive: 'Saturday 8-10 AM',
-  },
-  {
-    id: 2,
-    name: 'Irvine Park',
-    icon: '☀️',
-    playing: 2,
-    status: 'Open' as const,
-    rating: 4.1,
-    courts: 6,
-    weeklyVisitors: 89,
-    mostActive: 'Sunday 9-11 AM',
-  },
-  {
-    id: 3,
-    name: 'Heritage Park',
-    icon: '🌳',
-    playing: 6,
-    status: 'Busy' as const,
-    rating: 4.5,
-    courts: 10,
-    weeklyVisitors: 203,
-    mostActive: 'Saturday 8-10 AM',
-  },
+// ─── Court Data ────────────────────────────────────────────
+const COURT_INFO: Record<number, { icon: string; rating: number; playing: number; weeklyVisits: number; mostActive: string }> = {
+  1:  { icon: '🏠', rating: 4.3, playing: 4, weeklyVisits: 127, mostActive: 'Saturday 8-10 AM' },
+  2:  { icon: '☀️', rating: 4.1, playing: 2, weeklyVisits: 89, mostActive: 'Sunday 9-11 AM' },
+  4:  { icon: '🏊', rating: 4.4, playing: 3, weeklyVisits: 156, mostActive: 'Saturday 9-11 AM' },
+  6:  { icon: '🌳', rating: 4.2, playing: 5, weeklyVisits: 134, mostActive: 'Sunday 8-10 AM' },
+  8:  { icon: '🔥', rating: 4.6, playing: 8, weeklyVisits: 210, mostActive: 'Friday 6-8 PM' },
+  9:  { icon: '🏖️', rating: 4.0, playing: 3, weeklyVisits: 95, mostActive: 'Saturday 3-5 PM' },
+  11: { icon: '🏔️', rating: 4.5, playing: 6, weeklyVisits: 178, mostActive: 'Saturday 8-10 AM' },
+  12: { icon: '🎯', rating: 4.3, playing: 7, weeklyVisits: 195, mostActive: 'Wednesday 6-8 PM' },
+  15: { icon: '🌊', rating: 4.7, playing: 4, weeklyVisits: 142, mostActive: 'Sunday 10-12 PM' },
+  26: { icon: '🏅', rating: 4.4, playing: 6, weeklyVisits: 168, mostActive: 'Wednesday 6-8 PM' },
+  28: { icon: '🎯', rating: 4.2, playing: 5, weeklyVisits: 145, mostActive: 'Saturday 10-12 PM' },
+};
+
+// ─── Game Data (from posted-games.json) ────────────────────
+
+interface RawGame {
+  id: number;
+  hostId: number;
+  hostName: string;
+  hostDupr: number;
+  courtId: number;
+  courtName: string;
+  datetime: string;
+  format: string;
+  needed: number;
+  joined: Array<{ id: number; name: string; dupr: number }>;
+  duprRange: [number, number];
+  notes: string;
+  status: string;
+  city: string;
+  isRecurring: boolean;
+  recurrence?: string;
+  regulars?: Array<{ id: number; name: string; dupr: number }>;
+  openSpots?: number;
+}
+
+const POSTED_GAMES: RawGame[] = [
+  { id: 1, hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, courtId: 1, courtName: 'Pickleball Station', datetime: '2026-03-25T18:00:00', format: 'doubles', needed: 2, joined: [{ id: 501, name: 'Lisa Wang', dupr: 4.0 }], duprRange: [3.5, 4.5], notes: 'Bring own balls', status: 'open', city: 'Irvine', isRecurring: false },
+  { id: 2, hostId: 502, hostName: 'David Rodriguez', hostDupr: 3.5, courtId: 2, courtName: 'Rancho San Joaquin', datetime: '2026-03-25T09:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.0, 4.0], notes: 'Looking for a fun singles match', status: 'open', city: 'Irvine', isRecurring: false },
+  { id: 3, hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, courtId: 4, courtName: 'Lakeshore Athletic Club', datetime: '2026-03-26T10:00:00', format: 'doubles', needed: 3, joined: [{ id: 509, name: 'Emily Clark', dupr: 4.7 }], duprRange: [4.0, 5.0], notes: 'Indoor courts, need 3 more for doubles', status: 'open', city: 'Irvine', isRecurring: false },
+  { id: 4, hostId: 504, hostName: 'Chris Thompson', hostDupr: 3.2, courtId: 9, courtName: 'Newport Beach PB Courts', datetime: '2026-03-26T16:00:00', format: 'doubles', needed: 2, joined: [{ id: 510, name: 'Kevin Nguyen', dupr: 3.6 }, { id: 508, name: 'James Lee', dupr: 3.1 }], duprRange: [2.5, 4.0], notes: 'Casual game, all levels welcome', status: 'open', city: 'Newport Beach', isRecurring: false },
+  { id: 5, hostId: 505, hostName: 'Nicole Kim', hostDupr: 4.0, courtId: 8, courtName: 'Costa Mesa Pickleball', datetime: '2026-03-27T19:00:00', format: 'mixed', needed: 2, joined: [{ id: 506, name: 'Ryan Patel', dupr: 3.9 }], duprRange: [3.5, 4.5], notes: 'Mixed doubles, need 1 more pair', status: 'open', city: 'Costa Mesa', isRecurring: false },
+  { id: 6, hostId: 507, hostName: 'Sarah Mitchell', hostDupr: 4.3, courtId: 11, courtName: 'Laguna Niguel Regional Park', datetime: '2026-03-28T08:00:00', format: 'doubles', needed: 1, joined: [], duprRange: [4.0, 5.0], notes: 'Morning doubles, early bird!', status: 'open', city: 'Laguna Niguel', isRecurring: false },
+  { id: 7, hostId: 511, hostName: 'Megan Davis', hostDupr: 4.1, courtId: 15, courtName: 'Santa Monica Pickleball Club', datetime: '2026-03-28T14:00:00', format: 'singles', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Singles match by the beach', status: 'open', city: 'Santa Monica', isRecurring: false },
+  { id: 8, hostId: 513, hostName: 'Amanda Garcia', hostDupr: 4.4, courtId: 12, courtName: 'Anaheim Pickleball Center', datetime: '2026-03-29T11:00:00', format: 'doubles', needed: 3, joined: [{ id: 515, name: 'Rachel Adams', dupr: 4.6 }], duprRange: [4.0, 5.0], notes: 'Competitive doubles, reserve courts booked', status: 'open', city: 'Anaheim', isRecurring: false },
+  { id: 9, hostId: 514, hostName: 'Brandon Scott', hostDupr: 3.7, courtId: 6, courtName: 'Glen IR Pickleball Complex', datetime: '2026-03-29T17:00:00', format: 'doubles', needed: 2, joined: [{ id: 518, name: 'Jason Brown', dupr: 3.8 }, { id: 516, name: 'Daniel Kim', dupr: 3.3 }], duprRange: [3.0, 4.0], notes: 'After-work doubles, drinks after!', status: 'open', city: 'Irvine', isRecurring: false },
+  { id: 10, hostId: 517, hostName: 'Lauren Taylor', hostDupr: 4.0, courtId: 28, courtName: 'Long Beach Pickleball Hub', datetime: '2026-03-30T10:00:00', format: 'mixed', needed: 1, joined: [], duprRange: [3.5, 4.5], notes: 'Mixed doubles partner needed', status: 'open', city: 'Long Beach', isRecurring: false },
+  { id: 11, isRecurring: true, recurrence: 'Every Sat 9:00-11:00 AM', courtId: 1, courtName: 'Pickleball Station', city: 'Irvine', hostId: 500, hostName: 'Mike Chen', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-29T09:00:00', needed: 4, duprRange: [3.5, 4.5], notes: 'Our regular Saturday morning crew', status: 'open', regulars: [{ id: 500, name: 'Mike C.', dupr: 3.8 }, { id: 501, name: 'Lisa W.', dupr: 4.0 }, { id: 506, name: 'Ryan P.', dupr: 3.9 }, { id: 514, name: 'Brandon S.', dupr: 3.7 }], openSpots: 0, joined: [] },
+  { id: 12, isRecurring: true, recurrence: 'Every Sun 8:00-10:00 AM', courtId: 6, courtName: 'Glen IR Pickleball Complex', city: 'Irvine', hostId: 503, hostName: 'Amy Wang', hostDupr: 4.5, format: 'doubles', datetime: '2026-03-30T08:00:00', needed: 4, duprRange: [4.0, 5.0], notes: 'Advanced doubles group', status: 'open', regulars: [{ id: 503, name: 'Amy W.', dupr: 4.5 }, { id: 509, name: 'Emily C.', dupr: 4.7 }, { id: 507, name: 'Sarah M.', dupr: 4.3 }], openSpots: 1, joined: [] },
+  { id: 13, isRecurring: true, recurrence: 'Every Wed 6:00-8:00 PM', courtId: 26, courtName: 'Irvine Great Park Courts', city: 'Irvine', hostId: 518, hostName: 'Jason Brown', hostDupr: 3.8, format: 'doubles', datetime: '2026-03-25T18:00:00', needed: 4, duprRange: [3.0, 4.5], notes: 'Mid-week doubles, casual vibe', status: 'open', regulars: [{ id: 518, name: 'Jason B.', dupr: 3.8 }, { id: 519, name: 'Stephanie N.', dupr: 4.2 }, { id: 505, name: 'Nicole K.', dupr: 4.0 }], openSpots: 1, joined: [] },
 ];
 
-const MOCK_GAMES = [
-  {
-    id: 1,
-    poster: 'Mike',
-    spotsNeeded: 2,
-    court: 'Station',
-    time: '6PM',
-    duprMin: 3.5,
-    duprMax: 4.5,
-    joined: 2,
-    total: 4,
-  },
-  {
-    id: 2,
-    poster: 'Sarah',
-    spotsNeeded: 1,
-    court: 'Irvine Park',
-    time: '7:30PM',
-    duprMin: 2.5,
-    duprMax: 3.5,
-    joined: 3,
-    total: 4,
-  },
-  {
-    id: 3,
-    poster: 'James',
-    spotsNeeded: 3,
-    court: 'Heritage Park',
-    time: '9AM',
-    duprMin: 4.0,
-    duprMax: 5.0,
-    joined: 1,
-    total: 4,
-  },
-];
+interface CardData {
+  id: string;
+  type: 'game' | 'court';
+  courtName: string;
+  courtId: number;
+  icon: string;
+  playing: number;
+  rating: number;
+  weeklyVisits: number;
+  mostActive: string;
+  // Game-specific
+  hostName?: string;
+  time?: string;
+  format?: string;
+  duprMin?: number;
+  duprMax?: number;
+  joined?: Array<{ name: string; dupr: number }>;
+  needed?: number;
+  isRecurring?: boolean;
+  recurrence?: string;
+  notes?: string;
+}
 
-// ─── Components ─────────────────────────────────────────────
+function buildCards(): CardData[] {
+  const cards: CardData[] = [];
+
+  for (const game of POSTED_GAMES) {
+    const court = COURT_INFO[game.courtId] || { icon: '🏓', rating: 4.0, playing: 2, weeklyVisits: 50, mostActive: 'Weekends' };
+    const dt = new Date(game.datetime);
+    const timeStr = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+    const joinedPlayers = game.joined || [];
+    const regulars = game.regulars || [];
+
+    cards.push({
+      id: game.isRecurring ? `recurring-${game.id}` : `game-${game.id}`,
+      type: 'game',
+      courtName: game.courtName,
+      courtId: game.courtId,
+      icon: court.icon,
+      playing: court.playing,
+      rating: court.rating,
+      weeklyVisits: court.weeklyVisits,
+      mostActive: court.mostActive,
+      hostName: game.hostName,
+      time: game.isRecurring ? game.recurrence : timeStr,
+      format: game.format,
+      duprMin: game.duprRange[0],
+      duprMax: game.duprRange[1],
+      joined: game.isRecurring ? regulars : joinedPlayers,
+      needed: game.isRecurring ? game.openSpots : game.needed,
+      isRecurring: game.isRecurring,
+      recurrence: game.recurrence,
+      notes: game.notes,
+    });
+  }
+
+  return cards;
+}
+
+const ALL_CARDS = buildCards();
+
+// ─── Components ────────────────────────────────────────────
 
 function StarRating({ rating }: { rating: number }) {
   const full = Math.floor(rating);
@@ -102,243 +153,284 @@ function StarRating({ rating }: { rating: number }) {
   return <Text style={styles.stars}>{stars.join('')}</Text>;
 }
 
-function PlayerSlots({ joined, total }: { joined: number; total: number }) {
-  const slots = [];
+function PlayerAvatars({ players, needed }: { players: Array<{ name: string; dupr: number }>; needed: number }) {
+  const total = players.length + (needed || 0);
+  const items = [];
   for (let i = 0; i < total; i++) {
-    slots.push(
-      <Text key={i} style={styles.slotEmoji}>
-        {i < joined ? '👤' : '__'}
-      </Text>
-    );
+    if (i < players.length) {
+      const initials = players[i].name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      items.push(
+        <View key={i} style={styles.avatar}>
+          <Text style={styles.avatarText}>{initials}</Text>
+        </View>
+      );
+    } else {
+      items.push(
+        <View key={i} style={styles.avatarEmpty}>
+          <Text style={styles.avatarEmptyText}>?</Text>
+        </View>
+      );
+    }
   }
-  return <View style={styles.slotsRow}>{slots}</View>;
+  return <View style={styles.avatarRow}>{items}</View>;
 }
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
+function JoinedAnimation({ visible, type }: { visible: boolean; type: 'join' | 'skip' }) {
+  if (!visible) return null;
+  return (
+    <View style={[styles.overlay, type === 'skip' && styles.overlaySkip]}>
+      <Text style={styles.overlayEmoji}>{type === 'join' ? '✅' : '👋'}</Text>
+      <Text style={styles.overlayText}>
+        {type === 'join' ? 'Joined!' : 'Skipped'}
+      </Text>
+    </View>
+  );
 }
 
-function getFormattedDate(): string {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const d = new Date();
-  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+// ─── Card Component ────────────────────────────────────────
+
+function GameCard({
+  card,
+  onJoin,
+  onSkip,
+}: {
+  card: CardData;
+  onJoin: () => void;
+  onSkip: () => void;
+}) {
+  const slideX = useRef(new Animated.Value(0)).current;
+  const [overlay, setOverlay] = useState<{ visible: boolean; type: 'join' | 'skip' }>({ visible: false, type: 'join' });
+
+  const handleJoin = () => {
+    Animated.timing(slideX, {
+      toValue: SCREEN_WIDTH,
+      duration: 350,
+      useNativeDriver: true,
+    }).start(() => {
+      setOverlay({ visible: true, type: 'join' });
+      setTimeout(() => onJoin(), 400);
+    });
+  };
+
+  const handleSkip = () => {
+    Animated.timing(slideX, {
+      toValue: -SCREEN_WIDTH,
+      duration: 350,
+      useNativeDriver: true,
+    }).start(() => {
+      setOverlay({ visible: true, type: 'skip' });
+      setTimeout(() => onSkip(), 400);
+    });
+  };
+
+  return (
+    <Animated.View style={[styles.card, { transform: [{ translateX: slideX }] }]}>
+      <View style={styles.cardInner}>
+        {/* Court Header */}
+        <View style={styles.courtSection}>
+          <Text style={styles.courtIcon}>{card.icon}</Text>
+          <View style={styles.courtInfo}>
+            <Text style={styles.courtName} numberOfLines={1}>{card.courtName}</Text>
+            <View style={styles.courtMetaRow}>
+              <Text style={styles.playingNow}>{card.playing} playing now</Text>
+              <Text style={styles.dot}>·</Text>
+              <StarRating rating={card.rating} />
+            </View>
+          </View>
+        </View>
+
+        {/* Game Info */}
+        <View style={styles.gameSection}>
+          <View style={styles.gameRow}>
+            <Text style={styles.hostName}>@ {card.hostName}</Text>
+            <Text style={styles.dot}>·</Text>
+            <Text style={styles.gameTime}>{card.time}</Text>
+          </View>
+          <View style={styles.gameRow}>
+            <Text style={styles.formatBadge}>
+              {card.format === 'doubles' ? '🏓 Doubles' : card.format === 'singles' ? '🎯 Singles' : '🤝 Mixed'}
+            </Text>
+            <Text style={styles.dot}>·</Text>
+            <Text style={styles.duprRange}>DUPR {card.duprMin}–{card.duprMax}</Text>
+          </View>
+          {card.isRecurring && (
+            <View style={styles.recurringBadge}>
+              <Text style={styles.recurringText}>🔄 {card.recurrence}</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Player Avatars */}
+        <View style={styles.playersSection}>
+          <PlayerAvatars
+            players={card.joined || []}
+            needed={card.needed || 0}
+          />
+          <Text style={styles.spotsText}>
+            {card.needed && card.needed > 0 ? `${card.needed} spot${card.needed > 1 ? 's' : ''} open` : 'Full — waitlist available'}
+          </Text>
+        </View>
+
+        {/* Notes */}
+        {card.notes ? (
+          <Text style={styles.notesText}>💬 {card.notes}</Text>
+        ) : null}
+
+        {/* Action Buttons */}
+        <View style={styles.actionsRow}>
+          <TouchableOpacity
+            style={styles.skipBtn}
+            onPress={handleSkip}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.skipBtnText}>Skip →</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.joinBtn}
+            onPress={handleJoin}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.joinBtnText}>🏓 Join</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Social Proof */}
+        <View style={styles.socialProof}>
+          <Text style={styles.socialProofText}>🔥 {card.weeklyVisits} visits this week</Text>
+          <Text style={styles.socialProofSub}>Most active: {card.mostActive}</Text>
+        </View>
+
+        {/* Scroll Hint */}
+        <Text style={styles.scrollHint}>▲ Swipe up to continue</Text>
+      </View>
+
+      <JoinedAnimation visible={overlay.visible} type={overlay.type} />
+    </Animated.View>
+  );
 }
 
-// ─── Main Screen ────────────────────────────────────────────
+// ─── Empty State ───────────────────────────────────────────
+
+function EmptyCard() {
+  const router = useRouter();
+  return (
+    <View style={[styles.card, styles.emptyCard]}>
+      <Text style={styles.emptyEmoji}>🎉</Text>
+      <Text style={styles.emptyTitle}>That's all for now!</Text>
+      <Text style={styles.emptySub}>No more games nearby — yet.</Text>
+      <TouchableOpacity
+        style={styles.emptyBtn}
+        onPress={() => router.push('/post-game')}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.emptyBtnText}>📝 Post a Game</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// ─── Main Screen ───────────────────────────────────────────
 
 export default function PlayScreen() {
   const router = useRouter();
-  const [refreshing, setRefreshing] = useState(false);
+  const [cards, setCards] = useState<CardData[]>(ALL_CARDS);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 800);
+  const handleJoin = useCallback((cardId: string) => {
+    setCards(prev => prev.filter(c => c.id !== cardId));
   }, []);
 
+  const handleSkip = useCallback((cardId: string) => {
+    setCards(prev => prev.filter(c => c.id !== cardId));
+  }, []);
+
+  const renderItem = useCallback(({ item }: { item: CardData }) => (
+    <GameCard
+      card={item}
+      onJoin={() => handleJoin(item.id)}
+      onSkip={() => handleSkip(item.id)}
+    />
+  ), [handleJoin, handleSkip]);
+
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={theme.accent}
-          colors={[theme.accent]}
-        />
-      }
-    >
-      {/* ── Header ── */}
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.greeting}>{getGreeting()}, Boss</Text>
-            <Text style={styles.date}>{getFormattedDate()}</Text>
-          </View>
+        <View style={styles.headerLeft}>
+          <Text style={styles.title}>Play</Text>
+        </View>
+        <View style={styles.headerRight}>
           {MOCK_USER.streakDays > 0 && (
             <TouchableOpacity
               style={styles.streakBadge}
               onPress={() => router.push('/(tabs)/profile')}
               activeOpacity={0.8}
             >
-              <Text style={styles.streakBadgeEmoji}>
-                {getStreakEmoji(MOCK_USER.streakDays)}
-              </Text>
-              <Text style={styles.streakBadgeText}>{MOCK_USER.streakDays}</Text>
+              <Text style={styles.streakEmoji}>{getStreakEmoji(MOCK_USER.streakDays)}</Text>
+              <Text style={styles.streakCount}>{MOCK_USER.streakDays}</Text>
             </TouchableOpacity>
           )}
-        </View>
-      </View>
-
-      {/* ── Play Now CTA ── */}
-      <TouchableOpacity
-        style={styles.playNowBtn}
-        onPress={() => router.push('/play-now')}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.playNowEmoji}>🏓</Text>
-        <View style={styles.playNowTextWrap}>
-          <Text style={styles.playNowTitle}>PLAY NOW</Text>
-          <Text style={styles.playNowSub}>Find a game now</Text>
-        </View>
-      </TouchableOpacity>
-
-      {/* ── Find a Game / Browse Games / Paddles ── */}
-      <View style={styles.quickActions}>
-        <TouchableOpacity
-          style={styles.quickActionBtn}
-          onPress={() => router.push('/matchmaking')}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.quickActionIcon}>🔍</Text>
-          <Text style={styles.quickActionLabel}>Find Opponents</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.quickActionBtn}
-          onPress={() => router.push('/posted-games')}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.quickActionIcon}>📋</Text>
-          <Text style={styles.quickActionLabel}>Browse Games</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.quickActionBtn}
-          onPress={() => router.push('/paddles')}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.quickActionIcon}>🏓</Text>
-          <Text style={styles.quickActionLabel}>Paddle Guide</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* ── Find Your Paddle CTA ── */}
-      <TouchableOpacity
-        style={styles.paddleCta}
-        onPress={() => router.push('/paddle/find')}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.paddleCtaEmoji}>🎯</Text>
-        <View>
-          <Text style={styles.paddleCtaTitle}>Find Your Perfect Paddle</Text>
-          <Text style={styles.paddleCtaSub}>3 questions, personalized results</Text>
-        </View>
-      </TouchableOpacity>
-
-      {/* ── Nearby Courts ── */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>NEARBY COURTS</Text>
-          <TouchableOpacity onPress={() => router.push('/courts')}>
-            <Text style={styles.seeAll}>See all →</Text>
-          </TouchableOpacity>
-        </View>
-
-        {MOCK_COURTS.map((court) => (
           <TouchableOpacity
-            key={court.id}
-            style={styles.courtCard}
-            onPress={() => router.push(`/court/${court.id}`)}
-            activeOpacity={theme.activeOpacity}
+            style={styles.searchBtn}
+            onPress={() => router.push('/matchmaking')}
+            activeOpacity={0.7}
           >
-            <View style={styles.courtHeader}>
-              <Text style={styles.courtIcon}>{court.icon}</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.courtName} numberOfLines={1}>{court.name}</Text>
-                <View style={styles.courtMeta}>
-                  <Text style={styles.courtPlaying}>{court.playing} playing</Text>
-                  <Text style={styles.courtDot}>·</Text>
-                  <Text style={[
-                    styles.courtStatus,
-                    court.status === 'Busy' ? styles.statusBusy : styles.statusOpen,
-                  ]}>
-                    {court.status}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.courtFooter}>
-              <StarRating rating={court.rating} />
-              <Text style={styles.courtVisitors}>{court.weeklyVisitors} visits this week</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* ── Today's Games ── */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>TODAY'S GAMES</Text>
-          <TouchableOpacity onPress={() => router.push('/posted-games')}>
-            <Text style={styles.seeAll}>See all →</Text>
+            <Text style={styles.searchIcon}>🔍</Text>
           </TouchableOpacity>
         </View>
-
-        {MOCK_GAMES.map((game) => (
-          <TouchableOpacity
-            key={game.id}
-            style={styles.gameCard}
-            activeOpacity={theme.activeOpacity}
-          >
-            <View style={styles.gameTop}>
-              <Text style={styles.gamePoster}>{game.poster} needs {game.spotsNeeded}</Text>
-              <View style={styles.duprBadge}>
-                <Text style={styles.duprText}>DUPR {game.duprMin}-{game.duprMax}</Text>
-              </View>
-            </View>
-            <Text style={styles.gameDetails}>@ {game.court} · {game.time}</Text>
-            <PlayerSlots joined={game.joined} total={game.total} />
-          </TouchableOpacity>
-        ))}
       </View>
 
-      {/* ── Post a Game Button ── */}
-      <TouchableOpacity
-        style={styles.postGameBtn}
-        onPress={() => router.push('/post-game')}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.postGameText}>📝 Post a Game</Text>
-      </TouchableOpacity>
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
+      {/* Card Feed */}
+      <FlatList
+        data={cards}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        snapToInterval={CARD_HEIGHT}
+        decelerationRate="fast"
+        ListEmptyComponent={<EmptyCard />}
+        bounces={false}
+      />
+    </View>
   );
 }
 
-// ─── Styles ─────────────────────────────────────────────────
+// ─── Styles ────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.bg,
   },
-  content: {
-    paddingTop: 56,
-  },
 
   // Header
   header: {
+    height: HEADER_HEIGHT,
+    paddingTop: 52,
     paddingHorizontal: theme.spacing.padding,
-    paddingBottom: 16,
-  },
-  headerTop: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.bg,
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '800',
+    // Gradient-like: use accent + gold combo
+    color: theme.accent,
+    textShadowColor: theme.gold + '60',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
-  },
-  greeting: {
-    fontSize: 26,
-    fontWeight: theme.fontWeight.bold,
-    color: theme.text,
-  },
-  date: {
-    fontSize: 14,
-    color: theme.textSecondary,
-    marginTop: 4,
   },
   streakBadge: {
     flexDirection: 'row',
@@ -348,246 +440,291 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
     gap: 4,
-    marginTop: 4,
   },
-  streakBadgeEmoji: {
+  streakEmoji: {
     fontSize: 16,
   },
-  streakBadgeText: {
+  streakCount: {
     fontSize: 14,
     fontWeight: '800',
     color: theme.gold,
   },
+  searchBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchIcon: {
+    fontSize: 18,
+  },
 
-  // Play Now CTA
-  playNowBtn: {
+  // Card
+  card: {
+    height: CARD_HEIGHT,
+    width: SCREEN_WIDTH,
+    backgroundColor: theme.bg,
+  },
+  cardInner: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    gap: 20,
+  },
+
+  // Court Section
+  courtSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.accent,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 12,
-    borderRadius: 16,
-    padding: 22,
     gap: 14,
-    shadowColor: theme.accent,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 8,
   },
-  playNowEmoji: {
-    fontSize: 36,
+  courtIcon: {
+    fontSize: 48,
   },
-  playNowTextWrap: {
+  courtInfo: {
     flex: 1,
   },
-  playNowTitle: {
+  courtName: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#ffffff',
-    letterSpacing: 1,
+    color: theme.text,
+    marginBottom: 6,
   },
-  playNowSub: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
-  },
-
-  // Quick Actions
-  quickActions: {
+  courtMetaRow: {
     flexDirection: 'row',
-    paddingHorizontal: theme.spacing.padding,
-    gap: 10,
-    marginBottom: 20,
-  },
-  quickActionBtn: {
-    flex: 1,
-    backgroundColor: theme.card,
-    borderRadius: 12,
-    padding: 14,
     alignItems: 'center',
     gap: 6,
+  },
+  playingNow: {
+    fontSize: 14,
+    color: theme.accent,
+    fontWeight: '600',
+  },
+  dot: {
+    fontSize: 14,
+    color: theme.textTertiary,
+  },
+  stars: {
+    fontSize: 14,
+    color: theme.gold,
+    letterSpacing: 1,
+  },
+
+  // Game Section
+  gameSection: {
+    backgroundColor: theme.card,
+    borderRadius: 16,
+    padding: 16,
+    gap: 8,
+  },
+  gameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  hostName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  gameTime: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.textSecondary,
+  },
+  formatBadge: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.text,
+  },
+  duprRange: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: theme.accent,
+  },
+  recurringBadge: {
+    backgroundColor: theme.accent + '15',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  recurringText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: theme.accent,
+  },
+
+  // Players
+  playersSection: {
+    gap: 8,
+  },
+  avatarRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: theme.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: theme.accent,
+  },
+  avatarText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  avatarEmpty: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: theme.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: theme.border,
+    borderStyle: 'dashed' as any,
+  },
+  avatarEmptyText: {
+    fontSize: 16,
+    color: theme.textTertiary,
+    fontWeight: '600',
+  },
+  spotsText: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    fontWeight: '600',
+  },
+
+  // Notes
+  notesText: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    fontStyle: 'italic',
+  },
+
+  // Actions
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 4,
+  },
+  skipBtn: {
+    flex: 1,
+    backgroundColor: theme.card,
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: theme.border,
   },
-  quickActionIcon: {
-    fontSize: 22,
-  },
-  quickActionLabel: {
-    fontSize: 13,
-    fontWeight: theme.fontWeight.semibold,
-    color: theme.text,
-  },
-
-  // Paddle CTA
-  paddleCta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.card,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 20,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: theme.accent + '30',
-  },
-  paddleCtaEmoji: {
-    fontSize: 28,
-  },
-  paddleCtaTitle: {
-    fontSize: 15,
-    fontWeight: theme.fontWeight.bold,
-    color: theme.text,
-  },
-  paddleCtaSub: {
-    fontSize: 12,
-    color: theme.textSecondary,
-    marginTop: 2,
-  },
-
-  // Section
-  section: {
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.padding,
-    paddingBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: theme.fontWeight.bold,
-    color: theme.textSecondary,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  seeAll: {
-    fontSize: 13,
-    color: theme.accent,
-    fontWeight: theme.fontWeight.semibold,
-  },
-
-  // Court Card
-  courtCard: {
-    backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 10,
-    borderRadius: 14,
-    padding: 14,
-  },
-  courtHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 8,
-  },
-  courtIcon: {
-    fontSize: 28,
-  },
-  courtName: {
+  skipBtnText: {
     fontSize: 16,
-    fontWeight: theme.fontWeight.semibold,
-    color: theme.text,
-  },
-  courtMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 3,
-  },
-  courtPlaying: {
-    fontSize: 12,
+    fontWeight: '700',
     color: theme.textSecondary,
   },
-  courtDot: {
-    fontSize: 12,
+  joinBtn: {
+    flex: 1.2,
+    backgroundColor: theme.accent,
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+    shadowColor: theme.accent,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  joinBtnText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#ffffff',
+  },
+
+  // Social Proof
+  socialProof: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  socialProofText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: theme.gold,
+  },
+  socialProofSub: {
+    fontSize: 11,
     color: theme.textTertiary,
   },
-  courtStatus: {
+
+  // Scroll Hint
+  scrollHint: {
+    textAlign: 'center',
     fontSize: 12,
-    fontWeight: theme.fontWeight.semibold,
-  },
-  statusBusy: {
-    color: theme.gold,
-  },
-  statusOpen: {
-    color: '#22c55e',
-  },
-  courtFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  stars: {
-    fontSize: 13,
-    color: theme.gold,
-  },
-  courtVisitors: {
-    fontSize: 12,
-    color: theme.accent,
-    fontWeight: theme.fontWeight.semibold,
+    color: theme.textTertiary,
+    marginTop: 4,
   },
 
-  // Game Card
-  gameCard: {
-    backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 10,
-    borderRadius: 14,
-    padding: 14,
-  },
-  gameTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  // Overlay
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(8, 145, 178, 0.92)',
     alignItems: 'center',
-    marginBottom: 4,
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 0,
   },
-  gamePoster: {
-    fontSize: 16,
-    fontWeight: theme.fontWeight.bold,
+  overlaySkip: {
+    backgroundColor: 'rgba(107, 114, 128, 0.85)',
+  },
+  overlayEmoji: {
+    fontSize: 64,
+  },
+  overlayText: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#fff',
+  },
+
+  // Empty State
+  emptyCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  emptyEmoji: {
+    fontSize: 64,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '800',
     color: theme.text,
   },
-  duprBadge: {
-    backgroundColor: 'rgba(8, 145, 178, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  duprText: {
-    fontSize: 11,
-    fontWeight: theme.fontWeight.semibold,
-    color: theme.accent,
-  },
-  gameDetails: {
-    fontSize: 13,
-    color: theme.textSecondary,
-    marginBottom: 8,
-  },
-  slotsRow: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  slotEmoji: {
-    fontSize: 20,
-  },
-
-  // Post Game Button
-  postGameBtn: {
-    marginHorizontal: theme.spacing.padding,
-    backgroundColor: theme.card,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: theme.accent + '40',
-    borderStyle: 'dashed' as any,
-  },
-  postGameText: {
+  emptySub: {
     fontSize: 15,
-    fontWeight: theme.fontWeight.semibold,
-    color: theme.accent,
+    color: theme.textSecondary,
+  },
+  emptyBtn: {
+    backgroundColor: theme.accent,
+    borderRadius: 14,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    marginTop: 8,
+    shadowColor: theme.accent,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  emptyBtnText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#ffffff',
   },
 });

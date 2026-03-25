@@ -17,15 +17,15 @@ export const theme = {
   textMuted: '#9ca3af',
 
   // Accent colors
-  accent: '#0891b2',
+  accent: '#00c4b4',
   gold: '#f59e0b',
   red: '#e53935',
-  blue: '#3b82f6',
+  purple: '#a855f7',
   linkBlue: '#60a5fa',
 
   // Surface colors (pickleball)
-  surfaceIndoor: '#8b5cf6',
-  surfaceOutdoor: '#22c55e',
+  surfaceIndoor: '#a855f7',
+  surfaceOutdoor: '#00c4b4',
   surfaceHard: '#3b82f6',
 
   // Interactive

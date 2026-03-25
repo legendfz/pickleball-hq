@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   // Code input
   codeHint: {
     fontSize: 13,
-    color: '#00d4aa',
+    color: '#00c4b4',
     marginBottom: 16,
     fontWeight: '500',
   },
@@ -370,11 +370,11 @@ const styles = StyleSheet.create({
   // Main button
   mainBtn: {
     width: '100%',
-    backgroundColor: '#0891b2',
+    backgroundColor: '#00c4b4',
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#0891b2',
+    shadowColor: '#00c4b4',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   },
   levelBtnActive: {
     backgroundColor: 'rgba(8, 145, 178, 0.2)',
-    borderColor: '#0891b2',
+    borderColor: '#00c4b4',
   },
   levelEmoji: {
     fontSize: 28,
@@ -498,11 +498,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
   },
   dotActive: {
-    backgroundColor: '#0891b2',
+    backgroundColor: '#00c4b4',
     width: 28,
     borderRadius: 5,
   },
   dotCompleted: {
-    backgroundColor: '#00d4aa',
+    backgroundColor: '#00c4b4',
   },
 });

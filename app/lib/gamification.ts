@@ -31,8 +31,8 @@ export interface Level {
 
 export const LEVELS: Level[] = [
   { level: 1, name: 'Rookie', xpNeeded: 0, color: '#888' },
-  { level: 2, name: 'Player', xpNeeded: 100, color: '#00d4aa' },
-  { level: 3, name: 'Competitor', xpNeeded: 300, color: '#0066ff' },
+  { level: 2, name: 'Player', xpNeeded: 100, color: '#00c4b4' },
+  { level: 3, name: 'Competitor', xpNeeded: 300, color: '#a855f7' },
   { level: 4, name: 'Champion', xpNeeded: 800, color: '#ffd32a' },
   { level: 5, name: 'Elite', xpNeeded: 1500, color: '#6c5ce7' },
   { level: 6, name: 'Legend', xpNeeded: 3000, color: '#ff4757' },

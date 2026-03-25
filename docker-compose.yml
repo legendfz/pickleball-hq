@@ -5,15 +5,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: tennishq
-      POSTGRES_USER: tennishq
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tennishq_dev_pw}
+      POSTGRES_DB: pickleballhq
+      POSTGRES_USER: pickleballhq
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pickleballhq_dev_pw}
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U tennishq']
+      test: ['CMD-SHELL', 'pg_isready -U pickleballhq']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -28,7 +28,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
-      DATABASE_URL: postgresql://tennishq:${POSTGRES_PASSWORD:-tennishq_dev_pw}@postgres:5432/tennishq
+      DATABASE_URL: postgresql://pickleballhq:${POSTGRES_PASSWORD:-pickleballhq_dev_pw}@postgres:5432/pickleballhq
     depends_on:
       postgres:
         condition: service_healthy

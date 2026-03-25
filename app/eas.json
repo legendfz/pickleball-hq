@@ -25,21 +25,21 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.pickleballhq.app"
+        "EXPO_PUBLIC_API_URL": "https://pickleballhq-server.railway.app"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.pickleballhq.app"
+        "EXPO_PUBLIC_API_URL": "https://pickleballhq-server.railway.app"
       }
     }
   },
   "submit": {
     "production": {
       "ios": {
-        "appleId": "your-apple-id@example.com",
-        "ascAppId": "your-asc-app-id"
+        "appleId": "",
+        "ascAppId": ""
       },
       "android": {
         "serviceAccountKeyPath": "./google-services.json"

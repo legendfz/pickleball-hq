@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.165:3001';
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  (__DEV__ ? 'http://localhost:3001' : 'https://pickleballhq-server.railway.app');
 
 const api = axios.create({
   baseURL: API_BASE_URL,

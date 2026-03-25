@@ -1,52 +1,952 @@
 [
-  {"id": 1, "name": "Ben Johns", "country": "USA", "ranking": 1, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 7.850, "duprDoubles": 7.920},
-  {"id": 2, "name": "Anna Leigh Waters", "country": "USA", "ranking": 1, "tour": "PPA", "plays": "Left", "photoUrl": null, "duprRating": 7.780, "duprDoubles": 7.890},
-  {"id": 3, "name": "Tyson McGuffin", "country": "USA", "ranking": 2, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 7.450, "duprDoubles": 7.380},
-  {"id": 4, "name": "Catherine Parenteau", "country": "CAN", "ranking": 2, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 7.320, "duprDoubles": 7.410},
-  {"id": 5, "name": "Riley Newman", "country": "USA", "ranking": 3, "tour": "PPA", "plays": "Left", "photoUrl": null, "duprRating": 7.210, "duprDoubles": 7.350},
-  {"id": 6, "name": "Callie Smith", "country": "USA", "ranking": 3, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 7.080, "duprDoubles": 7.190},
-  {"id": 7, "name": "Federico Staksrud", "country": "ARG", "ranking": 4, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.950, "duprDoubles": 6.820},
-  {"id": 8, "name": "Lea Jansen", "country": "USA", "ranking": 4, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.880, "duprDoubles": 6.950},
-  {"id": 9, "name": "Collin Johns", "country": "USA", "ranking": 5, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.750, "duprDoubles": 7.100},
-  {"id": 10, "name": "Mary Brascia", "country": "USA", "ranking": 5, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.620, "duprDoubles": 6.780},
-  {"id": 11, "name": "JW Johnson", "country": "USA", "ranking": 6, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.480, "duprDoubles": 6.350},
-  {"id": 12, "name": "Jorja Johnson", "country": "USA", "ranking": 6, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.350, "duprDoubles": 6.520},
-  {"id": 13, "name": "Matt Wright", "country": "USA", "ranking": 7, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.220, "duprDoubles": 6.680},
-  {"id": 14, "name": "Jessie Irvine", "country": "USA", "ranking": 7, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.150, "duprDoubles": 6.420},
-  {"id": 15, "name": "Dekel Bar", "country": "ISR", "ranking": 8, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 6.080, "duprDoubles": 6.250},
-  {"id": 16, "name": "Parris Todd", "country": "USA", "ranking": 8, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.950, "duprDoubles": 6.100},
-  {"id": 17, "name": "Dylan Frazier", "country": "USA", "ranking": 9, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.820, "duprDoubles": 6.050},
-  {"id": 18, "name": "Jackie Kawamoto", "country": "USA", "ranking": 9, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.710, "duprDoubles": 5.880},
-  {"id": 19, "name": "AJ Koller", "country": "USA", "ranking": 10, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.650, "duprDoubles": 5.820},
-  {"id": 20, "name": "Irina Tereschenko", "country": "USA", "ranking": 10, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.580, "duprDoubles": 5.750},
-  {"id": 21, "name": "Andrei Daescu", "country": "ROU", "ranking": 11, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.450, "duprDoubles": 5.620},
-  {"id": 22, "name": "Andrea Koop", "country": "USA", "ranking": 11, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.380, "duprDoubles": 5.550},
-  {"id": 23, "name": "Thomas Wilson", "country": "USA", "ranking": 12, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.320, "duprDoubles": 5.480},
-  {"id": 24, "name": "Salome Devidze", "country": "GEO", "ranking": 12, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.250, "duprDoubles": 5.410},
-  {"id": 25, "name": "Jay Devilliers", "country": "RSA", "ranking": 13, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.180, "duprDoubles": 5.350},
-  {"id": 26, "name": "Lauren Stratman", "country": "USA", "ranking": 13, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.120, "duprDoubles": 5.280},
-  {"id": 27, "name": "Pablo Tellez", "country": "MEX", "ranking": 14, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 5.050, "duprDoubles": 5.210},
-  {"id": 28, "name": "Etta Wright", "country": "USA", "ranking": 14, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.980, "duprDoubles": 5.150},
-  {"id": 29, "name": "Hunter Johnson", "country": "USA", "ranking": 15, "tour": "MLP", "plays": "Right", "photoUrl": null, "duprRating": 4.920, "duprDoubles": 5.080},
-  {"id": 30, "name": "Meghan Sheehan-Dizon", "country": "USA", "ranking": 15, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.850, "duprDoubles": 5.020},
-  {"id": 31, "name": "Hayden Patriquin", "country": "CAN", "ranking": 16, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.780, "duprDoubles": 4.950},
-  {"id": 32, "name": "Anna Bright", "country": "USA", "ranking": 16, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.720, "duprDoubles": 4.880},
-  {"id": 33, "name": "James Ignatowich", "country": "USA", "ranking": 17, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.650, "duprDoubles": 4.820},
-  {"id": 34, "name": "Rachel Rohrabacher", "country": "USA", "ranking": 17, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.580, "duprDoubles": 4.750},
-  {"id": 35, "name": "Connor Garnett", "country": "USA", "ranking": 18, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.520, "duprDoubles": 4.680},
-  {"id": 36, "name": "Vivienne David", "country": "USA", "ranking": 18, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.450, "duprDoubles": 4.620},
-  {"id": 37, "name": "Zane Navratil", "country": "USA", "ranking": 19, "tour": "MLP", "plays": "Right", "photoUrl": null, "duprRating": 4.380, "duprDoubles": 4.550},
-  {"id": 38, "name": "Allyce Jones", "country": "AUS", "ranking": 19, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.320, "duprDoubles": 4.480},
-  {"id": 39, "name": "Travis Rettenmaier", "country": "USA", "ranking": 20, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.250, "duprDoubles": 4.420},
-  {"id": 40, "name": "Jade Kawamoto", "country": "USA", "ranking": 20, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.180, "duprDoubles": 4.350},
-  {"id": 41, "name": "Julian Arnold", "country": "USA", "ranking": 21, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.920, "duprDoubles": 4.750},
-  {"id": 42, "name": "Megan Fudge Dizon", "country": "USA", "ranking": 21, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.850, "duprDoubles": 4.680},
-  {"id": 43, "name": "Gabriel Tardio", "country": "BRA", "ranking": 22, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.780, "duprDoubles": 4.620},
-  {"id": 44, "name": "Susannah Barr", "country": "USA", "ranking": 22, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.720, "duprDoubles": 4.550},
-  {"id": 45, "name": "Christian Alshon", "country": "USA", "ranking": 23, "tour": "MLP", "plays": "Right", "photoUrl": null, "duprRating": 4.650, "duprDoubles": 4.480},
-  {"id": 46, "name": "Bobbi Oshiro", "country": "USA", "ranking": 23, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.580, "duprDoubles": 4.420},
-  {"id": 47, "name": "Chuck Taylor", "country": "USA", "ranking": 24, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.520, "duprDoubles": 4.350},
-  {"id": 48, "name": "Lucy Kovalova", "country": "SVK", "ranking": 24, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.450, "duprDoubles": 4.280},
-  {"id": 49, "name": "Quang Duong", "country": "USA", "ranking": 25, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.380, "duprDoubles": 4.220},
-  {"id": 50, "name": "Lacy Schneemann", "country": "USA", "ranking": 25, "tour": "PPA", "plays": "Right", "photoUrl": null, "duprRating": 4.320, "duprDoubles": 4.150}
+  {
+    "id": 1,
+    "name": "Ben Johns",
+    "country": "USA",
+    "ranking": 1,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 7.85,
+    "duprDoubles": 7.92,
+    "gear": {
+      "paddle": "Ben Johns Perseus 16mm",
+      "paddleId": 1,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Anna Leigh Waters",
+    "country": "USA",
+    "ranking": 1,
+    "tour": "PPA",
+    "plays": "Left",
+    "photoUrl": null,
+    "duprRating": 7.78,
+    "duprDoubles": 7.89,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "Nike Court Air Zoom"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Tyson McGuffin",
+    "country": "USA",
+    "ranking": 2,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 7.45,
+    "duprDoubles": 7.38,
+    "gear": {
+      "paddle": "Vanguard Invikta Air",
+      "paddleId": 5,
+      "brand": "Selkirk",
+      "brandId": 2,
+      "apparel": "Selkirk",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 4,
+    "name": "Catherine Parenteau",
+    "country": "CAN",
+    "ranking": 2,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 7.32,
+    "duprDoubles": 7.41,
+    "gear": {
+      "paddle": "Ben Johns Perseus 16mm",
+      "paddleId": 1,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 5,
+    "name": "Riley Newman",
+    "country": "USA",
+    "ranking": 3,
+    "tour": "PPA",
+    "plays": "Left",
+    "photoUrl": null,
+    "duprRating": 7.21,
+    "duprDoubles": 7.35,
+    "gear": {
+      "paddle": "Radical Pro",
+      "paddleId": 8,
+      "brand": "HEAD",
+      "brandId": 3,
+      "apparel": "HEAD",
+      "shoes": "HEAD Sprint Pro"
+    }
+  },
+  {
+    "id": 6,
+    "name": "Callie Smith",
+    "country": "USA",
+    "ranking": 3,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 7.08,
+    "duprDoubles": 7.19,
+    "gear": {
+      "paddle": "Solaire CFS 16mm",
+      "paddleId": 3,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 7,
+    "name": "Federico Staksrud",
+    "country": "ARG",
+    "ranking": 4,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.95,
+    "duprDoubles": 6.82,
+    "gear": {
+      "paddle": "Vanguard Invikta Air",
+      "paddleId": 5,
+      "brand": "Selkirk",
+      "brandId": 2,
+      "apparel": "Selkirk",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 8,
+    "name": "Lea Jansen",
+    "country": "USA",
+    "ranking": 4,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.88,
+    "duprDoubles": 6.95,
+    "gear": {
+      "paddle": "Solaire CFS 16mm",
+      "paddleId": 3,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 9,
+    "name": "Collin Johns",
+    "country": "USA",
+    "ranking": 5,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.75,
+    "duprDoubles": 7.1,
+    "gear": {
+      "paddle": "Ben Johns Perseus 16mm",
+      "paddleId": 1,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 10,
+    "name": "Mary Brascia",
+    "country": "USA",
+    "ranking": 5,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.62,
+    "duprDoubles": 6.78,
+    "gear": {
+      "paddle": "Radical Pro",
+      "paddleId": 8,
+      "brand": "HEAD",
+      "brandId": 3,
+      "apparel": "HEAD",
+      "shoes": "HEAD Sprint Pro"
+    }
+  },
+  {
+    "id": 11,
+    "name": "JW Johnson",
+    "country": "USA",
+    "ranking": 6,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.48,
+    "duprDoubles": 6.35,
+    "gear": {
+      "paddle": "Magnus 16mm",
+      "paddleId": 4,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 12,
+    "name": "Jorja Johnson",
+    "country": "USA",
+    "ranking": 6,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.35,
+    "duprDoubles": 6.52,
+    "gear": {
+      "paddle": "Magnus 16mm",
+      "paddleId": 4,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 13,
+    "name": "Matt Wright",
+    "country": "USA",
+    "ranking": 7,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.22,
+    "duprDoubles": 6.68,
+    "gear": {
+      "paddle": "Hyperion CFS 16mm",
+      "paddleId": 30,
+      "brand": "JOOLA",
+      "brandId": 1,
+      "apparel": "JOOLA",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 14,
+    "name": "Jessie Irvine",
+    "country": "USA",
+    "ranking": 7,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.15,
+    "duprDoubles": 6.42,
+    "gear": {
+      "paddle": "Pursuit Pro MX 6.0",
+      "paddleId": 26,
+      "brand": "Engage",
+      "brandId": 9,
+      "apparel": "Engage",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 15,
+    "name": "Dekel Bar",
+    "country": "ISR",
+    "ranking": 8,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 6.08,
+    "duprDoubles": 6.25,
+    "gear": {
+      "paddle": "CRBN 1X 16mm",
+      "paddleId": 11,
+      "brand": "CRBN",
+      "brandId": 4,
+      "apparel": "CRBN",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 16,
+    "name": "Parris Todd",
+    "country": "USA",
+    "ranking": 8,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.95,
+    "duprDoubles": 6.1,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 17,
+    "name": "Dylan Frazier",
+    "country": "USA",
+    "ranking": 9,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.82,
+    "duprDoubles": 6.05,
+    "gear": {
+      "paddle": "Extreme Tour",
+      "paddleId": 9,
+      "brand": "HEAD",
+      "brandId": 3,
+      "apparel": "HEAD",
+      "shoes": "HEAD Sprint Pro"
+    }
+  },
+  {
+    "id": 18,
+    "name": "Jackie Kawamoto",
+    "country": "USA",
+    "ranking": 9,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.71,
+    "duprDoubles": 5.88,
+    "gear": {
+      "paddle": "Evoke Premier",
+      "paddleId": 17,
+      "brand": "Onix",
+      "brandId": 6,
+      "apparel": "Onix",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 19,
+    "name": "AJ Koller",
+    "country": "USA",
+    "ranking": 10,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.65,
+    "duprDoubles": 5.82,
+    "gear": {
+      "paddle": "Pursuit Pro 6.0",
+      "paddleId": 27,
+      "brand": "Engage",
+      "brandId": 9,
+      "apparel": "Engage",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 20,
+    "name": "Irina Tereschenko",
+    "country": "USA",
+    "ranking": 10,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.58,
+    "duprDoubles": 5.75,
+    "gear": {
+      "paddle": "CRBN 3X 16mm",
+      "paddleId": 13,
+      "brand": "CRBN",
+      "brandId": 4,
+      "apparel": "CRBN",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 21,
+    "name": "Andrei Daescu",
+    "country": "ROU",
+    "ranking": 11,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.45,
+    "duprDoubles": 5.62,
+    "gear": {
+      "paddle": "Bantam EX-L",
+      "paddleId": 20,
+      "brand": "Paddletek",
+      "brandId": 7,
+      "apparel": "Paddletek",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 22,
+    "name": "Andrea Koop",
+    "country": "USA",
+    "ranking": 11,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.38,
+    "duprDoubles": 5.55,
+    "gear": {
+      "paddle": "Warrior Edge",
+      "paddleId": 14,
+      "brand": "Diadem",
+      "brandId": 5,
+      "apparel": "Diadem",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 23,
+    "name": "Thomas Wilson",
+    "country": "USA",
+    "ranking": 12,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.32,
+    "duprDoubles": 5.48,
+    "gear": {
+      "paddle": "Vanguard Power Air",
+      "paddleId": 6,
+      "brand": "Selkirk",
+      "brandId": 2,
+      "apparel": "Selkirk",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 24,
+    "name": "Salome Devidze",
+    "country": "GEO",
+    "ranking": 12,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.25,
+    "duprDoubles": 5.41,
+    "gear": {
+      "paddle": "Edge 18K",
+      "paddleId": 15,
+      "brand": "Diadem",
+      "brandId": 5,
+      "apparel": "Diadem",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 25,
+    "name": "Jay Devilliers",
+    "country": "RSA",
+    "ranking": 13,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.18,
+    "duprDoubles": 5.35,
+    "gear": {
+      "paddle": "Warrior Edge",
+      "paddleId": 14,
+      "brand": "Diadem",
+      "brandId": 5,
+      "apparel": "Diadem",
+      "shoes": "HEAD Sprint Pro"
+    }
+  },
+  {
+    "id": 26,
+    "name": "Lauren Stratman",
+    "country": "USA",
+    "ranking": 13,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.12,
+    "duprDoubles": 5.28,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 27,
+    "name": "Pablo Tellez",
+    "country": "MEX",
+    "ranking": 14,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 5.05,
+    "duprDoubles": 5.21,
+    "gear": {
+      "paddle": "Vanguard Invikta Air",
+      "paddleId": 5,
+      "brand": "Selkirk",
+      "brandId": 2,
+      "apparel": "Selkirk",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 28,
+    "name": "Etta Wright",
+    "country": "USA",
+    "ranking": 14,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.98,
+    "duprDoubles": 5.15,
+    "gear": {
+      "paddle": "Z5 Composite",
+      "paddleId": 18,
+      "brand": "Onix",
+      "brandId": 6,
+      "apparel": "Onix",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 29,
+    "name": "Hunter Johnson",
+    "country": "USA",
+    "ranking": 15,
+    "tour": "MLP",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.92,
+    "duprDoubles": 5.08,
+    "gear": {
+      "paddle": "Bantam TS-5 Pro",
+      "paddleId": 21,
+      "brand": "Paddletek",
+      "brandId": 7,
+      "apparel": "Paddletek",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 30,
+    "name": "Meghan Sheehan-Dizon",
+    "country": "USA",
+    "ranking": 15,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.85,
+    "duprDoubles": 5.02,
+    "gear": {
+      "paddle": "Mach6 MAX",
+      "paddleId": 7,
+      "brand": "Selkirk",
+      "brandId": 2,
+      "apparel": "Selkirk",
+      "shoes": "Nike GP Challenge"
+    }
+  },
+  {
+    "id": 31,
+    "name": "Hayden Patriquin",
+    "country": "CAN",
+    "ranking": 16,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.78,
+    "duprDoubles": 4.95,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 32,
+    "name": "Anna Bright",
+    "country": "USA",
+    "ranking": 16,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.72,
+    "duprDoubles": 4.88,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 33,
+    "name": "James Ignatowich",
+    "country": "USA",
+    "ranking": 17,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.65,
+    "duprDoubles": 4.82,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 34,
+    "name": "Rachel Rohrabacher",
+    "country": "USA",
+    "ranking": 17,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.58,
+    "duprDoubles": 4.75,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 35,
+    "name": "Connor Garnett",
+    "country": "USA",
+    "ranking": 18,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.52,
+    "duprDoubles": 4.68,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 36,
+    "name": "Vivienne David",
+    "country": "USA",
+    "ranking": 18,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.45,
+    "duprDoubles": 4.62,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 37,
+    "name": "Zane Navratil",
+    "country": "USA",
+    "ranking": 19,
+    "tour": "MLP",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.38,
+    "duprDoubles": 4.55,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 38,
+    "name": "Allyce Jones",
+    "country": "AUS",
+    "ranking": 19,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.32,
+    "duprDoubles": 4.48,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 39,
+    "name": "Travis Rettenmaier",
+    "country": "USA",
+    "ranking": 20,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.25,
+    "duprDoubles": 4.42,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 40,
+    "name": "Jade Kawamoto",
+    "country": "USA",
+    "ranking": 20,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.18,
+    "duprDoubles": 4.35,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 41,
+    "name": "Julian Arnold",
+    "country": "USA",
+    "ranking": 21,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.92,
+    "duprDoubles": 4.75,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 42,
+    "name": "Megan Fudge Dizon",
+    "country": "USA",
+    "ranking": 21,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.85,
+    "duprDoubles": 4.68,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 43,
+    "name": "Gabriel Tardio",
+    "country": "BRA",
+    "ranking": 22,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.78,
+    "duprDoubles": 4.62,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 44,
+    "name": "Susannah Barr",
+    "country": "USA",
+    "ranking": 22,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.72,
+    "duprDoubles": 4.55,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 45,
+    "name": "Christian Alshon",
+    "country": "USA",
+    "ranking": 23,
+    "tour": "MLP",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.65,
+    "duprDoubles": 4.48,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 46,
+    "name": "Bobbi Oshiro",
+    "country": "USA",
+    "ranking": 23,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.58,
+    "duprDoubles": 4.42,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 47,
+    "name": "Chuck Taylor",
+    "country": "USA",
+    "ranking": 24,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.52,
+    "duprDoubles": 4.35,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 48,
+    "name": "Lucy Kovalova",
+    "country": "SVK",
+    "ranking": 24,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.45,
+    "duprDoubles": 4.28,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 49,
+    "name": "Quang Duong",
+    "country": "USA",
+    "ranking": 25,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.38,
+    "duprDoubles": 4.22,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  },
+  {
+    "id": 50,
+    "name": "Lacy Schneemann",
+    "country": "USA",
+    "ranking": 25,
+    "tour": "PPA",
+    "plays": "Right",
+    "photoUrl": null,
+    "duprRating": 4.32,
+    "duprDoubles": 4.15,
+    "gear": {
+      "paddle": "Ben Johns Signature",
+      "paddleId": 23,
+      "brand": "Franklin",
+      "brandId": 8,
+      "apparel": "Franklin",
+      "shoes": "ASICS Gel-Renma"
+    }
+  }
 ]

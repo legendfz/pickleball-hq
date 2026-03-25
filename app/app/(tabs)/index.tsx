@@ -187,7 +187,7 @@ export default function PlayScreen() {
         </View>
       </TouchableOpacity>
 
-      {/* ── Find a Game / Browse Games ── */}
+      {/* ── Find a Game / Browse Games / Paddles ── */}
       <View style={styles.quickActions}>
         <TouchableOpacity
           style={styles.quickActionBtn}
@@ -205,7 +205,28 @@ export default function PlayScreen() {
           <Text style={styles.quickActionIcon}>📋</Text>
           <Text style={styles.quickActionLabel}>Browse Games</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.quickActionBtn}
+          onPress={() => router.push('/paddles')}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.quickActionIcon}>🏓</Text>
+          <Text style={styles.quickActionLabel}>Paddle Guide</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* ── Find Your Paddle CTA ── */}
+      <TouchableOpacity
+        style={styles.paddleCta}
+        onPress={() => router.push('/paddle/find')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.paddleCtaEmoji}>🎯</Text>
+        <View>
+          <Text style={styles.paddleCtaTitle}>Find Your Perfect Paddle</Text>
+          <Text style={styles.paddleCtaSub}>3 questions, personalized results</Text>
+        </View>
+      </TouchableOpacity>
 
       {/* ── Nearby Courts ── */}
       <View style={styles.section}>
@@ -396,6 +417,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: theme.fontWeight.semibold,
     color: theme.text,
+  },
+
+  // Paddle CTA
+  paddleCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.card,
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: theme.spacing.padding,
+    marginBottom: 20,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: theme.accent + '30',
+  },
+  paddleCtaEmoji: {
+    fontSize: 28,
+  },
+  paddleCtaTitle: {
+    fontSize: 15,
+    fontWeight: theme.fontWeight.bold,
+    color: theme.text,
+  },
+  paddleCtaSub: {
+    fontSize: 12,
+    color: theme.textSecondary,
+    marginTop: 2,
   },
 
   // Section

@@ -8,6 +8,7 @@ import brandsRouter from './routes/brands';
 import fantasyRouter from './routes/fantasy';
 import courtsRouter from './routes/courts';
 import matchmakingRouter from './routes/matchmaking';
+import paddlesRouter from './routes/paddles';
 import postedGamesRouter from './routes/posted-games';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/brands', brandsRouter);
 app.use('/api/fantasy', fantasyRouter);
 app.use('/api/courts', courtsRouter);
 app.use('/api/matchmaking', matchmakingRouter);
+app.use('/api/paddles', paddlesRouter);
 app.use('/api/posted-games', postedGamesRouter);
 
 // Health check

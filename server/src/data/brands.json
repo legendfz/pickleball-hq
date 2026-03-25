@@ -1,0 +1,11 @@
+[
+  {"id": 1, "name": "JOOLA", "logo": null, "paddleCount": 4, "proPlayers": [1, 8, 12], "website": "https://joola.com"},
+  {"id": 2, "name": "Selkirk", "logo": null, "paddleCount": 3, "proPlayers": [3, 7], "website": "https://selkirk.com"},
+  {"id": 3, "name": "HEAD", "logo": null, "paddleCount": 3, "proPlayers": [5, 10], "website": "https://head.com"},
+  {"id": 4, "name": "CRBN", "logo": null, "paddleCount": 3, "proPlayers": [15, 20], "website": "https://crbnpickleball.com"},
+  {"id": 5, "name": "Diadem", "logo": null, "paddleCount": 3, "proPlayers": [22, 25], "website": "https://diademsports.com"},
+  {"id": 6, "name": "Onix", "logo": null, "paddleCount": 3, "proPlayers": [18, 28], "website": "https://onixpickleball.com"},
+  {"id": 7, "name": "Paddletek", "logo": null, "paddleCount": 3, "proPlayers": [30, 35], "website": "https://paddletek.com"},
+  {"id": 8, "name": "Franklin", "logo": null, "paddleCount": 3, "proPlayers": [1, 2], "website": "https://franklinsports.com"},
+  {"id": 9, "name": "Engage", "logo": null, "paddleCount": 3, "proPlayers": [14, 19], "website": "https://engagepickleball.com"}
+]

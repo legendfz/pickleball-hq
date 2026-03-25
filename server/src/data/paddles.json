@@ -1,0 +1,326 @@
+[
+  {
+    "id": 1, "name": "Ben Johns Perseus 16mm", "brand": "JOOLA", "brandId": 1,
+    "weight": "8.0oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 180, "rating": 4.6, "reviewCount": 342,
+    "proPlayers": [1, 8, 12], "tags": ["advanced", "control", "power", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=JOOLA+Perseus+16mm",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Advanced players who want control + power balance"
+  },
+  {
+    "id": 2, "name": "Ben Johns Perseus 14mm", "brand": "JOOLA", "brandId": 1,
+    "weight": "7.8oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 180, "rating": 4.5, "reviewCount": 218,
+    "proPlayers": [1, 12], "tags": ["advanced", "power", "carbon", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=JOOLA+Perseus+14mm",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Players wanting more pop and speed"
+  },
+  {
+    "id": 3, "name": "Solaire CFS 16mm", "brand": "JOOLA", "brandId": 1,
+    "weight": "7.9oz", "faceMaterial": "Carbon Friction Surface", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 200, "rating": 4.7, "reviewCount": 156,
+    "proPlayers": [8], "tags": ["advanced", "spin", "carbon", "premium"],
+    "buyUrl": "https://amazon.com/s?k=JOOLA+Solaire+CFS",
+    "releasedYear": 2024, "category": "premium", "bestFor": "Spin-focused advanced players"
+  },
+  {
+    "id": 4, "name": "Magnus 16mm", "brand": "JOOLA", "brandId": 1,
+    "weight": "8.1oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.8\"",
+    "price": 140, "rating": 4.3, "reviewCount": 289,
+    "proPlayers": [12], "tags": ["intermediate", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=JOOLA+Magnus+16mm",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "Intermediate players stepping up"
+  },
+  {
+    "id": 5, "name": "Vanguard Invikta Air", "brand": "Selkirk", "brandId": 2,
+    "weight": "7.9oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.375\"",
+    "price": 200, "rating": 4.7, "reviewCount": 267,
+    "proPlayers": [3, 7], "tags": ["advanced", "power", "carbon", "elongated"],
+    "buyUrl": "https://amazon.com/s?k=Selkirk+Vanguard+Invikta",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Power players with an elongated preference"
+  },
+  {
+    "id": 6, "name": "Vanguard Power Air", "brand": "Selkirk", "brandId": 2,
+    "weight": "8.0oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "15.75\"", "width": "7.75\"",
+    "price": 180, "rating": 4.5, "reviewCount": 198,
+    "proPlayers": [3], "tags": ["advanced", "power", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Selkirk+Vanguard+Power+Air",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Aggressive players seeking raw power"
+  },
+  {
+    "id": 7, "name": "Mach6 MAX", "brand": "Selkirk", "brandId": 2,
+    "weight": "7.8oz", "faceMaterial": "Fiberglass", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.25\"", "length": "15.7\"", "width": "7.8\"",
+    "price": 100, "rating": 4.2, "reviewCount": 445,
+    "proPlayers": [7], "tags": ["intermediate", "balanced", "fiberglass", "wide-body"],
+    "buyUrl": "https://amazon.com/s?k=Selkirk+Mach6+MAX",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "All-around intermediate players"
+  },
+  {
+    "id": 8, "name": "Radical Pro", "brand": "HEAD", "brandId": 3,
+    "weight": "8.1oz", "faceMaterial": "Graphite", "coreMaterial": "Polypropylene",
+    "thickness": "15mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.75\"",
+    "price": 160, "rating": 4.4, "reviewCount": 178,
+    "proPlayers": [5, 10], "tags": ["advanced", "control", "graphite"],
+    "buyUrl": "https://amazon.com/s?k=HEAD+Radical+Pro+pickleball",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Control-oriented advanced players"
+  },
+  {
+    "id": 9, "name": "Extreme Tour", "brand": "HEAD", "brandId": 3,
+    "weight": "7.9oz", "faceMaterial": "Graphite", "coreMaterial": "Polypropylene",
+    "thickness": "15mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.3\"",
+    "price": 150, "rating": 4.3, "reviewCount": 134,
+    "proPlayers": [5], "tags": ["advanced", "spin", "graphite", "elongated"],
+    "buyUrl": "https://amazon.com/s?k=HEAD+Extreme+Tour+pickleball",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Spin-heavy players with elongated style"
+  },
+  {
+    "id": 10, "name": "Speed Elite", "brand": "HEAD", "brandId": 3,
+    "weight": "7.7oz", "faceMaterial": "Fiberglass", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.125\"", "length": "15.8\"", "width": "7.7\"",
+    "price": 100, "rating": 4.1, "reviewCount": 221,
+    "proPlayers": [10], "tags": ["intermediate", "speed", "fiberglass", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=HEAD+Speed+Elite+pickleball",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "Quick-hand players and doubles specialists"
+  },
+  {
+    "id": 11, "name": "CRBN 1X 16mm", "brand": "CRBN", "brandId": 4,
+    "weight": "8.0oz", "faceMaterial": "T700 Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 180, "rating": 4.5, "reviewCount": 312,
+    "proPlayers": [15, 20], "tags": ["advanced", "control", "carbon", "spin"],
+    "buyUrl": "https://amazon.com/s?k=CRBN+1X+16mm",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Players who want premium carbon feel"
+  },
+  {
+    "id": 12, "name": "CRBN 2X 14mm", "brand": "CRBN", "brandId": 4,
+    "weight": "7.8oz", "faceMaterial": "T700 Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.75\"",
+    "price": 170, "rating": 4.4, "reviewCount": 187,
+    "proPlayers": [15], "tags": ["advanced", "power", "carbon", "wide-body"],
+    "buyUrl": "https://amazon.com/s?k=CRBN+2X+14mm",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Power players who prefer a wider face"
+  },
+  {
+    "id": 13, "name": "CRBN 3X 16mm", "brand": "CRBN", "brandId": 4,
+    "weight": "7.9oz", "faceMaterial": "T700 Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.125\"", "length": "15.7\"", "width": "7.8\"",
+    "price": 160, "rating": 4.3, "reviewCount": 145,
+    "proPlayers": [20], "tags": ["intermediate", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=CRBN+3X+16mm",
+    "releasedYear": 2024, "category": "premium", "bestFor": "Balanced play with smaller grip"
+  },
+  {
+    "id": 14, "name": "Warrior Edge", "brand": "Diadem", "brandId": 5,
+    "weight": "8.0oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.4\"", "width": "7.5\"",
+    "price": 170, "rating": 4.5, "reviewCount": 198,
+    "proPlayers": [22, 25], "tags": ["advanced", "control", "carbon", "spin"],
+    "buyUrl": "https://amazon.com/s?k=Diadem+Warrior+Edge",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Aggressive baseline players"
+  },
+  {
+    "id": 15, "name": "Edge 18K", "brand": "Diadem", "brandId": 5,
+    "weight": "7.7oz", "faceMaterial": "18K Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.3\"",
+    "price": 200, "rating": 4.6, "reviewCount": 112,
+    "proPlayers": [22], "tags": ["advanced", "power", "carbon", "premium", "elongated"],
+    "buyUrl": "https://amazon.com/s?k=Diadem+Edge+18K",
+    "releasedYear": 2024, "category": "premium", "bestFor": "Elite players wanting maximum carbon tech"
+  },
+  {
+    "id": 16, "name": "Nova", "brand": "Diadem", "brandId": 5,
+    "weight": "7.6oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.125\"", "length": "15.7\"", "width": "7.7\"",
+    "price": 100, "rating": 4.1, "reviewCount": 267,
+    "proPlayers": [25], "tags": ["intermediate", "balanced", "carbon", "beginner-friendly"],
+    "buyUrl": "https://amazon.com/s?k=Diadem+Nova+pickleball",
+    "releasedYear": 2023, "category": "mid-range", "bestFor": "Developing players looking for value"
+  },
+  {
+    "id": 17, "name": "Evoke Premier", "brand": "Onix", "brandId": 6,
+    "weight": "7.9oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.75\"",
+    "price": 150, "rating": 4.3, "reviewCount": 234,
+    "proPlayers": [18], "tags": ["advanced", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Onix+Evoke+Premier",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Versatile players who mix shots"
+  },
+  {
+    "id": 18, "name": "Z5 Composite", "brand": "Onix", "brandId": 6,
+    "weight": "7.8oz", "faceMaterial": "Fiberglass", "coreMaterial": "Nomex",
+    "thickness": "12.7mm", "gripSize": "4.25\"", "length": "15.5\"", "width": "8.125\"",
+    "price": 80, "rating": 4.0, "reviewCount": 523,
+    "proPlayers": [18, 28], "tags": ["intermediate", "power", "fiberglass", "classic", "wide-body"],
+    "buyUrl": "https://amazon.com/s?k=Onix+Z5+Composite",
+    "releasedYear": 2018, "category": "budget", "bestFor": "Classic power players and new converts"
+  },
+  {
+    "id": 19, "name": "Evoke Pro", "brand": "Onix", "brandId": 6,
+    "weight": "7.7oz", "faceMaterial": "Graphite", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "15.7\"", "width": "7.8\"",
+    "price": 120, "rating": 4.2, "reviewCount": 178,
+    "proPlayers": [28], "tags": ["intermediate", "control", "graphite"],
+    "buyUrl": "https://amazon.com/s?k=Onix+Evoke+Pro",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "Consistent all-court players"
+  },
+  {
+    "id": 20, "name": "Bantam EX-L", "brand": "Paddletek", "brandId": 7,
+    "weight": "7.8oz", "faceMaterial": "Fiberglass", "coreMaterial": "Polypropylene",
+    "thickness": "14.5mm", "gripSize": "4.25\"", "length": "15.75\"", "width": "7.8\"",
+    "price": 130, "rating": 4.4, "reviewCount": 389,
+    "proPlayers": [30, 35], "tags": ["intermediate", "balanced", "fiberglass"],
+    "buyUrl": "https://amazon.com/s?k=Paddletek+Bantam+EX-L",
+    "releasedYear": 2021, "category": "mid-range", "bestFor": "Reliable all-around performance"
+  },
+  {
+    "id": 21, "name": "Bantam TS-5 Pro", "brand": "Paddletek", "brandId": 7,
+    "weight": "8.0oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "14.5mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.7\"",
+    "price": 170, "rating": 4.5, "reviewCount": 156,
+    "proPlayers": [30], "tags": ["advanced", "control", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Paddletek+Bantam+TS-5+Pro",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Competitive players wanting touch and control"
+  },
+  {
+    "id": 22, "name": "Tempest Wave Pro", "brand": "Paddletek", "brandId": 7,
+    "weight": "7.6oz", "faceMaterial": "Graphite", "coreMaterial": "Polypropylene",
+    "thickness": "14.5mm", "gripSize": "4.125\"", "length": "15.6\"", "width": "7.8\"",
+    "price": 110, "rating": 4.2, "reviewCount": 234,
+    "proPlayers": [35], "tags": ["intermediate", "control", "graphite", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=Paddletek+Tempest+Wave+Pro",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "Soft-touch players and dink specialists"
+  },
+  {
+    "id": 23, "name": "Ben Johns Signature", "brand": "Franklin", "brandId": 8,
+    "weight": "7.9oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 150, "rating": 4.4, "reviewCount": 567,
+    "proPlayers": [1, 2], "tags": ["advanced", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Franklin+Ben+Johns+Signature",
+    "releasedYear": 2022, "category": "premium", "bestFor": "Players who want pro-level at mid-range price"
+  },
+  {
+    "id": 24, "name": "FS Tour Dynasty 16mm", "brand": "Franklin", "brandId": 8,
+    "weight": "8.0oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.25\"", "width": "7.6\"",
+    "price": 140, "rating": 4.3, "reviewCount": 189,
+    "proPlayers": [2], "tags": ["advanced", "power", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Franklin+FS+Tour+Dynasty",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Aggressive players wanting power"
+  },
+  {
+    "id": 25, "name": "FS Tour Carbon", "brand": "Franklin", "brandId": 8,
+    "weight": "7.6oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.25\"", "length": "15.7\"", "width": "7.8\"",
+    "price": 100, "rating": 4.1, "reviewCount": 312,
+    "proPlayers": [1], "tags": ["intermediate", "balanced", "carbon", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=Franklin+FS+Tour+Carbon",
+    "releasedYear": 2023, "category": "mid-range", "bestFor": "Developing players wanting a taste of carbon"
+  },
+  {
+    "id": 26, "name": "Pursuit Pro MX 6.0", "brand": "Engage", "brandId": 9,
+    "weight": "8.1oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 180, "rating": 4.5, "reviewCount": 167,
+    "proPlayers": [14, 19], "tags": ["advanced", "control", "carbon", "spin"],
+    "buyUrl": "https://amazon.com/s?k=Engage+Pursuit+Pro+MX",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Tournament-level control and spin"
+  },
+  {
+    "id": 27, "name": "Pursuit Pro 6.0", "brand": "Engage", "brandId": 9,
+    "weight": "7.9oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.75\"",
+    "price": 160, "rating": 4.4, "reviewCount": 145,
+    "proPlayers": [14], "tags": ["advanced", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Engage+Pursuit+Pro",
+    "releasedYear": 2023, "category": "premium", "bestFor": "All-court advanced players"
+  },
+  {
+    "id": 28, "name": "Encore Pro", "brand": "Engage", "brandId": 9,
+    "weight": "7.7oz", "faceMaterial": "Fiberglass", "coreMaterial": "Polypropylene",
+    "thickness": "14mm", "gripSize": "4.25\"", "length": "15.8\"", "width": "7.8\"",
+    "price": 100, "rating": 4.1, "reviewCount": 289,
+    "proPlayers": [19], "tags": ["intermediate", "control", "fiberglass"],
+    "buyUrl": "https://amazon.com/s?k=Engage+Encore+Pro",
+    "releasedYear": 2021, "category": "mid-range", "bestFor": "Soft game and dinking enthusiasts"
+  },
+  {
+    "id": 29, "name": "Vanguard Control Air", "brand": "Selkirk", "brandId": 2,
+    "weight": "7.6oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "15.75\"", "width": "7.75\"",
+    "price": 180, "rating": 4.6, "reviewCount": 134,
+    "proPlayers": [7], "tags": ["advanced", "control", "carbon", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=Selkirk+Vanguard+Control+Air",
+    "releasedYear": 2024, "category": "premium", "bestFor": "Touch players and net dominators"
+  },
+  {
+    "id": 30, "name": "Hyperion CFS 16mm", "brand": "JOOLA", "brandId": 1,
+    "weight": "8.0oz", "faceMaterial": "Carbon Friction Surface", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 170, "rating": 4.4, "reviewCount": 198,
+    "proPlayers": [8], "tags": ["advanced", "spin", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=JOOLA+Hyperion+CFS",
+    "releasedYear": 2022, "category": "premium", "bestFor": "Spin-dominant baseline players"
+  },
+  {
+    "id": 31, "name": "Gen 3 Evoke", "brand": "Onix", "brandId": 6,
+    "weight": "7.8oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.75\"",
+    "price": 170, "rating": 4.5, "reviewCount": 112,
+    "proPlayers": [18], "tags": ["advanced", "balanced", "carbon", "premium"],
+    "buyUrl": "https://amazon.com/s?k=Onix+Gen3+Evoke",
+    "releasedYear": 2024, "category": "premium", "bestFor": "Next-gen all-court play"
+  },
+  {
+    "id": 32, "name": "Element 2.0", "brand": "CRBN", "brandId": 4,
+    "weight": "7.5oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.125\"", "length": "15.6\"", "width": "7.9\"",
+    "price": 120, "rating": 4.2, "reviewCount": 201,
+    "proPlayers": [20], "tags": ["intermediate", "speed", "carbon", "lightweight", "beginner-friendly"],
+    "buyUrl": "https://amazon.com/s?k=CRBN+Element+2.0",
+    "releasedYear": 2024, "category": "mid-range", "bestFor": "Fast hands and beginner transition"
+  },
+  {
+    "id": 33, "name": "Zenith 16mm", "brand": "Diadem", "brandId": 5,
+    "weight": "7.9oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.7\"",
+    "price": 130, "rating": 4.3, "reviewCount": 178,
+    "proPlayers": [22, 25], "tags": ["intermediate", "balanced", "carbon"],
+    "buyUrl": "https://amazon.com/s?k=Diadem+Zenith+16mm",
+    "releasedYear": 2023, "category": "mid-range", "bestFor": "Upgrading intermediate players"
+  },
+  {
+    "id": 34, "name": "Bantam Stryker", "brand": "Paddletek", "brandId": 7,
+    "weight": "7.4oz", "faceMaterial": "Graphite", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.125\"", "length": "15.5\"", "width": "7.75\"",
+    "price": 80, "rating": 4.0, "reviewCount": 345,
+    "proPlayers": [35], "tags": ["beginner", "speed", "graphite", "lightweight"],
+    "buyUrl": "https://amazon.com/s?k=Paddletek+Bantam+Stryker",
+    "releasedYear": 2020, "category": "budget", "bestFor": "Beginners and casual players"
+  },
+  {
+    "id": 35, "name": "Ben Johns 13mm", "brand": "Franklin", "brandId": 8,
+    "weight": "7.5oz", "faceMaterial": "Carbon Fiber", "coreMaterial": "Polypropylene",
+    "thickness": "13mm", "gripSize": "4.25\"", "length": "16.5\"", "width": "7.5\"",
+    "price": 150, "rating": 4.3, "reviewCount": 423,
+    "proPlayers": [1, 2], "tags": ["advanced", "power", "carbon", "thin-core"],
+    "buyUrl": "https://amazon.com/s?k=Franklin+Ben+Johns+13mm",
+    "releasedYear": 2023, "category": "premium", "bestFor": "Power-oriented players who love the BJ line"
+  },
+  {
+    "id": 36, "name": "Pursuit EX 6.0", "brand": "Engage", "brandId": 9,
+    "weight": "7.8oz", "faceMaterial": "Fiberglass", "coreMaterial": "Polypropylene",
+    "thickness": "16mm", "gripSize": "4.25\"", "length": "16.0\"", "width": "7.7\"",
+    "price": 110, "rating": 4.2, "reviewCount": 198,
+    "proPlayers": [19], "tags": ["intermediate", "balanced", "fiberglass"],
+    "buyUrl": "https://amazon.com/s?k=Engage+Pursuit+EX+6.0",
+    "releasedYear": 2022, "category": "mid-range", "bestFor": "Fiberglass feel with good value"
+  }
+]

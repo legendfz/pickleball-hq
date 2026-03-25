@@ -639,8 +639,9 @@ function MatchesTab({ player, getPlayerName, router }: { player: PlayerDetail; g
 // ─── Gear Tab ────────────────────────────────────────────────────────
 function GearTab({ player, router }: { player: PlayerDetail; router: any }) {
   const { t } = useLanguage();
+  const gear = (player as any).gear;
   const equipment = (player as any).equipment;
-  if (!equipment) return <EmptyState message={t('noEquipmentData')} />;
+  if (!gear && !equipment) return <EmptyState message={t('noEquipmentData')} />;
 
   const renderTimeline = (items: { brand: string; from: number; to: number | null }[], label: string, icon: string) => {
     if (!items || items.length === 0) return null;
@@ -670,59 +671,135 @@ function GearTab({ player, router }: { player: PlayerDetail; router: any }) {
   };
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>{t('equipmentAndSponsors')}</Text>
-      {renderTimeline(equipment.apparel, t('apparel'), '')}
-      {renderTimeline(equipment.shoes, t('shoes'), '')}
-      {equipment.racket && (
-        <View style={styles.equipSection}>
-          <Text style={styles.equipLabel}>{t('racket')}</Text>
-          <View style={styles.equipItem}>
-            <Text style={{ fontSize: 16 }}>{'\uD83C\uDFBE'}</Text>
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              onPress={() => router.push(`/brand/${encodeURIComponent(equipment.racket.brand)}`)}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.equipBrand}>{equipment.racket.brand}</Text>
-              <Text style={styles.equipYears}>{equipment.racket.model}</Text>
-            </TouchableOpacity>
-          </View>
+    <>
+      {/* Paddle Card - Primary gear */}
+      {gear && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>🏓 Paddle</Text>
+          <TouchableOpacity
+            style={styles.paddleGearCard}
+            onPress={() => gear.paddleId && router.push(`/paddle/${gear.paddleId}`)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.paddleGearHeader}>
+              <Text style={styles.paddleGearBrand}>{gear.brand}</Text>
+              <Text style={styles.paddleGearName}>{gear.paddle}</Text>
+            </View>
+            <View style={styles.paddleGearActions}>
+              {gear.paddleId && (
+                <>
+                  <TouchableOpacity
+                    style={styles.paddleGearBtn}
+                    onPress={() => router.push(`/paddle/${gear.paddleId}`)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.paddleGearBtnText}>View Details</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.paddleGearBtn, { backgroundColor: theme.accent }]}
+                    onPress={() => {
+                      // Find a different paddle to compare with
+                      const otherId = gear.paddleId === 1 ? 5 : 1;
+                      router.push(`/paddle/compare/${gear.paddleId}-${otherId}`);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.paddleGearBtnText, { color: '#fff' }]}>Compare</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
       )}
-      {equipment.watch && (
-        <View style={styles.equipSection}>
-          <Text style={styles.equipLabel}>{t('watch')}</Text>
-          <View style={styles.equipItem}>
-            <Text style={{ fontSize: 16 }}>{'\u231A'}</Text>
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              onPress={() => router.push(`/brand/${encodeURIComponent(equipment.watch)}`)}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.equipBrand}>{equipment.watch}</Text>
-            </TouchableOpacity>
-          </View>
+
+      {/* Other Equipment */}
+      {equipment && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Equipment & Sponsors</Text>
+          {gear && gear.apparel && (
+            <View style={styles.equipSection}>
+              <Text style={styles.equipLabel}>Apparel</Text>
+              <View style={styles.equipItem}>
+                <Text style={{ fontSize: 16 }}>👕</Text>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => router.push(`/brand/${encodeURIComponent(gear.apparel)}`)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.equipBrand}>{gear.apparel}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {gear && gear.shoes && (
+            <View style={styles.equipSection}>
+              <Text style={styles.equipLabel}>Shoes</Text>
+              <View style={styles.equipItem}>
+                <Text style={{ fontSize: 16 }}>👟</Text>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => router.push(`/brand/${encodeURIComponent(gear.shoes)}`)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.equipBrand}>{gear.shoes}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {renderTimeline(equipment.apparel, t('apparel'), '')}
+          {renderTimeline(equipment.shoes, t('shoes'), '')}
+          {equipment.racket && (
+            <View style={styles.equipSection}>
+              <Text style={styles.equipLabel}>{t('racket')}</Text>
+              <View style={styles.equipItem}>
+                <Text style={{ fontSize: 16 }}>{'\uD83C\uDFBE'}</Text>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => router.push(`/brand/${encodeURIComponent(equipment.racket.brand)}`)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.equipBrand}>{equipment.racket.brand}</Text>
+                  <Text style={styles.equipYears}>{equipment.racket.model}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {equipment.watch && (
+            <View style={styles.equipSection}>
+              <Text style={styles.equipLabel}>{t('watch')}</Text>
+              <View style={styles.equipItem}>
+                <Text style={{ fontSize: 16 }}>{'\u231A'}</Text>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => router.push(`/brand/${encodeURIComponent(equipment.watch)}`)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.equipBrand}>{equipment.watch}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {equipment.otherSponsors && equipment.otherSponsors.length > 0 && (
+            <View style={styles.equipSection}>
+              <Text style={styles.equipLabel}>{t('otherSponsors')}</Text>
+              <View style={styles.sponsorRow}>
+                {equipment.otherSponsors.map((s: string, i: number) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={styles.sponsorPill}
+                    onPress={() => router.push(`/brand/${encodeURIComponent(s)}`)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.sponsorText}>{s}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
-      {equipment.otherSponsors && equipment.otherSponsors.length > 0 && (
-        <View style={styles.equipSection}>
-          <Text style={styles.equipLabel}>{t('otherSponsors')}</Text>
-          <View style={styles.sponsorRow}>
-            {equipment.otherSponsors.map((s: string, i: number) => (
-              <TouchableOpacity
-                key={i}
-                style={styles.sponsorPill}
-                onPress={() => router.push(`/brand/${encodeURIComponent(s)}`)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.sponsorText}>{s}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      )}
-    </View>
+    </>
   );
 }
 
@@ -1294,6 +1371,48 @@ const styles = StyleSheet.create({
   sponsorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   sponsorPill: { backgroundColor: theme.bg, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 0.5, borderColor: theme.border },
   sponsorText: { fontSize: 13, color: theme.blue },
+
+  // Paddle Gear Card
+  paddleGearCard: {
+    backgroundColor: theme.bg,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: theme.accent + '30',
+  },
+  paddleGearHeader: {
+    marginBottom: 12,
+  },
+  paddleGearBrand: {
+    fontSize: 11,
+    color: theme.accent,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  paddleGearName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  paddleGearActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  paddleGearBtn: {
+    backgroundColor: theme.card,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  paddleGearBtnText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: theme.text,
+  },
 
   // DUPR Header
   duprHeaderBadge: {

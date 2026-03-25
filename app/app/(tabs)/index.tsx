@@ -9,8 +9,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { theme } from '../../lib/theme';
+import { getStreakEmoji } from '../../lib/gamification';
 
 // ─── Mock Data ──────────────────────────────────────────────
+const MOCK_USER = {
+  streakDays: 7,
+};
+
 const MOCK_COURTS = [
   {
     id: 1,
@@ -20,6 +25,8 @@ const MOCK_COURTS = [
     status: 'Busy' as const,
     rating: 4.3,
     courts: 8,
+    weeklyVisitors: 127,
+    mostActive: 'Saturday 8-10 AM',
   },
   {
     id: 2,
@@ -29,6 +36,8 @@ const MOCK_COURTS = [
     status: 'Open' as const,
     rating: 4.1,
     courts: 6,
+    weeklyVisitors: 89,
+    mostActive: 'Sunday 9-11 AM',
   },
   {
     id: 3,
@@ -38,6 +47,8 @@ const MOCK_COURTS = [
     status: 'Busy' as const,
     rating: 4.5,
     courts: 10,
+    weeklyVisitors: 203,
+    mostActive: 'Saturday 8-10 AM',
   },
 ];
 
@@ -143,8 +154,24 @@ export default function PlayScreen() {
     >
       {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.greeting}>{getGreeting()}, Boss</Text>
-        <Text style={styles.date}>{getFormattedDate()}</Text>
+        <View style={styles.headerTop}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.greeting}>{getGreeting()}, Boss</Text>
+            <Text style={styles.date}>{getFormattedDate()}</Text>
+          </View>
+          {MOCK_USER.streakDays > 0 && (
+            <TouchableOpacity
+              style={styles.streakBadge}
+              onPress={() => router.push('/(tabs)/profile')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.streakBadgeEmoji}>
+                {getStreakEmoji(MOCK_USER.streakDays)}
+              </Text>
+              <Text style={styles.streakBadgeText}>{MOCK_USER.streakDays}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* ── Play Now CTA ── */}
@@ -214,7 +241,7 @@ export default function PlayScreen() {
             </View>
             <View style={styles.courtFooter}>
               <StarRating rating={court.rating} />
-              <Text style={styles.courtCount}>{court.courts} courts</Text>
+              <Text style={styles.courtVisitors}>{court.weeklyVisitors} visits this week</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -277,6 +304,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.padding,
     paddingBottom: 16,
   },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
   greeting: {
     fontSize: 26,
     fontWeight: theme.fontWeight.bold,
@@ -286,6 +318,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.textSecondary,
     marginTop: 4,
+  },
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 4,
+    marginTop: 4,
+  },
+  streakBadgeEmoji: {
+    fontSize: 16,
+  },
+  streakBadgeText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: theme.gold,
   },
 
   // Play Now CTA
@@ -427,9 +477,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.gold,
   },
-  courtCount: {
+  courtVisitors: {
     fontSize: 12,
-    color: theme.textSecondary,
+    color: theme.accent,
+    fontWeight: theme.fontWeight.semibold,
   },
 
   // Game Card

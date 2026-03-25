@@ -6,129 +6,245 @@ import {
   ScrollView,
   TouchableOpacity,
   Switch,
+  Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { theme } from '../../lib/theme';
+import { theme } from '../lib/theme';
+import { useLanguage } from '../lib/i18n';
+import {
+  getCurrentLevel,
+  getNextLevel,
+  getXPProgress,
+  getEarnedBadges,
+  LEVELS,
+  type StreakBadge,
+} from '../lib/gamification';
 
-// ─── Mock User ──────────────────────────────────────────────
+// ─── Mock Data ──────────────────────────────────────────────
 const MOCK_USER = {
   name: 'Boss',
-  avatar: '🏓',
-  duprRating: 4.253,
-  gamesPlayed: 47,
+  dupr: 3.8,
+  matches: 47,
   wins: 31,
+  streakDays: 7,
+  totalXP: 245,
 };
 
-const MOCK_GAME_HISTORY = [
-  { id: 1, court: 'Pickleball Station Irvine', date: 'Mar 24', time: '6PM', result: 'Won 11-7, 11-9', type: 'Doubles' },
-  { id: 2, court: 'Irvine Park', date: 'Mar 23', time: '9AM', result: 'Lost 9-11, 11-8, 7-11', type: 'Singles' },
-  { id: 3, court: 'Heritage Park', date: 'Mar 22', time: '7PM', result: 'Won 11-5, 11-8', type: 'Doubles' },
-  { id: 4, court: 'Pickleball Station Irvine', date: 'Mar 21', time: '5PM', result: 'Won 11-9, 8-11, 11-6', type: 'Doubles' },
-  { id: 5, court: 'Irvine Park', date: 'Mar 20', time: '10AM', result: 'Won 11-4, 11-3', type: 'Singles' },
-];
+// ─── Components ─────────────────────────────────────────────
 
-// ─── Screen ─────────────────────────────────────────────────
+function SectionTitle({ children }: { children: string }) {
+  return <Text style={styles.sectionTitle}>{children}</Text>;
+}
+
+function StatRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <View style={styles.statRow}>
+      <Text style={styles.statLabel}>{label}</Text>
+      <Text style={styles.statValue}>{value}</Text>
+    </View>
+  );
+}
+
+// ─── Main Screen ────────────────────────────────────────────
 
 export default function ProfileScreen() {
-  const router = useRouter();
-  const [darkMode, setDarkMode] = useState(true);
+  const { language, setLanguage, t } = useLanguage();
+  const [notifications, setNotifications] = useState(true);
 
-  const winRate = Math.round((MOCK_USER.wins / MOCK_USER.gamesPlayed) * 100);
+  const currentLevel = getCurrentLevel(MOCK_USER.totalXP);
+  const nextLevel = getNextLevel(currentLevel);
+  const xpProgress = getXPProgress(MOCK_USER.totalXP);
+  const earnedBadges = getEarnedBadges(MOCK_USER.streakDays);
+  const xpToNext = nextLevel ? nextLevel.xpNeeded - MOCK_USER.totalXP : 0;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* ── Avatar & Name ── */}
-      <View style={styles.profileHeader}>
+      <View style={styles.avatarSection}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{MOCK_USER.avatar}</Text>
+          <Text style={styles.avatarEmoji}>🏓</Text>
         </View>
-        <Text style={styles.userName}>{MOCK_USER.name}</Text>
-      </View>
-
-      {/* ── DUPR Rating ── */}
-      <View style={styles.duprCard}>
-        <Text style={styles.duprLabel}>DUPR RATING</Text>
-        <Text style={styles.duprValue}>{MOCK_USER.duprRating.toFixed(3)}</Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{MOCK_USER.gamesPlayed}</Text>
-            <Text style={styles.statLabel}>Games</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{MOCK_USER.wins}</Text>
-            <Text style={styles.statLabel}>Wins</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{winRate}%</Text>
-            <Text style={styles.statLabel}>Win Rate</Text>
-          </View>
+        <Text style={styles.name}>{MOCK_USER.name}</Text>
+        <View style={styles.duprWrap}>
+          <Text style={styles.duprLabel}>DUPR</Text>
+          <Text style={styles.duprValue}>{MOCK_USER.dupr}</Text>
         </View>
       </View>
 
-      {/* ── Recent Games ── */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>RECENT GAMES</Text>
-        {MOCK_GAME_HISTORY.map((game) => (
-          <View key={game.id} style={styles.gameCard}>
-            <View style={styles.gameTop}>
-              <Text style={styles.gameCourt} numberOfLines={1}>{game.court}</Text>
-              <Text style={styles.gameDate}>{game.date} · {game.time}</Text>
-            </View>
-            <View style={styles.gameBottom}>
-              <Text style={[
-                styles.gameResult,
-                game.result.startsWith('Won') ? styles.resultWon : styles.resultLost,
-              ]}>
-                {game.result}
-              </Text>
-              <View style={styles.gameTypeBadge}>
-                <Text style={styles.gameTypeText}>{game.type}</Text>
+      {/* ── Level & XP ── */}
+      <View style={styles.card}>
+        <View style={styles.levelHeader}>
+          <View>
+            <Text style={styles.levelBadge}>
+              LVL {currentLevel.level}
+            </Text>
+            <Text style={[styles.levelName, { color: currentLevel.color }]}>
+              {currentLevel.name}
+            </Text>
+          </View>
+          <Text style={styles.xpTotal}>{MOCK_USER.totalXP} XP</Text>
+        </View>
+
+        {/* Progress bar */}
+        <View style={styles.progressBarBg}>
+          <View
+            style={[
+              styles.progressBarFill,
+              {
+                width: `${xpProgress * 100}%`,
+                backgroundColor: currentLevel.color,
+              },
+            ]}
+          />
+        </View>
+
+        {nextLevel && (
+          <Text style={styles.xpToNext}>
+            {xpToNext} XP to {nextLevel.name} (LVL {nextLevel.level})
+          </Text>
+        )}
+        {!nextLevel && (
+          <Text style={styles.xpToNext}>🎉 Max level reached!</Text>
+        )}
+      </View>
+
+      {/* ── Streak ── */}
+      <View style={styles.card}>
+        <View style={styles.streakRow}>
+          <Text style={styles.streakEmoji}>
+            {MOCK_USER.streakDays >= 7 ? '🔥' : '🌱'}
+          </Text>
+          <View>
+            <Text style={styles.streakCount}>{MOCK_USER.streakDays} days</Text>
+            <Text style={styles.streakLabel}>Playing streak</Text>
+          </View>
+        </View>
+        {MOCK_USER.streakDays >= 7 && (
+          <View style={styles.streakBonus}>
+            <Text style={styles.streakBonusText}>+50 XP streak bonus earned!</Text>
+          </View>
+        )}
+      </View>
+
+      {/* ── Badges ── */}
+      {earnedBadges.length > 0 && (
+        <View style={styles.card}>
+          <SectionTitle>🏅 Badges</SectionTitle>
+          <View style={styles.badgeGrid}>
+            {earnedBadges.map((badge: StreakBadge) => (
+              <View key={badge.days} style={styles.badgeItem}>
+                <Text style={styles.badgeEmoji}>{badge.emoji}</Text>
+                <Text style={styles.badgeName}>{badge.name}</Text>
+                <Text style={styles.badgeDays}>{badge.days} days</Text>
               </View>
-            </View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* ── Stats ── */}
+      <View style={styles.card}>
+        <SectionTitle>{t('stats')}</SectionTitle>
+        <StatRow label={t('matches')} value={String(MOCK_USER.matches)} />
+        <StatRow label={t('wins')} value={String(MOCK_USER.wins)} />
+        <StatRow
+          label={t('winRate')}
+          value={`${Math.round((MOCK_USER.wins / MOCK_USER.matches) * 100)}%`}
+        />
+      </View>
+
+      {/* ── Settings ── */}
+      <View style={styles.card}>
+        <SectionTitle>{t('settings')}</SectionTitle>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>{t('notifications')}</Text>
+          <Switch
+            value={notifications}
+            onValueChange={setNotifications}
+            trackColor={{ false: theme.border, true: theme.accent }}
+            thumbColor="#fff"
+          />
+        </View>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>{t('language')}</Text>
+          <View style={styles.langToggle}>
+            <TouchableOpacity
+              style={[
+                styles.langBtn,
+                language === 'en' && styles.langBtnActive,
+              ]}
+              onPress={() => setLanguage('en')}
+            >
+              <Text
+                style={[
+                  styles.langBtnText,
+                  language === 'en' && styles.langBtnTextActive,
+                ]}
+              >
+                EN
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.langBtn,
+                language === 'zh' && styles.langBtnActive,
+              ]}
+              onPress={() => setLanguage('zh')}
+            >
+              <Text
+                style={[
+                  styles.langBtnText,
+                  language === 'zh' && styles.langBtnTextActive,
+                ]}
+              >
+                中文
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      {/* ── Level Progression Info ── */}
+      <View style={styles.card}>
+        <SectionTitle>📊 Level Progression</SectionTitle>
+        {LEVELS.map((level) => (
+          <View key={level.level} style={styles.levelRow}>
+            <View
+              style={[
+                styles.levelDot,
+                {
+                  backgroundColor:
+                    MOCK_USER.totalXP >= level.xpNeeded
+                      ? level.color
+                      : theme.border,
+                },
+              ]}
+            />
+            <Text
+              style={[
+                styles.levelRowName,
+                {
+                  color:
+                    MOCK_USER.totalXP >= level.xpNeeded
+                      ? level.color
+                      : theme.textSecondary,
+                  fontWeight:
+                    level.level === currentLevel.level ? '700' : '400',
+                },
+              ]}
+            >
+              LVL {level.level} — {level.name}
+            </Text>
+            <Text style={styles.levelRowXP}>{level.xpNeeded} XP</Text>
           </View>
         ))}
       </View>
 
-      {/* ── Settings ── */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>SETTINGS</Text>
-        <View style={styles.settingsGroup}>
-          <TouchableOpacity style={styles.settingRow} activeOpacity={0.7}>
-            <Text style={styles.settingIcon}>👤</Text>
-            <Text style={styles.settingLabel}>Edit Profile</Text>
-            <Text style={styles.settingArrow}>→</Text>
-          </TouchableOpacity>
-          <View style={styles.settingRow}>
-            <Text style={styles.settingIcon}>🌙</Text>
-            <Text style={styles.settingLabel}>Dark Mode</Text>
-            <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
-              trackColor={{ false: '#555', true: theme.accent }}
-              thumbColor="#fff"
-            />
-          </View>
-          <TouchableOpacity style={styles.settingRow} activeOpacity={0.7}>
-            <Text style={styles.settingIcon}>📍</Text>
-            <Text style={styles.settingLabel}>My Location</Text>
-            <Text style={styles.settingArrow}>→</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.settingRow} activeOpacity={0.7}>
-            <Text style={styles.settingIcon}>🔔</Text>
-            <Text style={styles.settingLabel}>Notifications</Text>
-            <Text style={styles.settingArrow}>→</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.settingRow} activeOpacity={0.7}>
-            <Text style={styles.settingIcon}>❓</Text>
-            <Text style={styles.settingLabel}>Help & Support</Text>
-            <Text style={styles.settingArrow}>→</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <Text style={styles.version}>PickleballHQ v1.0.0</Text>
       <View style={{ height: 40 }} />
     </ScrollView>
   );
@@ -145,8 +261,8 @@ const styles = StyleSheet.create({
     paddingTop: 56,
   },
 
-  // Profile Header
-  profileHeader: {
+  // Avatar
+  avatarSection: {
     alignItems: 'center',
     paddingBottom: 20,
   },
@@ -161,169 +277,228 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.accent,
   },
-  avatarText: {
+  avatarEmoji: {
     fontSize: 36,
   },
-  userName: {
-    fontSize: 24,
+  name: {
+    fontSize: 22,
     fontWeight: theme.fontWeight.bold,
     color: theme.text,
   },
-
-  // DUPR Card
-  duprCard: {
-    backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    borderRadius: 16,
-    padding: 20,
+  duprWrap: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: theme.accent + '30',
+    gap: 6,
+    marginTop: 6,
+    backgroundColor: 'rgba(8, 145, 178, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   duprLabel: {
-    fontSize: 11,
-    fontWeight: theme.fontWeight.semibold,
+    fontSize: 12,
+    fontWeight: theme.fontWeight.bold,
     color: theme.accent,
-    letterSpacing: 1.5,
-    marginBottom: 4,
   },
   duprValue: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: theme.accent,
+  },
+
+  // Level Card
+  card: {
+    backgroundColor: theme.card,
+    marginHorizontal: theme.spacing.padding,
+    marginBottom: theme.spacing.cardGap,
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  levelHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  levelBadge: {
+    fontSize: 11,
+    fontWeight: theme.fontWeight.bold,
+    color: theme.textSecondary,
+    letterSpacing: 1,
+  },
+  levelName: {
+    fontSize: 20,
+    fontWeight: '800',
+    marginTop: 2,
+  },
+  xpTotal: {
+    fontSize: 14,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.textSecondary,
+  },
+  progressBarBg: {
+    height: 8,
+    backgroundColor: theme.border,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  xpToNext: {
+    fontSize: 12,
+    color: theme.textSecondary,
+  },
+
+  // Streak
+  streakRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  streakEmoji: {
     fontSize: 40,
+  },
+  streakCount: {
+    fontSize: 28,
     fontWeight: '800',
     color: theme.text,
-    letterSpacing: -1,
   },
-  statsRow: {
-    flexDirection: 'row',
-    marginTop: 16,
-    width: '100%',
-    justifyContent: 'center',
-    gap: 24,
-  },
-  statItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: theme.fontWeight.bold,
-    color: theme.text,
-  },
-  statLabel: {
-    fontSize: 11,
+  streakLabel: {
+    fontSize: 13,
     color: theme.textSecondary,
     marginTop: 2,
   },
-  statDivider: {
-    width: 1,
-    backgroundColor: theme.border,
-    alignSelf: 'stretch',
+  streakBonus: {
+    marginTop: 12,
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  streakBonusText: {
+    fontSize: 12,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.gold,
+  },
+
+  // Badges
+  badgeGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  badgeItem: {
+    alignItems: 'center',
+    backgroundColor: theme.cardAlt,
+    borderRadius: 12,
+    padding: 12,
+    minWidth: 90,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  badgeEmoji: {
+    fontSize: 28,
+    marginBottom: 4,
+  },
+  badgeName: {
+    fontSize: 11,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.text,
+    textAlign: 'center',
+  },
+  badgeDays: {
+    fontSize: 10,
+    color: theme.textSecondary,
+    marginTop: 2,
   },
 
   // Section
-  section: {
-    marginBottom: 24,
-  },
   sectionTitle: {
     fontSize: 13,
     fontWeight: theme.fontWeight.bold,
     color: theme.textSecondary,
     textTransform: 'uppercase',
     letterSpacing: 1,
-    paddingHorizontal: theme.spacing.padding,
-    paddingBottom: 12,
+    marginBottom: 12,
   },
 
-  // Game Card
-  gameCard: {
-    backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    marginBottom: 8,
-    borderRadius: 12,
-    padding: 14,
-  },
-  gameTop: {
+  // Stats
+  statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.border,
   },
-  gameCourt: {
-    fontSize: 15,
-    fontWeight: theme.fontWeight.semibold,
-    color: theme.text,
-    flex: 1,
-    marginRight: 8,
-  },
-  gameDate: {
-    fontSize: 12,
+  statLabel: {
+    fontSize: 14,
     color: theme.textSecondary,
   },
-  gameBottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  gameResult: {
-    fontSize: 13,
+  statValue: {
+    fontSize: 14,
     fontWeight: theme.fontWeight.semibold,
-  },
-  resultWon: {
-    color: '#22c55e',
-  },
-  resultLost: {
-    color: theme.red,
-  },
-  gameTypeBadge: {
-    backgroundColor: 'rgba(8, 145, 178, 0.12)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  gameTypeText: {
-    fontSize: 11,
-    fontWeight: theme.fontWeight.medium,
-    color: theme.accent,
+    color: theme.text,
   },
 
   // Settings
-  settingsGroup: {
-    backgroundColor: theme.card,
-    marginHorizontal: theme.spacing.padding,
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
   settingRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    minHeight: 48,
-    borderBottomWidth: 0.5,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
     borderBottomColor: theme.border,
-    gap: 12,
-  },
-  settingIcon: {
-    fontSize: 18,
-    width: 28,
-    textAlign: 'center',
   },
   settingLabel: {
-    flex: 1,
-    fontSize: 15,
+    fontSize: 14,
     color: theme.text,
   },
-  settingArrow: {
-    fontSize: 16,
+  langToggle: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  langBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: theme.cardAlt,
+  },
+  langBtnActive: {
+    backgroundColor: theme.accent,
+  },
+  langBtnText: {
+    fontSize: 13,
+    fontWeight: theme.fontWeight.semibold,
     color: theme.textSecondary,
   },
+  langBtnTextActive: {
+    color: '#fff',
+  },
 
-  // Version
-  version: {
-    textAlign: 'center',
+  // Level progression
+  levelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  levelDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  levelRowName: {
+    flex: 1,
+    fontSize: 13,
+  },
+  levelRowXP: {
     fontSize: 12,
     color: theme.textTertiary,
-    marginTop: 8,
   },
 });

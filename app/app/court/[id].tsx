@@ -45,6 +45,12 @@ interface CourtDetail {
   address: string;
   reviews: Review[];
   events: CourtEvent[];
+  checkIns?: Array<{ name: string; time: string; avatar: string | null }>;
+  weeklyVisitors?: number;
+  popularTimes?: number[];
+  photos?: Array<{ id: number; color: string; caption: string; author: string; time: string }>;
+  mostActive?: string;
+  topPlayers?: string[];
 }
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
@@ -222,6 +228,93 @@ export default function CourtDetailScreen() {
                 </View>
               </View>
             ))}
+          </View>
+        )}
+
+        {/* Social Stats */}
+        {(court.weeklyVisitors || court.mostActive || court.topPlayers) && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>📊 Social Stats</Text>
+            {court.weeklyVisitors && (
+              <View style={styles.socialStatRow}>
+                <Text style={styles.socialStatIcon}>👥</Text>
+                <Text style={styles.socialStatText}>
+                  <Text style={styles.socialStatHighlight}>{court.weeklyVisitors}</Text> visits this week
+                </Text>
+              </View>
+            )}
+            {court.mostActive && (
+              <View style={styles.socialStatRow}>
+                <Text style={styles.socialStatIcon}>⏰</Text>
+                <Text style={styles.socialStatText}>
+                  Most active: <Text style={styles.socialStatHighlight}>{court.mostActive}</Text>
+                </Text>
+              </View>
+            )}
+            {court.topPlayers && court.topPlayers.length > 0 && (
+              <View style={styles.socialStatRow}>
+                <Text style={styles.socialStatIcon}>⭐</Text>
+                <Text style={styles.socialStatText}>
+                  Top players: <Text style={styles.socialStatHighlight}>{court.topPlayers.join(', ')}</Text>
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Popular Times Chart */}
+        {court.popularTimes && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>📈 Popular Times</Text>
+            <View style={styles.chartContainer}>
+              {court.popularTimes.map((value, hour) => {
+                const maxVal = Math.max(...court.popularTimes!);
+                const height = maxVal > 0 ? (value / maxVal) * 60 : 0;
+                const isNow = hour === new Date().getHours();
+                return (
+                  <View key={hour} style={styles.chartBarWrap}>
+                    <View
+                      style={[
+                        styles.chartBar,
+                        {
+                          height: Math.max(height, 2),
+                          backgroundColor: isNow ? theme.accent : theme.textTertiary + '60',
+                        },
+                      ]}
+                    />
+                    {hour % 4 === 0 && (
+                      <Text style={styles.chartLabel}>
+                        {hour === 0 ? '12a' : hour === 12 ? '12p' : hour > 12 ? `${hour - 12}p` : `${hour}a`}
+                      </Text>
+                    )}
+                  </View>
+                );
+              })}
+            </View>
+            <Text style={styles.chartHint}>Current hour highlighted</Text>
+          </View>
+        )}
+
+        {/* Photos */}
+        {court.photos && court.photos.length > 0 && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>📸 Photos</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoScroll}>
+              {court.photos.map((photo) => (
+                <View key={photo.id} style={styles.photoItem}>
+                  <View style={[styles.photoPlaceholder, { backgroundColor: photo.color }]}>
+                    <Text style={styles.photoIcon}>🏓</Text>
+                  </View>
+                  <Text style={styles.photoCaption} numberOfLines={1}>{photo.caption}</Text>
+                  <Text style={styles.photoMeta}>{photo.author} · {photo.time}</Text>
+                </View>
+              ))}
+              {/* Add Photo Button */}
+              <TouchableOpacity style={styles.addPhotoBtn} activeOpacity={0.7}>
+                <Text style={styles.addPhotoIcon}>+</Text>
+                <Text style={styles.addPhotoText}>Add Photo</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
         )}
 
@@ -404,6 +497,109 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#666',
     marginTop: 4,
+  },
+
+  // Social Stats
+  socialStatRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+    borderBottomWidth: 0.5,
+    borderBottomColor: theme.border,
+  },
+  socialStatIcon: {
+    fontSize: 18,
+  },
+  socialStatText: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    flex: 1,
+  },
+  socialStatHighlight: {
+    color: theme.text,
+    fontWeight: '600',
+  },
+
+  // Popular Times Chart
+  chartContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 2,
+    height: 80,
+    marginBottom: 8,
+  },
+  chartBarWrap: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  chartBar: {
+    width: '80%',
+    borderRadius: 2,
+    minHeight: 2,
+  },
+  chartLabel: {
+    fontSize: 8,
+    color: theme.textTertiary,
+    marginTop: 4,
+  },
+  chartHint: {
+    fontSize: 11,
+    color: theme.textTertiary,
+    textAlign: 'center',
+  },
+
+  // Photos
+  photoScroll: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+  },
+  photoItem: {
+    width: 140,
+    marginRight: 12,
+  },
+  photoPlaceholder: {
+    width: 140,
+    height: 100,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoIcon: {
+    fontSize: 28,
+    opacity: 0.7,
+  },
+  photoCaption: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: theme.text,
+    marginTop: 6,
+  },
+  photoMeta: {
+    fontSize: 10,
+    color: theme.textTertiary,
+    marginTop: 2,
+  },
+  addPhotoBtn: {
+    width: 140,
+    height: 100,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: theme.accent + '40',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  addPhotoIcon: {
+    fontSize: 28,
+    color: theme.accent,
+  },
+  addPhotoText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: theme.accent,
   },
 
   // 🔥 Live Activity

@@ -29,6 +29,8 @@ interface Court {
   openHours: string;
   address: string;
   distance?: number;
+  weeklyVisitors?: number;
+  mostActive?: string;
 }
 
 function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
@@ -153,6 +155,9 @@ export default function CourtsScreen() {
             <View style={styles.courtFooter}>
               <StarRating rating={item.rating} />
               <View style={styles.footerRight}>
+                {item.weeklyVisitors ? (
+                  <Text style={styles.weeklyVisitors}>{item.weeklyVisitors} visits/wk</Text>
+                ) : null}
                 {item.free ? (
                   <View style={styles.freeBadge}>
                     <Text style={styles.freeBadgeText}>FREE</Text>
@@ -162,7 +167,6 @@ export default function CourtsScreen() {
                     <Text style={styles.paidBadgeText}>PAID</Text>
                   </View>
                 )}
-                <Text style={styles.hours}>{item.openHours}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -290,6 +294,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  weeklyVisitors: {
+    fontSize: 11,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.accent,
   },
   freeBadge: {
     backgroundColor: 'rgba(22, 163, 74, 0.2)',

@@ -18,15 +18,19 @@ import {
   LEVELS,
   type StreakBadge,
 } from '../lib/gamification';
+import ShareButton from '../components/ShareButton';
+import { generateStreakShareText, generateDuprShareText, SHARE_XP_REWARD } from '../lib/share';
 
 // ─── Mock Data ──────────────────────────────────────────────
 const MOCK_USER = {
   name: 'Boss',
   dupr: 3.8,
+  previousDupr: 3.6,
   matches: 47,
   wins: 31,
   streakDays: 7,
   totalXP: 245,
+  sharesThisMonth: 5,
 };
 
 // ─── Components ─────────────────────────────────────────────
@@ -129,6 +133,18 @@ export default function ProfileScreen() {
             <Text style={styles.streakBonusText}>+50 XP streak bonus earned!</Text>
           </View>
         )}
+        <View style={styles.shareRow}>
+          <ShareButton
+            shareText={generateStreakShareText({ streakDays: MOCK_USER.streakDays })}
+            label="Share Streak"
+            icon="🔥"
+          />
+          <ShareButton
+            shareText={generateDuprShareText({ currentDupr: MOCK_USER.dupr, previousDupr: MOCK_USER.previousDupr })}
+            label="Share DUPR"
+            icon="⚡"
+          />
+        </View>
       </View>
 
       {/* ── Badges ── */}
@@ -156,6 +172,8 @@ export default function ProfileScreen() {
           label={t('winRate')}
           value={`${Math.round((MOCK_USER.wins / MOCK_USER.matches) * 100)}%`}
         />
+        <StatRow label="Shares this month" value={`📤 ${MOCK_USER.sharesThisMonth}`} />
+        <StatRow label="Share XP earned" value={`+${MOCK_USER.sharesThisMonth * SHARE_XP_REWARD} XP`} />
       </View>
 
       {/* ── Settings ── */}
@@ -385,6 +403,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: theme.fontWeight.semibold,
     color: theme.gold,
+  },
+
+  // Share row
+  shareRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 14,
+    flexWrap: 'wrap',
   },
 
   // Badges

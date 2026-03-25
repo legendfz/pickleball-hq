@@ -13,6 +13,8 @@ import api from '../../lib/api';
 import { theme } from '../../lib/theme';
 import { SkeletonBlock } from '../../lib/skeleton';
 import { EmptyState } from '../../lib/empty-state';
+import ShareButton from '../../components/ShareButton';
+import { generateCourtShareText } from '../../lib/share';
 
 interface Review {
   id: number;
@@ -134,6 +136,13 @@ export default function CourtDetailScreen() {
               </Text>
               <Text style={styles.statLabel}>Access</Text>
             </View>
+          </View>
+          <View style={styles.shareRow}>
+            <ShareButton
+              shareText={generateCourtShareText({ courtName: court.name, city: court.city })}
+              label="Share Visit"
+              icon="📍"
+            />
           </View>
         </View>
 
@@ -387,6 +396,11 @@ const styles = StyleSheet.create({
     width: 1,
     height: 30,
     backgroundColor: theme.border,
+  },
+
+  // Share
+  shareRow: {
+    marginTop: 14,
   },
 
   card: {

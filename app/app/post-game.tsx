@@ -12,6 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter, Stack } from 'expo-router';
 import api from '../lib/api';
 import { theme } from '../lib/theme';
+import ShareButton from '../components/ShareButton';
+import { generateMatchShareText } from '../lib/share';
 
 interface Court {
   id: number;
@@ -60,6 +62,7 @@ export default function PostGameScreen() {
   const [duprMax, setDuprMax] = useState(USER_DUPR + 0.5);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [gamePosted, setGamePosted] = useState(false);
 
   const { data: courtsData } = useQuery<{ data: Court[] }>({
     queryKey: ['courts-all'],
@@ -123,8 +126,9 @@ export default function PostGameScreen() {
         hostName: 'You',
         hostDupr: USER_DUPR,
       });
+      setGamePosted(true);
       Alert.alert('Game Posted! 🏓', 'Your game is live. Players can now join!', [
-        { text: 'OK', onPress: () => router.back() },
+        { text: 'OK' },
       ]);
     } catch {
       Alert.alert('Error', 'Failed to post game. Please try again.');
@@ -402,10 +406,37 @@ export default function PostGameScreen() {
           </Text>
         </TouchableOpacity>
 
-        {/* Back Button */}
-        <TouchableOpacity style={styles.backBtn} onPress={() => setStep(1)} activeOpacity={0.7}>
-          <Text style={styles.backBtnText}>← Change Court</Text>
-        </TouchableOpacity>
+        {/* Share after posting */}
+        {gamePosted && (
+          <View style={styles.shareSection}>
+            <Text style={styles.shareTitle}>📣 Tell your friends!</Text>
+            <Text style={styles.shareSubtitle}>Share that you're looking for players</Text>
+            <ShareButton
+              shareText={generateMatchShareText({
+                courtName: selectedCourtObj?.name || 'a court',
+                score: 'Looking for players!',
+                format,
+                dupr: USER_DUPR,
+              })}
+              label="Share Game"
+              icon="📤"
+            />
+            <TouchableOpacity
+              style={styles.doneBtn}
+              onPress={() => router.back()}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.doneBtnText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Back */}
+        {!gamePosted && (
+          <TouchableOpacity style={styles.backBtn} onPress={() => setStep(1)} activeOpacity={0.7}>
+            <Text style={styles.backBtnText}>← Change Court</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </>
   );
@@ -829,6 +860,43 @@ const styles = StyleSheet.create({
   },
   backBtnText: {
     fontSize: 13,
+    color: theme.textSecondary,
+  },
+
+  // Share section (after posting)
+  shareSection: {
+    backgroundColor: theme.card,
+    marginHorizontal: theme.spacing.padding,
+    borderRadius: 14,
+    padding: 20,
+    marginTop: 16,
+    alignItems: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: theme.accent + '30',
+  },
+  shareTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.text,
+  },
+  shareSubtitle: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    marginBottom: 8,
+  },
+  doneBtn: {
+    backgroundColor: theme.bg,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 8,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  doneBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
     color: theme.textSecondary,
   },
 });

@@ -15,6 +15,8 @@ import { PlayerAvatar } from '../lib/player-avatar';
 import { SkeletonBlock } from '../lib/skeleton';
 import { EmptyState } from '../lib/empty-state';
 import { theme } from '../lib/theme';
+import ShareButton from '../components/ShareButton';
+import { generatePaddleShareText } from '../lib/share';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -143,6 +145,15 @@ export default function PaddleDetailScreen() {
                 <Text style={styles.tagText}>{tag}</Text>
               </View>
             ))}
+          </View>
+
+          {/* Share */}
+          <View style={styles.shareRow}>
+            <ShareButton
+              shareText={generatePaddleShareText({ paddleName: paddle.name, brand: paddle.brand })}
+              label="Share Paddle"
+              icon="🏓"
+            />
           </View>
         </View>
 
@@ -322,6 +333,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.accent,
     fontWeight: '500',
+  },
+
+  // Share
+  shareRow: {
+    marginTop: 14,
   },
 
   card: {

@@ -83,10 +83,13 @@ router.get('/', (_req: Request, res: Response) => {
 });
 
 // GET /api/posted-games/play-now — active games happening soon
-router.get('/play-now', (_req: Request, res: Response) => {
+router.get('/play-now', (req: Request, res: Response) => {
   const now = new Date();
   const endOfDay = new Date(now);
   endOfDay.setHours(23, 59, 59, 999);
+
+  const userDupr = parseFloat(String(req.query.dupr || '4.0'));
+  const duprTolerance = parseFloat(String(req.query.duprTolerance || '0.8'));
 
   const soon = new Date(now);
   soon.setHours(soon.getHours() + 2);
@@ -97,7 +100,11 @@ router.get('/play-now', (_req: Request, res: Response) => {
     .filter((g) => {
       if (g.status === 'expired') return false;
       const dt = new Date(g.datetime);
-      return dt >= now && dt <= endOfDay && (g.status === 'open' || g.status === 'needs_players');
+      if (!(dt >= now && dt <= endOfDay && (g.status === 'open' || g.status === 'needs_players'))) return false;
+      // Filter by DUPR range - only show games within user's skill range
+      const [minDupr, maxDupr] = g.duprRange;
+      if (userDupr < minDupr - duprTolerance || userDupr > maxDupr + duprTolerance) return false;
+      return true;
     })
     .map((g) => {
       const dt = new Date(g.datetime);
@@ -121,13 +128,16 @@ router.get('/play-now', (_req: Request, res: Response) => {
     { courtId: 28, name: 'Long Beach Pickleball Hub', activeNow: 4, predictedCrowd: 'busy' },
   ].filter((c) => c.activeNow >= 2);
 
-  // Players looking for partners right now
-  const lookingForPartners = [
+  // Players looking for partners right now (filtered by DUPR proximity)
+  const allLookingForPartners = [
     { id: 501, name: 'Jessica Park', city: 'Irvine', court: 'Orange County PB Club', dupr: 4.2, lookingFor: 'doubles partner' },
     { id: 506, name: 'Ryan Patel', city: 'Irvine', court: 'Northwood Park', dupr: 3.9, lookingFor: 'opponent' },
     { id: 503, name: 'Amy Wang', city: 'Irvine', court: 'Lakeshore Athletic Club', dupr: 4.5, lookingFor: 'doubles partner' },
     { id: 519, name: 'Stephanie Nguyen', city: 'Aliso Viejo', court: 'Irvine Great Park', dupr: 4.2, lookingFor: 'mixed doubles partner' },
   ];
+  const lookingForPartners = allLookingForPartners.filter(
+    (p) => Math.abs(p.dupr - userDupr) <= duprTolerance
+  );
 
   res.json({
     data: {
@@ -218,6 +228,24 @@ router.post('/:id/join', (req: Request, res: Response) => {
     return;
   }
 
+  // Check time conflict - user already has a game at overlapping time
+  const gameStart = new Date(game.datetime).getTime();
+  const gameEnd = gameStart + 2 * 60 * 60 * 1000; // assume 2 hour window
+  const hasConflict = games.some((g) => {
+    if (g.id === id) return false;
+    if (g.status === 'expired' || g.status === 'cancelled') return false;
+    const isParticipant = g.hostId === playerId || g.joined.some((j) => j.id === playerId);
+    if (!isParticipant) return false;
+    const otherStart = new Date(g.datetime).getTime();
+    const otherEnd = otherStart + 2 * 60 * 60 * 1000;
+    // Check overlap
+    return gameStart < otherEnd && gameEnd > otherStart;
+  });
+  if (hasConflict) {
+    res.status(400).json({ error: 'You already have a game at this time' });
+    return;
+  }
+
   // For recurring games, handle waitlist
   if (game.isRecurring && joinWaitlist) {
     if (!game.waitlist) game.waitlist = [];
@@ -227,6 +255,16 @@ router.post('/:id/join', (req: Request, res: Response) => {
     }
     game.waitlist.push({ id: playerId, name: playerName, dupr: playerDupr || 0 });
     res.json({ data: enrichGame(game), message: 'Added to waitlist' });
+    return;
+  }
+
+  // Check format capacity
+  const maxPlayers = game.format === 'singles' ? 2 : 4;
+  const totalPlayers = game.joined.length + 1; // +1 for host
+  if (totalPlayers >= maxPlayers) {
+    res.status(400).json({
+      error: `This ${game.format} game is full (max ${maxPlayers} players)`,
+    });
     return;
   }
 

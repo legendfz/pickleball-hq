@@ -62,10 +62,13 @@ export default function PlayNowScreen() {
   const router = useRouter();
   const [joining, setJoining] = useState<number | null>(null);
 
+  // Mock user DUPR (in production, from user profile)
+  const USER_DUPR = 4.0;
+
   const { data, isLoading, refetch } = useQuery<{ data: PlayNowData }>({
-    queryKey: ['play-now'],
+    queryKey: ['play-now', USER_DUPR],
     queryFn: async () => {
-      const res = await api.get('/api/posted-games/play-now');
+      const res = await api.get(`/api/posted-games/play-now?dupr=${USER_DUPR}`);
       return res.data;
     },
     refetchInterval: 30000, // Auto-refresh every 30s

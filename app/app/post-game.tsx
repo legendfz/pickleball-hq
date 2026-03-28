@@ -85,6 +85,31 @@ export default function PostGameScreen() {
 
   const selectedCourtObj = courts.find((c) => c.id === selectedCourt);
 
+  // Check if selected time exceeds court closing time
+  const courtClosingWarning = useMemo(() => {
+    if (!selectedCourtObj || !selectedTime) return null;
+    const court = selectedCourtObj as any;
+    const closeTime = court.hours?.close || '22:00';
+
+    let selectedHour = 0;
+    if (selectedTime === 'custom' && customTime) {
+      selectedHour = parseInt(customTime.split(':')[0], 10);
+    } else if (selectedTime !== 'custom') {
+      const opt = QUICK_TIME_OPTIONS.find((o) => o.key === selectedTime);
+      if (opt) {
+        const dt = new Date(opt.getDatetime());
+        selectedHour = dt.getHours();
+      }
+    }
+
+    const closeHour = parseInt(closeTime.split(':')[0], 10);
+    if (selectedHour >= closeHour) {
+      const closeLabel = closeHour > 12 ? `${closeHour - 12} PM` : `${closeHour} AM`;
+      return `This court closes at ${closeLabel}`;
+    }
+    return null;
+  }, [selectedCourtObj, selectedTime, customTime]);
+
   const adjustDupr = (field: 'min' | 'max', delta: number) => {
     if (field === 'min') {
       setDuprMin((prev) => Math.min(duprMax - 0.1, Math.max(2.0, Math.round((prev + delta) * 10) / 10)));
@@ -297,6 +322,13 @@ export default function PostGameScreen() {
                 placeholderTextColor={theme.textTertiary}
               />
             </View>
+          </View>
+        )}
+
+        {/* Court Closing Warning */}
+        {courtClosingWarning && (
+          <View style={styles.warningCard}>
+            <Text style={styles.warningText}>⚠️ {courtClosingWarning}</Text>
           </View>
         )}
 
@@ -675,6 +707,21 @@ const styles = StyleSheet.create({
     borderColor: theme.border,
   },
 
+  // Court closing warning
+  warningCard: {
+    backgroundColor: '#f59e0b' + '20',
+    marginHorizontal: theme.spacing.padding,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#f59e0b' + '40',
+  },
+  warningText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#f59e0b',
+  },
   // Defaults summary
   defaultsCard: {
     backgroundColor: theme.card,

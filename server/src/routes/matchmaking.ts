@@ -14,30 +14,31 @@ interface MatchPlayer {
   preferredPlay: string;
   availability: string;
   level: string;
+  socialTagCount: number;
 }
 
 // Mock matchmaking users (20 players in Irvine/LA area)
 const matchPlayers: MatchPlayer[] = [
-  { id: 500, name: 'Mike Chen', city: 'Irvine', lat: 33.6846, lng: -117.8265, dupr: 3.8, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'intermediate' },
-  { id: 501, name: 'Jessica Park', city: 'Irvine', lat: 33.6931, lng: -117.7932, dupr: 4.2, type: 'partner', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate' },
-  { id: 502, name: 'David Rodriguez', city: 'Tustin', lat: 33.7325, lng: -117.8102, dupr: 3.5, type: 'player', preferredPlay: 'singles', availability: 'anytime', level: 'beginner' },
-  { id: 503, name: 'Amy Wang', city: 'Irvine', lat: 33.6712, lng: -117.7789, dupr: 4.5, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced' },
-  { id: 504, name: 'Chris Thompson', city: 'Newport Beach', lat: 33.6189, lng: -117.9281, dupr: 3.2, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'beginner' },
-  { id: 505, name: 'Nicole Kim', city: 'Costa Mesa', lat: 33.6639, lng: -117.9134, dupr: 4.0, type: 'player', preferredPlay: 'singles', availability: 'weekdays', level: 'intermediate' },
-  { id: 506, name: 'Ryan Patel', city: 'Irvine', lat: 33.7102, lng: -117.7745, dupr: 3.9, type: 'partner', preferredPlay: 'doubles', availability: 'anytime', level: 'intermediate' },
-  { id: 507, name: 'Sarah Mitchell', city: 'Laguna Niguel', lat: 33.5241, lng: -117.7056, dupr: 4.3, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced' },
-  { id: 508, name: 'James Lee', city: 'Anaheim', lat: 33.8366, lng: -117.9143, dupr: 3.1, type: 'player', preferredPlay: 'singles', availability: 'weekdays', level: 'beginner' },
-  { id: 509, name: 'Emily Clark', city: 'Huntington Beach', lat: 33.6595, lng: -117.9988, dupr: 4.7, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced' },
-  { id: 510, name: 'Kevin Nguyen', city: 'Garden Grove', lat: 33.7739, lng: -117.9414, dupr: 3.6, type: 'player', preferredPlay: 'doubles', availability: 'anytime', level: 'intermediate' },
-  { id: 511, name: 'Megan Davis', city: 'Santa Monica', lat: 34.0195, lng: -118.4912, dupr: 4.1, type: 'player', preferredPlay: 'singles', availability: 'weekends', level: 'intermediate' },
-  { id: 512, name: 'Tom Wilson', city: 'Los Angeles', lat: 34.0407, lng: -118.2468, dupr: 3.4, type: 'player', preferredPlay: 'doubles', availability: 'weekdays', level: 'beginner' },
-  { id: 513, name: 'Amanda Garcia', city: 'Pasadena', lat: 34.1478, lng: -118.1445, dupr: 4.4, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced' },
-  { id: 514, name: 'Brandon Scott', city: 'Irvine', lat: 33.6856, lng: -117.8401, dupr: 3.7, type: 'player', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate' },
-  { id: 515, name: 'Rachel Adams', city: 'Mission Viejo', lat: 33.5965, lng: -117.6592, dupr: 4.6, type: 'partner', preferredPlay: 'singles', availability: 'anytime', level: 'advanced' },
-  { id: 516, name: 'Daniel Kim', city: 'Fullerton', lat: 33.8703, lng: -117.9242, dupr: 3.3, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'beginner' },
-  { id: 517, name: 'Lauren Taylor', city: 'Long Beach', lat: 33.7701, lng: -118.1937, dupr: 4.0, type: 'partner', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate' },
-  { id: 518, name: 'Jason Brown', city: 'Irvine', lat: 33.6705, lng: -117.7368, dupr: 3.8, type: 'player', preferredPlay: 'singles', availability: 'anytime', level: 'intermediate' },
-  { id: 519, name: 'Stephanie Nguyen', city: 'Aliso Viejo', lat: 33.5675, lng: -117.7268, dupr: 4.2, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'intermediate' },
+  { id: 500, name: 'Mike Chen', city: 'Irvine', lat: 33.6846, lng: -117.8265, dupr: 3.8, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'intermediate', socialTagCount: 5 },
+  { id: 501, name: 'Jessica Park', city: 'Irvine', lat: 33.6931, lng: -117.7932, dupr: 4.2, type: 'partner', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate', socialTagCount: 8 },
+  { id: 502, name: 'David Rodriguez', city: 'Tustin', lat: 33.7325, lng: -117.8102, dupr: 3.5, type: 'player', preferredPlay: 'singles', availability: 'anytime', level: 'beginner', socialTagCount: 0 },
+  { id: 503, name: 'Amy Wang', city: 'Irvine', lat: 33.6712, lng: -117.7789, dupr: 4.5, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced', socialTagCount: 12 },
+  { id: 504, name: 'Chris Thompson', city: 'Newport Beach', lat: 33.6189, lng: -117.9281, dupr: 3.2, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'beginner', socialTagCount: 0 },
+  { id: 505, name: 'Nicole Kim', city: 'Costa Mesa', lat: 33.6639, lng: -117.9134, dupr: 4.0, type: 'player', preferredPlay: 'singles', availability: 'weekdays', level: 'intermediate', socialTagCount: 3 },
+  { id: 506, name: 'Ryan Patel', city: 'Irvine', lat: 33.7102, lng: -117.7745, dupr: 3.9, type: 'partner', preferredPlay: 'doubles', availability: 'anytime', level: 'intermediate', socialTagCount: 6 },
+  { id: 507, name: 'Sarah Mitchell', city: 'Laguna Niguel', lat: 33.5241, lng: -117.7056, dupr: 4.3, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced', socialTagCount: 10 },
+  { id: 508, name: 'James Lee', city: 'Anaheim', lat: 33.8366, lng: -117.9143, dupr: 3.1, type: 'player', preferredPlay: 'singles', availability: 'weekdays', level: 'beginner', socialTagCount: 0 },
+  { id: 509, name: 'Emily Clark', city: 'Huntington Beach', lat: 33.6595, lng: -117.9988, dupr: 4.7, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced', socialTagCount: 15 },
+  { id: 510, name: 'Kevin Nguyen', city: 'Garden Grove', lat: 33.7739, lng: -117.9414, dupr: 3.6, type: 'player', preferredPlay: 'doubles', availability: 'anytime', level: 'intermediate', socialTagCount: 2 },
+  { id: 511, name: 'Megan Davis', city: 'Santa Monica', lat: 34.0195, lng: -118.4912, dupr: 4.1, type: 'player', preferredPlay: 'singles', availability: 'weekends', level: 'intermediate', socialTagCount: 4 },
+  { id: 512, name: 'Tom Wilson', city: 'Los Angeles', lat: 34.0407, lng: -118.2468, dupr: 3.4, type: 'player', preferredPlay: 'doubles', availability: 'weekdays', level: 'beginner', socialTagCount: 0 },
+  { id: 513, name: 'Amanda Garcia', city: 'Pasadena', lat: 34.1478, lng: -118.1445, dupr: 4.4, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'advanced', socialTagCount: 9 },
+  { id: 514, name: 'Brandon Scott', city: 'Irvine', lat: 33.6856, lng: -117.8401, dupr: 3.7, type: 'player', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate', socialTagCount: 7 },
+  { id: 515, name: 'Rachel Adams', city: 'Mission Viejo', lat: 33.5965, lng: -117.6592, dupr: 4.6, type: 'partner', preferredPlay: 'singles', availability: 'anytime', level: 'advanced', socialTagCount: 11 },
+  { id: 516, name: 'Daniel Kim', city: 'Fullerton', lat: 33.8703, lng: -117.9242, dupr: 3.3, type: 'player', preferredPlay: 'doubles', availability: 'weekends', level: 'beginner', socialTagCount: 0 },
+  { id: 517, name: 'Lauren Taylor', city: 'Long Beach', lat: 33.7701, lng: -118.1937, dupr: 4.0, type: 'partner', preferredPlay: 'doubles', availability: 'weekdays', level: 'intermediate', socialTagCount: 5 },
+  { id: 518, name: 'Jason Brown', city: 'Irvine', lat: 33.6705, lng: -117.7368, dupr: 3.8, type: 'player', preferredPlay: 'singles', availability: 'anytime', level: 'intermediate', socialTagCount: 3 },
+  { id: 519, name: 'Stephanie Nguyen', city: 'Aliso Viejo', lat: 33.5675, lng: -117.7268, dupr: 4.2, type: 'partner', preferredPlay: 'doubles', availability: 'weekends', level: 'intermediate', socialTagCount: 6 },
 ];
 
 function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -129,8 +130,10 @@ router.get('/nearby', (req: Request, res: Response) => {
     return { ...p, matchScore: score, isPerfect };
   });
 
-  // Sort by match score (desc), then distance (asc)
+  // Sort by social tags (more tags first), then match score (desc), then distance (asc)
   results.sort((a, b) => {
+    // Players with social tags rank higher
+    if (a.socialTagCount !== b.socialTagCount) return b.socialTagCount - a.socialTagCount;
     if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore;
     return a.distance - b.distance;
   });

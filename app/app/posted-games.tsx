@@ -14,6 +14,7 @@ import api from '../../lib/api';
 import { theme } from '../../lib/theme';
 import { SkeletonList } from '../../lib/skeleton';
 import { EmptyState } from '../../lib/empty-state';
+import PostGameRatingModal from '../../components/PostGameRatingModal';
 
 interface JoinedPlayer {
   id: number;
@@ -87,6 +88,14 @@ const formatIcons: Record<string, string> = {
 export default function PostedGamesScreen() {
   const router = useRouter();
   const [joining, setJoining] = useState<number | null>(null);
+  const [ratingModal, setRatingModal] = useState<{
+    visible: boolean;
+    opponentName: string;
+    opponentId?: number;
+    courtName: string;
+    score: string;
+    format: 'singles' | 'doubles' | 'mixed';
+  }>({ visible: false, opponentName: '', courtName: '', score: '', format: 'doubles' });
 
   const { data, isLoading, refetch } = useQuery<{ data: PostedGame[] }>({
     queryKey: ['posted-games'],
@@ -362,6 +371,24 @@ export default function PostedGamesScreen() {
             </Text>
           </TouchableOpacity>
         )}
+
+        {/* Mark as Complete (for full games) */}
+        {isFull && (
+          <TouchableOpacity
+            style={styles.completeBtn}
+            onPress={() => setRatingModal({
+              visible: true,
+              opponentName: allPlayers.length > 1 ? allPlayers[1].name : 'Opponent',
+              opponentId: allPlayers.length > 1 ? allPlayers[1].id : undefined,
+              courtName: game.courtName,
+              score: 'Won 11-7, 11-9',
+              format: game.format,
+            })}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.completeBtnText}>✅ Mark as Complete & Rate</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -429,6 +456,15 @@ export default function PostedGamesScreen() {
           </View>
         )}
       </ScrollView>
+      <PostGameRatingModal
+        visible={ratingModal.visible}
+        onClose={() => setRatingModal({ ...ratingModal, visible: false })}
+        opponentName={ratingModal.opponentName}
+        opponentId={ratingModal.opponentId}
+        courtName={ratingModal.courtName}
+        score={ratingModal.score}
+        format={ratingModal.format}
+      />
     </>
   );
 }
@@ -790,5 +826,19 @@ const styles = StyleSheet.create({
   },
   waitlistBtnText: {
     color: theme.accent,
+  },
+  completeBtn: {
+    backgroundColor: '#22c55e' + '15',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#22c55e' + '40',
+  },
+  completeBtnText: {
+    color: '#22c55e',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

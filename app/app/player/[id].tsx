@@ -1061,7 +1061,7 @@ export default function PlayerDetailScreen() {
             <PickleballBallIcon size={60} opacity={0.03} />
           </View>
           <View style={styles.bigAvatar}>
-            <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+            <Image source={{ uri: avatarUrl }} style={styles.avatarImage} resizeMode="cover" />
           </View>
           <Text style={styles.playerName}>{getPlayerName(player)}</Text>
           {resolvedLanguage !== 'en' && getPlayerName(player) !== player.name && (

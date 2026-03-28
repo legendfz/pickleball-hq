@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Linking,
+  Platform,
 } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
@@ -90,8 +91,12 @@ export default function CourtDetailScreen() {
 
   const openDirections = () => {
     if (!court) return;
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}`;
-    Linking.openURL(url);
+    const googleUrl = `https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}`;
+    const appleUrl = `https://maps.apple.com/?daddr=${court.lat},${court.lng}`;
+    // Try Google Maps first, fall back to Apple Maps
+    Linking.openURL(Platform.OS === 'ios' ? appleUrl : googleUrl).catch(() => {
+      Linking.openURL(Platform.OS === 'ios' ? googleUrl : appleUrl);
+    });
   };
 
   if (isLoading) {

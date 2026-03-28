@@ -28,6 +28,7 @@ export function PlayerAvatar({ name, photoUrl, size = 40 }: PlayerAvatarProps) {
           styles.avatar,
           { width: size, height: size, borderRadius: size / 2 },
         ]}
+        resizeMode="cover"
         onError={() => setImageError(true)}
       />
     );
@@ -41,6 +42,7 @@ export function PlayerAvatar({ name, photoUrl, size = 40 }: PlayerAvatarProps) {
           styles.avatar,
           { width: size, height: size, borderRadius: size / 2 },
         ]}
+        resizeMode="cover"
         onError={() => setDicebearError(true)}
       />
     );

@@ -161,6 +161,9 @@ export default function CourtsScreen() {
       <FlatList
         data={courts}
         keyExtractor={(item) => item.id.toString()}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

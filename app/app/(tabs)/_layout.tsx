@@ -109,7 +109,19 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Tab 2: Courts — 球场 */}
+      {/* Tab 2: Feed — 社区 */}
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Feed',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label="Feed" focused={focused} emoji="📢" />
+          ),
+        }}
+      />
+
+      {/* Tab 3: Courts — 球场 */}
       <Tabs.Screen
         name="courts"
         options={{

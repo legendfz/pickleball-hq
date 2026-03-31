@@ -8,6 +8,7 @@ import {
   Switch,
   Alert,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { theme } from '../lib/theme';
 import { useLanguage } from '../lib/i18n';
 import {
@@ -58,6 +59,7 @@ function StatRow({
 
 export default function ProfileScreen() {
   const { language, setLanguage, t } = useLanguage();
+  const router = useRouter();
   const [notifications, setNotifications] = useState(true);
 
   const currentLevel = getCurrentLevel(MOCK_USER.totalXP);
@@ -253,6 +255,22 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
+
+      {/* ── What's New ── */}
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push('/whats-new')}
+        activeOpacity={theme.activeOpacity}
+      >
+        <View style={styles.whatsNewRow}>
+          <Text style={styles.whatsNewEmoji}>✨</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.whatsNewTitle}>What's New</Text>
+            <Text style={styles.whatsNewSub}>See the latest updates</Text>
+          </View>
+          <Text style={styles.whatsNewArrow}>›</Text>
+        </View>
+      </TouchableOpacity>
 
       {/* ── Level Progression Info ── */}
       <View style={styles.card}>
@@ -566,6 +584,30 @@ const styles = StyleSheet.create({
   },
   langBtnTextActive: {
     color: '#fff',
+  },
+
+  // What's New
+  whatsNewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  whatsNewEmoji: {
+    fontSize: 24,
+  },
+  whatsNewTitle: {
+    fontSize: 15,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.text,
+  },
+  whatsNewSub: {
+    fontSize: 12,
+    color: theme.textSecondary,
+    marginTop: 2,
+  },
+  whatsNewArrow: {
+    fontSize: 22,
+    color: theme.textSecondary,
   },
 
   // Level progression

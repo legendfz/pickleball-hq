@@ -1,8 +1,10 @@
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { LanguageProvider } from '../lib/i18n';
 import { theme } from '../lib/theme';
+import { checkRatePrompt } from '../lib/rate-prompt';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +16,10 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
+  useEffect(() => {
+    checkRatePrompt();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
@@ -150,6 +156,14 @@ export default function RootLayout() {
           name="fantasy/predict-result/[tournamentId]"
           options={{
             title: 'Prediction Results',
+            headerBackTitle: 'Back',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="whats-new"
+          options={{
+            title: "What's New",
             headerBackTitle: 'Back',
             animation: 'slide_from_right',
           }}

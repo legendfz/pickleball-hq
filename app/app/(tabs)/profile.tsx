@@ -176,6 +176,33 @@ export default function ProfileScreen() {
         <StatRow label="Share XP earned" value={`+${MOCK_USER.sharesThisMonth * SHARE_XP_REWARD} XP`} />
       </View>
 
+      {/* ── Activity ── */}
+      <View style={styles.card}>
+        <SectionTitle>📊 Activity</SectionTitle>
+        <View style={styles.activityGrid}>
+          <View style={styles.activityCard}>
+            <Text style={styles.activityValue}>3 games</Text>
+            <Text style={styles.activityLabel}>This Week</Text>
+            <Text style={styles.activitySub}>6 hrs played</Text>
+          </View>
+          <View style={styles.activityCard}>
+            <Text style={styles.activityValue}>12 games</Text>
+            <Text style={styles.activityLabel}>This Month</Text>
+            <Text style={styles.activitySub}>Win rate 72%</Text>
+          </View>
+          <View style={styles.activityCard}>
+            <Text style={styles.activityValue}>🏓 Irvine Station</Text>
+            <Text style={styles.activityLabel}>Most Played</Text>
+            <Text style={styles.activitySub}>8 games</Text>
+          </View>
+          <View style={styles.activityCard}>
+            <Text style={styles.activityValue}>📅 Saturday</Text>
+            <Text style={styles.activityLabel}>Best Day</Text>
+            <Text style={styles.activitySub}>Most active</Text>
+          </View>
+        </View>
+      </View>
+
       {/* ── Settings ── */}
       <View style={styles.card}>
         <SectionTitle>{t('settings')}</SectionTitle>
@@ -442,6 +469,40 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: theme.textSecondary,
     marginTop: 2,
+  },
+
+  // Activity
+  activityGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  activityCard: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: theme.bg,
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  activityValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: theme.text,
+    marginBottom: 4,
+  },
+  activityLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: theme.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+    marginBottom: 2,
+  },
+  activitySub: {
+    fontSize: 11,
+    color: theme.textTertiary,
   },
 
   // Section

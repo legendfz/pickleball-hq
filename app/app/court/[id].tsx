@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  TextInput,
+  Modal,
 } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
@@ -75,6 +77,135 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
     else stars.push('☆');
   }
   return <Text style={{ color: theme.gold, fontSize: size }}>{stars.join('')}</Text>;
+}
+
+// ─── Enhanced Reviews Section ────────────────────────────────────────
+const MOCK_REVIEWS: Review[] = [
+  { id: 1, user: 'Mike C.', rating: 4, text: 'Great courts, well maintained. Gets crowded on weekends.', date: '2 days ago' },
+  { id: 2, user: 'Sarah K.', rating: 5, text: 'Best courts in the area! Clean lines, good nets, and plenty of space.', date: '1 week ago' },
+  { id: 3, user: 'Tom R.', rating: 4, text: 'Good surface, friendly community. Parking can be tricky on Saturday mornings.', date: '2 weeks ago' },
+  { id: 4, user: 'Lisa W.', rating: 5, text: 'Love playing here! The lights at night are excellent for evening games.', date: '3 weeks ago' },
+  { id: 5, user: 'David R.', rating: 3, text: 'Decent courts but they could use resurfacing. Water pools after rain.', date: '1 month ago' },
+  { id: 6, user: 'Amy W.', rating: 5, text: 'Perfect for competitive play. Good mix of skill levels here.', date: '1 month ago' },
+  { id: 7, user: 'Chris T.', rating: 4, text: 'Clean restrooms, water fountain works. Only issue is limited shade.', date: '1 month ago' },
+  { id: 8, user: 'Nicole K.', rating: 4, text: 'Great community! Regular games happening, easy to find partners.', date: '2 months ago' },
+];
+
+function ReviewsSection({ initialReviews, courtName }: { initialReviews?: Review[]; courtName: string }) {
+  const reviews = initialReviews && initialReviews.length > 0 ? initialReviews : MOCK_REVIEWS;
+  const [showWriteReview, setShowWriteReview] = useState(false);
+  const [newRating, setNewRating] = useState(0);
+  const [newText, setNewText] = useState('');
+  const [userReviews, setUserReviews] = useState<Review[]>([]);
+
+  const allReviews = [...userReviews, ...reviews];
+  const avgRating = allReviews.length > 0
+    ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
+    : '0.0';
+
+  const handleSubmit = () => {
+    if (newRating === 0 || !newText.trim()) return;
+    const newReview: Review = {
+      id: Date.now(),
+      user: 'You',
+      rating: newRating,
+      text: newText.trim(),
+      date: 'Just now',
+    };
+    setUserReviews([newReview, ...userReviews]);
+    setShowWriteReview(false);
+    setNewRating(0);
+    setNewText('');
+  };
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.reviewsHeader}>
+        <View>
+          <Text style={styles.cardTitle}>Reviews</Text>
+          <Text style={styles.reviewsAvg}>
+            {avgRating} ★ ({allReviews.length} reviews)
+          </Text>
+        </View>
+      </View>
+
+      {allReviews.map((review) => (
+        <View key={review.id} style={styles.reviewRow}>
+          <View style={styles.reviewHeader}>
+            <View style={styles.reviewAvatar}>
+              <Text style={styles.reviewAvatarText}>
+                {review.user.split(' ').map(n => n[0]).join('')}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={styles.reviewHeaderRow}>
+                <Text style={styles.reviewUser}>{review.user}</Text>
+                <Text style={styles.reviewDate}>{review.date}</Text>
+              </View>
+              <StarRating rating={review.rating} size={12} />
+            </View>
+          </View>
+          <Text style={styles.reviewText}>{review.text}</Text>
+        </View>
+      ))}
+
+      <TouchableOpacity
+        style={styles.writeReviewBtn}
+        onPress={() => setShowWriteReview(true)}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.writeReviewBtnText}>✏️ Write Review</Text>
+      </TouchableOpacity>
+
+      {/* Write Review Modal */}
+      <Modal visible={showWriteReview} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Review {courtName}</Text>
+
+            <Text style={styles.modalLabel}>Rating</Text>
+            <View style={styles.starPicker}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity key={star} onPress={() => setNewRating(star)} activeOpacity={0.7}>
+                  <Text style={[styles.starPickerStar, star <= newRating && styles.starPickerActive]}>
+                    ★
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={styles.modalLabel}>Your Review</Text>
+            <TextInput
+              style={styles.reviewInput}
+              placeholder="Share your experience..."
+              placeholderTextColor={theme.textTertiary}
+              multiline
+              value={newText}
+              onChangeText={setNewText}
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
+                onPress={() => { setShowWriteReview(false); setNewRating(0); setNewText(''); }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.modalCancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalSubmitBtn, (newRating === 0 || !newText.trim()) && styles.modalSubmitDisabled]}
+                onPress={handleSubmit}
+                activeOpacity={0.7}
+                disabled={newRating === 0 || !newText.trim()}
+              >
+                <Text style={styles.modalSubmitBtnText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
 }
 
 export default function CourtDetailScreen() {
@@ -434,21 +565,7 @@ export default function CourtDetailScreen() {
         )}
 
         {/* Reviews */}
-        {court.reviews && court.reviews.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Reviews</Text>
-            {court.reviews.map((review) => (
-              <View key={review.id} style={styles.reviewRow}>
-                <View style={styles.reviewHeader}>
-                  <Text style={styles.reviewUser}>{review.user}</Text>
-                  <StarRating rating={review.rating} size={12} />
-                </View>
-                <Text style={styles.reviewText}>{review.text}</Text>
-                <Text style={styles.reviewDate}>{review.date}</Text>
-              </View>
-            ))}
-          </View>
-        )}
+        <ReviewsSection initialReviews={court.reviews} courtName={court.name} />
       </ScrollView>
     </>
   );
@@ -593,15 +710,34 @@ const styles = StyleSheet.create({
   },
 
   reviewRow: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 0.5,
     borderBottomColor: theme.border,
   },
   reviewHeader: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    gap: 10,
+  },
+  reviewAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: theme.accent + '20',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reviewAvatarText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: theme.accent,
+  },
+  reviewHeaderRow: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   reviewUser: {
     fontSize: 13,
@@ -612,11 +748,116 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.textSecondary,
     lineHeight: 18,
+    paddingLeft: 46,
   },
   reviewDate: {
     fontSize: 11,
     color: '#666',
-    marginTop: 4,
+  },
+  reviewsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  reviewsAvg: {
+    fontSize: 13,
+    color: theme.gold,
+    fontWeight: '600',
+  },
+  writeReviewBtn: {
+    marginTop: 12,
+    paddingVertical: 12,
+    backgroundColor: theme.accent + '15',
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.accent + '30',
+  },
+  writeReviewBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.accent,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: theme.card,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.text,
+    marginBottom: 16,
+  },
+  modalLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: theme.textSecondary,
+    marginBottom: 8,
+    marginTop: 12,
+  },
+  starPicker: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  starPickerStar: {
+    fontSize: 32,
+    color: theme.border,
+  },
+  starPickerActive: {
+    color: theme.gold,
+  },
+  reviewInput: {
+    backgroundColor: theme.bg,
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 14,
+    color: theme.text,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: theme.border,
+  },
+  modalCancelBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.text,
+  },
+  modalSubmitBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: theme.accent,
+  },
+  modalSubmitDisabled: {
+    opacity: 0.4,
+  },
+  modalSubmitBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
   },
 
   // Social Stats
